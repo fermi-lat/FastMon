@@ -1,0 +1,9 @@
+$ Header $
+v0 
+
+ + ACD iterator
+ + Gem Discarded Time ?
+ + timeIntervalElapsed - deltaEventTime - zoom - rollover 
+ + EPU - crate number ?
+ + Histograms : Level Layer
+ + Think about autoscale (move root object creation to the TreeProcessor?)
