@@ -1,0 +1,24 @@
+#! /bin/sh
+
+export CMD='rm -f *~ .*~'
+echo 'Removing backup files...'
+echo $CMD
+$CMD
+
+export CMD='rm -f *.pyc *.pyo'
+echo 'Removing assembled bytecode...'
+echo $CMD
+$CMD
+
+export CMD='rm -f pGEMcontribution.py pTKRcontributionIterator.py pCALcontributionIterator.py'
+echo 'Removing self written code...'
+echo $CMD
+$CMD
+
+export CMD='rm -f IsocDataFile.root'
+echo 'Removing Default Root File...'
+echo $CMD
+$CMD
+
+
+echo 'Done.'

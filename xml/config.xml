@@ -1,0 +1,200 @@
+<?xml version="1.0" ?>
+
+<monitoring>
+
+    <!--
+    Input lists:
+    Definition of the variables for filling the ROOT tree.
+    -->
+
+    <inputList group="GEM" name="GEM1" enabled="True">
+
+	<variable name="gem_timebase" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_discarded" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_dead_zone" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_condition_summary" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_tkr_vector" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	
+	<variable name="gem_cal_le_vector" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	
+	<variable name="gem_cal_he_vector" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	
+	<variable name="gem_cond_arr_time_tkr" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_cond_arr_time_cal_le" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_cond_arr_time_cal_he" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_cond_arr_time_roi" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_cond_arr_time_cno" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_trigger_time" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_one_pps_time_time_base" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_one_pps_time_seconds" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_delta_event_time" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="gem_delta_window_open_time" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+    </inputList>
+
+
+    <inputList group="TKR" name="TKR1" enabled="True">
+
+	<variable name="tkr_strip_count" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS)</shape>
+	</variable>
+	
+	<variable name="tkr_layer_strip_count" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>
+	
+	<variable name="tkr_layer_tot" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>
+	
+    </inputList>
+
+
+    
+    <inputList group="CAL" name="CAL1" enabled="True">
+
+	<variable name="cal_log_count" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS)</shape>
+	</variable>
+	
+    </inputList>
+	
+	
+    <!--
+    Output lists:
+    Definition of the plot which are filled from the ROOT tree.
+    -->
+
+    <outputList group="GEM" name="GEM1" enabled="True">
+
+        <TH1F name="gem_condition_summary" enabled="True" level="lat">
+	    <title>GEM condition summary</title>
+	    <xbins>64</xbins>
+	    <xmin>0</xmin>
+	    <xmax>64</xmax>
+            <expression>gem_condition_summary</expression>
+        </TH1F>
+
+        <TH1F name="gem_delta_event_time" enabled="True" level="lat">
+	    <title>GEM delta event time</title>
+	    <xbins>200</xbins>
+	    <xmin>0</xmin>
+	    <xmax>70000</xmax>
+            <expression>gem_delta_event_time</expression>
+        </TH1F>
+
+    </outputList>
+
+    <outputList group="TKR" name="TKR1" enabled="True">
+
+        <TH1F name="tkr_strip_count" enabled="True" level="tower">
+	    <title>Tracker hit multiplicity</title>
+	    <xbins>100</xbins>
+	    <xmin>0</xmin>
+	    <xmax>100</xmax>
+            <expression>tkr_strip_count</expression>
+        </TH1F>
+
+        <TH1F name="tkr_tot" enabled="True" level="tower">
+	    <title>Tracker TOT</title>
+	    <xbins>256</xbins>
+	    <xmin>0</xmin>
+	    <xmax>256</xmax>
+            <expression>tkr_layer_tot</expression>
+        </TH1F>
+
+    </outputList>
+
+
+    <outputList group="CAL" name="CAL1" enabled="True">
+
+        <TH1F name="cal_log_count" enabled="True" level="tower">
+	    <title>Calorimeter hit multiplicity</title>
+	    <xbins>96</xbins>
+	    <xmin>0</xmin>
+	    <xmax>96</xmax>
+            <expression>cal_log_count</expression>
+        </TH1F>
+
+    </outputList>
+
+    <outputList group="Trending" name="Trending1" enabled="True">
+
+        <StripChart name="trending_tkr_strip_count" enabled="True" level="lat">
+	    <title>Trending</title>
+ 	    <dtime>0.1</dtime>
+            <expression>tkr_strip_count</expression>
+       </StripChart>
+
+    </outputList>
+
+
+</monitoring>

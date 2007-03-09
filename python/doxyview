@@ -1,0 +1,3 @@
+#! /bin/sh
+
+htmlview ./doc/html/index.html &
