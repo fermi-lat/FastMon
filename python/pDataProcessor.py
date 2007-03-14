@@ -83,12 +83,12 @@ class pDataProcessor:
     def startProcessing(self, maxEvents = 1000):
         logging.info('Beginning data processing...')
         startTime = time.time()
-        while (self.NumEvents < maxEvents):
+        while (self.NumEvents != maxEvents):
             try:
                 (meta, buff) = self.LsfMerger.getUncompressedEvent()
             except TypeError:
-                logging.info('Got void event. Returning...')
-                return 
+                logging.info('End of file reached.')
+                break
             self.processMetaEvent(meta)
             self.processEvent(buff)
         elapsedTime = time.time() - startTime
