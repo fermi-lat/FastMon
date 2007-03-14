@@ -17,14 +17,18 @@ from pLATcontributionIterator         import pLATcontributionIterator
 from pEBFeventIterator                import pEBFeventIterator
 from pXmlParser                       import pXmlParser
 from pGlobals			      import *
+from pContributionIteratorWriter      import *
+from pContributionWriter              import *
 
 logging.basicConfig(level=logging.DEBUG)
 
 class pDataProcessor:
 
-    def __init__(self):
-        self.__XmlParser = pXmlParser('../xml/config.xml')
+    def __init__(self, configFilePath):
+        self.__XmlParser = pXmlParser(configFilePath)
         self.TreeMaker   = pRootTreeMaker(self.__XmlParser)
+        self.__updateContributionIterators()
+        self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
         self.lci         = pLATcomponentIterator(self.TreeMaker)
         self.eei         = pEBFeventIterator(self.lci)
@@ -37,7 +41,22 @@ class pDataProcessor:
         self.ROOTTree    = None
 
     def openFile(self, filePath):
-        self.LsfMerger   = LsfMerger(filePath)
+        logging.info('Opening the input data file...')
+        if os.path.exists(filePath):
+            self.LsfMerger   = LsfMerger(filePath)
+            logging.info('Done.')
+        else:
+            sys.exit('Input data file not found. Exiting...')
+
+    def __updateContributionIterators(self):
+        writer = pTKRcontributionIteratorWriter(self.__XmlParser)
+        writer.writeIterator()
+        writer = pCALcontributionIteratorWriter(self.__XmlParser)
+        writer.writeIterator()
+
+    def __updateContributions(self):
+        writer = pGEMcontributionWriter(self.__XmlParser)
+        writer.writeComponent()
 
     def processEvent(self, event):
         self.TreeMaker.resetVariables()
@@ -49,8 +68,7 @@ class pDataProcessor:
         
     def processMetaEvent(self, meta):
 	self.TreeMaker.DefaultVariablesDictionary['event_timestamp'][0] = \
-		self.calculateTimeStamp(meta)
-
+             self.calculateTimeStamp(meta)
 
     def calculateTimeStamp(self, meta):
 	timeTics = copy(meta.timeTics())
@@ -60,10 +78,8 @@ class pDataProcessor:
 	if(clockTicksEvt1PPS <0):
 	    clockTicksEvt1PPS += CLOCK_ROLLOVER
 	timestamp = timeHack_hacks +  clockTicksEvt1PPS*CLOCK_TIC
-	#print timestamp
 	return timestamp
 				
-
     def startProcessing(self, maxEvents = 1000):
         logging.info('Beginning data processing...')
         startTime = time.time()
@@ -80,9 +96,25 @@ class pDataProcessor:
         logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
         self.TreeMaker.close()
+
      
 
 if __name__ == '__main__':
-  dataProcessor  = pDataProcessor()
-  dataProcessor.openFile('/data/IsocData/lsf/00003521-0b3a63a8-03bc-0000-00da.lsf')
-  dataProcessor.startProcessing(1000)
+    from optparse import OptionParser
+    parser = OptionParser(usage='usage: %prog [options] data_file')
+    parser.add_option('-c', '--config-file', dest='config_file',\
+                      default='../xml/config.xml', type=str,   \
+                      help='the input configuration xml file')
+    parser.add_option('-n', '--num-events', dest='events',      \
+                      default=-1, type=int,       \
+                      help='the number of events to be processed')
+    (options, args) = parser.parse_args()
+    if len(args) != 1:
+        parser.print_help()
+        parser.error('incorrect number of arguments')
+        sys.exit()
+        
+    dataProcessor  = pDataProcessor(options.config_file)
+    dataProcessor.openFile(args[0])
+    dataProcessor.startProcessing(options.events)
+    

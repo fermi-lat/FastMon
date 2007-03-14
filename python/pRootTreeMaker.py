@@ -2,8 +2,6 @@ import random
 import numpy
 
 from ROOT                        import TFile, TTree, TH1F
-from pContributionIteratorWriter import *
-from pContributionWriter         import *
 from pRootTreeProcessor          import pRootTreeProcessor
 
 
@@ -17,20 +15,7 @@ class pRootTreeMaker:
                                               self.__XmlParser)
         self.DefaultVariablesDictionary = None
         self.VariablesDictionary = None        
-        self.__updateIterators()
-        self.__updateContributions()
         self.__createTree()
-
-    def __updateIterators(self):
-        writer = pTKRcontributionIteratorWriter(self.__XmlParser)
-        writer.writeIterator()
-        writer = pCALcontributionIteratorWriter(self.__XmlParser)
-        writer.writeIterator()
-
-    def __updateContributions(self):
-        writer = pGEMcontributionWriter(self.__XmlParser)
-        writer.writeComponent()
-   
 
     def __createTree(self):
         self.VariablesDictionary = {}

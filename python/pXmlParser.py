@@ -3,6 +3,7 @@
 ## @brief Basic xml configuration file parser.
 
 import sys
+import os
 import logging
 import time
 
@@ -22,7 +23,7 @@ class pXmlParser:
     ## @param filePath
     #  Path to the input xml configuration file.
 
-    def __init__(self, filePath):
+    def __init__(self, configFilePath):
 
         ## @var InputListsDict
         ## @brief Dictionary containing the input lists.
@@ -43,12 +44,15 @@ class pXmlParser:
         #  xml.dom.minidom module.
         
         logging.info('Parsing input xml file...')
-        startTime        = time.time()
+        if os.path.exists(configFilePath):
+            self.XmlDoc           = minidom.parse(file(configFilePath))
+        else:
+            sys.exit('Input configuration file not found. Exiting...')
+        startTime                 = time.time()
         self.InputListsDict       = {}
         self.EnabledVariablesDict = {} 
         self.OutputListsDict      = {}
         self.EnabledPlotRepsDict  = {}
-        self.XmlDoc      = minidom.parse(file(filePath))
         for element in self.XmlDoc.getElementsByTagName('inputList'):
             list = pXmlInputList(element)
             self.InputListsDict[list.getName()] = list
