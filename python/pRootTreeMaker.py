@@ -7,8 +7,8 @@ from pRootTreeProcessor          import pRootTreeProcessor
 
 class pRootTreeMaker:
 
-    def __init__(self, xmlParser):
-        self.__RootFile  = TFile('IsocDataFile.root', 'recreate')
+    def __init__(self, xmlParser, outputFilePath):
+        self.__RootFile  = TFile(outputFilePath, 'recreate')
         self.__RootTree  = TTree('IsocDataTree', 'IsocDataTree')
         self.__XmlParser = xmlParser
         self.__Processor = pRootTreeProcessor(self.__RootTree,\

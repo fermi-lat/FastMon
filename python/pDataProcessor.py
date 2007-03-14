@@ -24,9 +24,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 class pDataProcessor:
 
-    def __init__(self, configFilePath):
+    def __init__(self, configFilePath, inputFilePath, outputFilePath):
+        if outputFilePath is None:
+            outputFilePath = '%s.root' % inputFilePath.split('.')[0]
         self.__XmlParser = pXmlParser(configFilePath)
-        self.TreeMaker   = pRootTreeMaker(self.__XmlParser)
+        self.TreeMaker   = pRootTreeMaker(self.__XmlParser, outputFilePath)
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
@@ -39,6 +41,7 @@ class pDataProcessor:
         self.LsfMerger   = None
         self.OutROOTFile = None
         self.ROOTTree    = None
+        self.openFile(inputFilePath)
 
     def openFile(self, filePath):
         logging.info('Opening the input data file...')
@@ -104,17 +107,20 @@ if __name__ == '__main__':
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',\
                       default='../xml/config.xml', type=str,   \
-                      help='the input configuration xml file')
+                      help='path to the input xml configuration file')
     parser.add_option('-n', '--num-events', dest='events',      \
                       default=-1, type=int,       \
-                      help='the number of events to be processed')
+                      help='number of events to be processed')
+    parser.add_option('-o', '--output-file', dest='output_file',
+                      default=None, type=str,
+                      help='path to the output ROOT file')
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.print_help()
         parser.error('incorrect number of arguments')
         sys.exit()
-        
-    dataProcessor  = pDataProcessor(options.config_file)
-    dataProcessor.openFile(args[0])
+    
+    dataProcessor  = pDataProcessor(options.config_file, args[0],\
+                                    options.output_file)
     dataProcessor.startProcessing(options.events)
     
