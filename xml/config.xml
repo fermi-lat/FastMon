@@ -24,6 +24,11 @@
             <shape>(1)</shape>
 	</variable>
 
+	<variable name="gem_live_time" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
 	<variable name="gem_condition_summary" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
@@ -115,14 +120,18 @@
 	</variable>
 	
     </inputList>
-
-
+    
     
     <inputList group="CAL" name="CAL1" enabled="True">
 
 	<variable name="cal_log_count" enabled="True">
 	    <type>int</type>
 	    <shape>(NUM_TOWERS)</shape>
+	</variable>
+
+	<variable name="cal_tower_count" enabled="True">
+	    <type>int</type>
+	    <shape>(1)</shape>
 	</variable>
 	
     </inputList>
@@ -176,6 +185,14 @@
 
     <outputList group="CAL" name="CAL1" enabled="True">
 
+        <TH1F name="cal_log_count" enabled="True" level="lat">
+	    <title>Calorimeter hit multiplicity</title>
+	    <xbins>192</xbins>
+	    <xmin>0</xmin>
+	    <xmax>192</xmax>
+            <expression>cal_log_count</expression>
+        </TH1F>
+
         <TH1F name="cal_log_count" enabled="True" level="tower">
 	    <title>Calorimeter hit multiplicity</title>
 	    <xbins>96</xbins>
@@ -184,17 +201,52 @@
             <expression>cal_log_count</expression>
         </TH1F>
 
+        <TH1F name="cal_tower_count" enabled="True" level="lat">
+	    <title>Number of calorimeters hit</title>
+	    <xbins>16</xbins>
+	    <xmin>0</xmin>
+	    <xmax>16</xmax>
+            <expression>cal_tower_count</expression>
+        </TH1F>
+
     </outputList>
 
-    <outputList group="Trending" name="Trending1" enabled="True">
+    <outputList group="Trending" name="TkrTrending" enabled="True">
 
-        <StripChart name="trending_tkr_strip_count" enabled="True" level="lat">
-	    <title>Trending</title>
- 	    <dtime>0.1</dtime>
+        <StripChart name="trending_tkr_strip_count_lat" enabled="True" level="lat">
+	    <title>LAT_TKR_Trending</title>
+ 	    <dtime>10</dtime>
+            <expression>tkr_strip_count</expression>
+       </StripChart>
+
+        <StripChart name="trending_tkr_strip_count" enabled="True" level="tower">
+	    <title>Tkr_Trending</title>
+ 	    <dtime>10</dtime>
             <expression>tkr_strip_count</expression>
        </StripChart>
 
     </outputList>
 
+    <outputList group="Trending" name="CalTrending" enabled="True">
+
+        <StripChart name="trending_cal_log_count_lat" enabled="True" level="lat">
+	    <title>LAT_CAL_Trending</title>
+ 	    <dtime>10</dtime>
+            <expression>cal_log_count</expression>
+       </StripChart>
+
+        <StripChart name="trending_cal_log_count" enabled="True" level="tower">
+	    <title>Cal_Trending</title>
+ 	    <dtime>10</dtime>
+            <expression>cal_log_count</expression>
+       </StripChart>
+
+        <StripChart name="trending_cal_tower_count" enabled="True" level="lat">
+	    <title>Cal_Trending</title>
+ 	    <dtime>10</dtime>
+            <expression>cal_tower_count</expression>
+       </StripChart>
+
+    </outputList>
 
 </monitoring>
