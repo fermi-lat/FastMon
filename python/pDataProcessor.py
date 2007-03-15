@@ -82,7 +82,7 @@ class pDataProcessor:
 	    clockTicksEvt1PPS += CLOCK_ROLLOVER
 	timestamp = timeHack_hacks +  clockTicksEvt1PPS*CLOCK_TIC
 	return timestamp
-				
+
     def startProcessing(self, maxEvents = 1000):
         logging.info('Beginning data processing...')
         startTime = time.time()
@@ -112,7 +112,7 @@ if __name__ == '__main__':
                       default=-1, type=int,       \
                       help='number of events to be processed')
     parser.add_option('-o', '--output-file', dest='output_file',
-                      default=None, type=str,
+                      default='IsocDataFile.root', type=str,
                       help='path to the output ROOT file')
     (options, args) = parser.parse_args()
     if len(args) != 1:
@@ -123,4 +123,3 @@ if __name__ == '__main__':
     dataProcessor  = pDataProcessor(options.config_file, args[0],\
                                     options.output_file)
     dataProcessor.startProcessing(options.events)
-    
