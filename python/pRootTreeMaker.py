@@ -1,5 +1,6 @@
 import random
 import numpy
+import logging
 
 from ROOT                        import TFile, TTree, TH1F
 from pRootTreeProcessor          import pRootTreeProcessor
@@ -16,6 +17,7 @@ class pRootTreeMaker:
         self.DefaultVariablesDictionary = None
         self.VariablesDictionary = None        
         self.__createTree()
+        logging.info('Created File %s with Tree %s\n' % (outputFilePath, self.__RootTree.GetName()) )
 
     def __createTree(self):
         self.VariablesDictionary = {}
@@ -43,6 +45,8 @@ class pRootTreeMaker:
     def resetVariables(self):
         for variable in self.__XmlParser.EnabledVariablesDict.values():
             variable.reset()
+            #logging.debug('Resetting %s\n' % variable)
+	    
 
     def close(self):
         self.__Processor.process()
