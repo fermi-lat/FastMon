@@ -26,6 +26,9 @@ class pGEMcontributionBase:
     def gem_dead_zone(self):
         self.getVariable("gem_dead_zone")[0] = copy(self.deadZone())
 	
+    def gem_live_time(self):
+        self.getVariable("gem_live_time")[0] = copy(self.liveTime())
+	
 # Trigger Vector
     def gem_condition_summary(self):
         self.getVariable("gem_condition_summary")[0] = copy(self.conditionSummary())
