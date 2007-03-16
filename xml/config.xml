@@ -241,6 +241,8 @@
 	    <title>LAT_CAL_Trending</title>
  	    <dtime>10</dtime>
             <expression>cal_log_count[0]+cal_log_count[1]+cal_log_count[2]+cal_log_count[3]+cal_log_count[4]+cal_log_count[5]+cal_log_count[6]+cal_log_count[7]+cal_log_count[8]+cal_log_count[9]+cal_log_count[10]+cal_log_count[11]+cal_log_count[12]+cal_log_count[13]+cal_log_count[14]+cal_log_count[15]</expression>
+	    <ymin>0</ymin>
+	    <ymax>1600</ymax>
        </StripChart>
 
         <StripChart name="trending_cal_log_count" enabled="True" level="tower">
