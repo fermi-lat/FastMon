@@ -248,23 +248,26 @@ class pStripChartXmlRep(pPlotXmlRep):
     def __init__(self, element):
         pPlotXmlRep.__init__(self, element)
         self.DTime = float(self.getTagValue('dtime'))
+        self.YMin     = self.evalTagValue('ymin')
+        self.YMax     = self.evalTagValue('ymax')
 
     def getRootObject(self, rootTree, tower=None):
         name       = '%s%s' % (self.getName(), self.getSuffix(tower))
         title      = '%s%s' % (self.Title, self.getSuffix(tower))
-        #First take global variable in expression b/c if not GetMaximum does not work
-	expression = self.getExpression()
+	expression = self.getExpression(tower)
 	tmin = rootTree.GetMinimum('event_timestamp')
         tmax = rootTree.GetMaximum('event_timestamp')
-	#ymin and ymax may be passed in the xml
-        ymin = rootTree.GetMinimum(expression)
-        ymax = rootTree.GetMaximum(expression)
+        # GetMaximum works only on direct tree variable (e.g. not on cal_log_count[i])
+	#ymin and ymax may be passed in the xml if not try to get them from the tree
+        if self.YMin is None:
+	  self.YMin = rootTree.GetMinimum(expression)
+        if self.YMax is None:
+	  self.YMax = rootTree.GetMinimum(expression)
+	  
         #logging.debug('StripChart %s: tmin=%d tmax=%d ymin=%d ymax=%d' %\
-	#		(expression, tmin, tmax, ymin, ymax) )
-        #Now get the right expression
-	expression = self.getExpression(tower)
+	#		(expression, tmin, tmax, self.YMin, self.YMax) )
         nTimeBin = int((tmax-tmin)/self.DTime)
-	htemp = ROOT.TH2F('htemp', 'htemp', nTimeBin, tmin, tmax, 100, ymin,ymax)
+	htemp = ROOT.TH2F('htemp', 'htemp', nTimeBin, tmin, tmax, 100, self.YMin,self.YMax)
 	#Cut is always on the variable itself now : should come from xml
 	rootTree.Project('htemp', '%s:event_timestamp'% expression, '%s>0'% expression)
         profile = htemp.ProfileX()
