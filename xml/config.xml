@@ -249,12 +249,16 @@
 	    <title>Cal_Trending</title>
  	    <dtime>10</dtime>
             <expression>cal_log_count</expression>
+	    <ymin>0</ymin>
+	    <ymax>100</ymax>
        </StripChart>
 
         <StripChart name="trending_cal_tower_count" enabled="True" level="lat">
 	    <title>Cal_Trending</title>
  	    <dtime>10</dtime>
             <expression>cal_tower_count</expression>
+	    <ymin>0</ymin>
+	    <ymax>16</ymax>
        </StripChart>
 
     </outputList>
