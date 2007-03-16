@@ -164,6 +164,14 @@
 
     <outputList group="TKR" name="TKR1" enabled="True">
 
+        <TH1F name="tkr_strip_count_lat" enabled="True" level="lat">
+	    <title>Tracker hit multiplicity</title>
+	    <xbins>100</xbins>
+	    <xmin>0</xmin>
+	    <xmax>300</xmax>
+            <expression>tkr_strip_count</expression>
+        </TH1F>
+
         <TH1F name="tkr_strip_count" enabled="True" level="tower">
 	    <title>Tracker hit multiplicity</title>
 	    <xbins>100</xbins>
@@ -185,19 +193,19 @@
 
     <outputList group="CAL" name="CAL1" enabled="True">
 
-        <TH1F name="cal_log_count" enabled="True" level="lat">
+        <TH1F name="cal_log_count_lat" enabled="True" level="lat">
 	    <title>Calorimeter hit multiplicity</title>
-	    <xbins>192</xbins>
+	    <xbins>100</xbins>
 	    <xmin>0</xmin>
-	    <xmax>192</xmax>
-            <expression>cal_log_count</expression>
+	    <xmax>1600</xmax>
+            <expression>cal_log_count[0]+cal_log_count[1]+cal_log_count[2]+cal_log_count[3]+cal_log_count[4]+cal_log_count[5]+cal_log_count[6]+cal_log_count[7]+cal_log_count[8]+cal_log_count[9]+cal_log_count[10]+cal_log_count[11]+cal_log_count[12]+cal_log_count[13]+cal_log_count[14]+cal_log_count[15]</expression>
         </TH1F>
 
         <TH1F name="cal_log_count" enabled="True" level="tower">
 	    <title>Calorimeter hit multiplicity</title>
-	    <xbins>96</xbins>
+	    <xbins>100</xbins>
 	    <xmin>0</xmin>
-	    <xmax>96</xmax>
+	    <xmax>100</xmax>
             <expression>cal_log_count</expression>
         </TH1F>
 
@@ -232,7 +240,7 @@
         <StripChart name="trending_cal_log_count_lat" enabled="True" level="lat">
 	    <title>LAT_CAL_Trending</title>
  	    <dtime>10</dtime>
-            <expression>cal_log_count</expression>
+            <expression>cal_log_count[0]+cal_log_count[1]+cal_log_count[2]+cal_log_count[3]+cal_log_count[4]+cal_log_count[5]+cal_log_count[6]+cal_log_count[7]+cal_log_count[8]+cal_log_count[9]+cal_log_count[10]+cal_log_count[11]+cal_log_count[12]+cal_log_count[13]+cal_log_count[14]+cal_log_count[15]</expression>
        </StripChart>
 
         <StripChart name="trending_cal_log_count" enabled="True" level="tower">
