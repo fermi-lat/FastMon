@@ -72,6 +72,10 @@ class pDataProcessor:
     def processMetaEvent(self, meta):
 	self.TreeMaker.DefaultVariablesDictionary['event_timestamp'][0] = \
              self.calculateTimeStamp(meta)
+	#print meta.context().run().startedAt()
+	#print meta.context().run().id()
+	#print meta.context().scalers().livetime()
+	#print meta.context().open().crate()
 
     def calculateTimeStamp(self, meta):
 	timeTics = copy(meta.timeTics())
