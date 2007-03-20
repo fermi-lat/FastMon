@@ -225,12 +225,16 @@
 	    <title>LAT_TKR_Trending</title>
  	    <dtime>10</dtime>
             <expression>tkr_strip_count</expression>
+	    <ymin>0</ymin>
+	    <ymax>1000</ymax>
        </StripChart>
 
         <StripChart name="trending_tkr_strip_count" enabled="True" level="tower">
 	    <title>Tkr_Trending</title>
  	    <dtime>10</dtime>
             <expression>tkr_strip_count</expression>
+	    <ymin>0</ymin>
+	    <ymax>300</ymax>
        </StripChart>
 
     </outputList>
