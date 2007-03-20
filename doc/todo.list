@@ -1,13 +1,12 @@
- + RESET cal_tower_count
  + implement cal log iterator
  + ACD iterator
  + OSW Iterator
  + Gem Discarded Time ?
  + timeIntervalElapsed - deltaEventTime - zoom - rollover 
- + EPU - crate number ?
+ + EPU - crate number  = meta.context().open().crate()
  + Histograms : Level Layer
  + Think about autoscale (move root object creation to the TreeProcessor?)
- + each strip chart name needs to be unique
+ + each stripchart name needs to be unique
  + add XY axis title in xml
 
  + PLOTS
