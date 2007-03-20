@@ -42,6 +42,8 @@ class pDataProcessor:
         self.OutROOTFile = None
         self.ROOTTree    = None
         self.openFile(inputFilePath)
+	self.TimeHackRollOverNum = 0
+	self.TimeHackHasJustRolledOver = False
 
     def openFile(self, filePath):
         logging.info('Opening the input data file...')
@@ -62,8 +64,8 @@ class pDataProcessor:
         writer.writeComponent()
 
     def processEvent(self, event):
-        self.TreeMaker.resetVariables()
-        self.ldbi.iterate(event, len(event))
+	self.TreeMaker.resetVariables()
+	self.ldbi.iterate(event, len(event))
         self.TreeMaker.fillTree()
         self.NumEvents += 1
         if not self.NumEvents%100:
@@ -84,7 +86,17 @@ class pDataProcessor:
 	clockTicksEvt1PPS = timeTics - timeHack_tics	
 	if(clockTicksEvt1PPS <0):
 	    clockTicksEvt1PPS += CLOCK_ROLLOVER
-	timestamp = timeHack_hacks +  clockTicksEvt1PPS*CLOCK_TIC
+
+	#Check for timeHack rollover
+	hPrevious = meta.context().previous().timeHack().hacks()
+	hCurrent  = meta.context().current().timeHack().hacks()
+	if (hCurrent - hPrevious < 0) and not self.TimeHackHasJustRolledOver :
+	    self.TimeHackRollOverNum += 1
+	    self.TimeHackHasJustRolledOver = True
+	if hCurrent - hPrevious > 0:
+	   self.TimeHackHasJustRolledOver = False
+	
+	timestamp = 128*self.TimeHackRollOverNum + timeHack_hacks +  clockTicksEvt1PPS*CLOCK_TIC
 	return timestamp
 
     def startProcessing(self, maxEvents = 1000):
