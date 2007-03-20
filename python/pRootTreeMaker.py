@@ -42,18 +42,14 @@ class pRootTreeMaker:
     def fillTree(self):
         self.__RootTree.Fill()
 
+    ## @brief Reset variable Array
+    ## @param self
+    #  The class instance.
+
     def resetVariables(self):
-        ## @brief Reset the Tree variables at the beginning of each event
-	## the idea here is first to reset the variable as a pXmlElement
-	## and assign the value of the variable in the dictionnary to the
-	## Array of the reset variable
-	## Johan, March 19th, 2007
-        ## @param self
-        #  The class instance.
 
         for variable in self.__XmlParser.EnabledVariablesDict.values():
             variable.reset()
-	    self.VariablesDictionary[variable.getName()] = variable.Array
 	    
 	    
 
