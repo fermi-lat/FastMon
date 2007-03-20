@@ -254,16 +254,19 @@ class pStripChartXmlRep(pPlotXmlRep):
     def getRootObject(self, rootTree, tower=None):
         name       = '%s%s' % (self.getName(), self.getSuffix(tower))
         title      = '%s%s' % (self.Title, self.getSuffix(tower))
-	expression = self.getExpression(tower)
 	tmin = rootTree.GetMinimum('event_timestamp')
         tmax = rootTree.GetMaximum('event_timestamp')
+
+	# ymin and ymax may be passed in the xml if not try to get them from the tree
         # GetMaximum works only on direct tree variable (e.g. not on cal_log_count[i])
-	#ymin and ymax may be passed in the xml if not try to get them from the tree
+	# Need to implement something better
+	expression = self.getExpression()
         if self.YMin is None:
 	  self.YMin = rootTree.GetMinimum(expression)
         if self.YMax is None:
-	  self.YMax = rootTree.GetMinimum(expression)
+	  self.YMax = rootTree.GetMaximum(expression)
 	  
+	expression = self.getExpression(tower)
         #logging.debug('StripChart %s: tmin=%d tmax=%d ymin=%d ymax=%d' %\
 	#		(expression, tmin, tmax, self.YMin, self.YMax) )
         nTimeBin = int((tmax-tmin)/self.DTime)
