@@ -44,15 +44,14 @@ class pRootTreeVariable(pXmlElement):
         self.Type          = self.getTagValue('type')
         self.Shape         = self.evalTagValue('shape')
         self.LeafList      = self.__getLeafList()
-        self.Array         = None
-        self.reset()
+        self.Array         = numpy.zeros(self.Shape, self.Type)
 
     ## @brief Reset to 0 the underlying numpy array.
     ## @param self
     #  The class instance.
 
     def reset(self):
-        self.Array = numpy.zeros(self.Shape, self.Type)
+        self.Array.fill(0)
 
     ## @brief Return the LeafList for the ROOT function creating the branches.
     ## @param self
