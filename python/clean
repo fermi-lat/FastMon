@@ -25,4 +25,6 @@ echo 'Removing doxygen doc directory...'
 echo $CMD
 $CMD
 
+clear; pwd; ls --color=tty;
+
 echo 'Done.'
