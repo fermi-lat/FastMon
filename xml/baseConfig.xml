@@ -20,6 +20,21 @@
             <shape>(1)</shape>
 	</variable>
 
+ 	<variable name="meta_context_run_startedAt" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
+
+ 	<variable name="meta_context_scalers_livetime" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
+
+ 	<variable name="meta_context_open_crate" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
    </inputList>
 
 </monitoring>
