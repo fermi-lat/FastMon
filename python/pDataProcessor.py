@@ -19,6 +19,7 @@ from pXmlParser                       import pXmlParser
 from pGlobals			      import *
 from pContributionIteratorWriter      import *
 from pContributionWriter              import *
+from pMetaEventProcessor	      import *
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -28,7 +29,8 @@ class pDataProcessor:
         if outputFilePath is None:
             outputFilePath = '%s.root' % inputFilePath.split('.')[0]
         self.__XmlParser = pXmlParser(configFilePath)
-        self.TreeMaker   = pRootTreeMaker(self.__XmlParser, outputFilePath)
+        self.TreeMaker   = pRootTreeMaker(self.__XmlParser, outputFilePath)	
+	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)	
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
@@ -42,8 +44,6 @@ class pDataProcessor:
         self.OutROOTFile = None
         self.ROOTTree    = None
         self.openFile(inputFilePath)
-	self.TimeHackRollOverNum = 0
-	self.TimeHackHasJustRolledOver = False
 
     def openFile(self, filePath):
         logging.info('Opening the input data file...')
@@ -64,42 +64,37 @@ class pDataProcessor:
     def __updateContributions(self):
         writer = pGEMcontributionWriter(self.__XmlParser)
         writer.writeComponent()
-
+ 
     def processEvent(self, event):
-	self.TreeMaker.resetVariables()
 	self.ldbi.iterate(event, len(event))
-        self.TreeMaker.fillTree()
-        self.NumEvents += 1
-        if not self.NumEvents%100:
-            logging.debug('%d events processed' % self.NumEvents)
         
     def processMetaEvent(self, meta):
-	self.TreeMaker.DefaultVariablesDictionary['event_timestamp'][0] = \
-             self.calculateTimeStamp(meta)
-	#print meta.context().run().startedAt()
-	#print meta.context().run().id()
-	#print meta.context().scalers().livetime()
-	#print meta.context().open().crate()
+	self.MetaEventProcessor.process(meta)	
 
-    def calculateTimeStamp(self, meta):
-	timeTics = copy(meta.timeTics())
-	timeHack_tics = copy(meta.timeHack().tics())
-	timeHack_hacks = copy(meta.timeHack().hacks())
-	clockTicksEvt1PPS = timeTics - timeHack_tics	
-	if(clockTicksEvt1PPS <0):
-	    clockTicksEvt1PPS += CLOCK_ROLLOVER
-
-	#Check for timeHack rollover
-	hPrevious = meta.context().previous().timeHack().hacks()
-	hCurrent  = meta.context().current().timeHack().hacks()
-	if (hCurrent - hPrevious < 0) and not self.TimeHackHasJustRolledOver :
-	    self.TimeHackRollOverNum += 1
-	    self.TimeHackHasJustRolledOver = True
-	if hCurrent - hPrevious > 0:
-	   self.TimeHackHasJustRolledOver = False
+    ## @brief Global Event processing sequence
+    #
+    #   1) reset the tree variables
+    #   2) process the meta part of the event 
+    #   3) process the event part of the event 
+    #   4) fill the tree
+    #
+    ## @param self
+    #  The class instance.
+    ## @param meta
+    #  The Meta part of the global event
+    ## @param event
+    #  The Event part of the global event
+    
+    def process(self, meta, event):
+	self.TreeMaker.resetVariables()
+        self.processMetaEvent(meta)
+        self.processEvent(event)
+	self.TreeMaker.fillTree()
 	
-	timestamp = 128*self.TimeHackRollOverNum + timeHack_hacks +  clockTicksEvt1PPS*CLOCK_TIC
-	return timestamp
+	self.NumEvents += 1
+        if not self.NumEvents%100:
+            logging.debug('%d events processed' % self.NumEvents)
+
 
     def startProcessing(self, maxEvents = 1000):
         logging.info('Beginning data processing...')
@@ -110,8 +105,8 @@ class pDataProcessor:
             except TypeError:
                 logging.info('End of file reached.')
                 break
-            self.processMetaEvent(meta)
-            self.processEvent(buff)
+            self.process(meta, buff)
+
         elapsedTime = time.time() - startTime
         averageRate = self.NumEvents/elapsedTime
         logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
