@@ -13,4 +13,7 @@ class pAEMcontributionIteratorBase(LDF.AEMcontributionIterator):
 
     def getVariable(self, name):
         return self.TreeMaker.VariablesDictionary[name]
-    
+
+    def acd_tile_count__pha__(self, cable, channel, pha):
+	self.getVariable('acd_tile_count')[0] += 1
+   
