@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<monitoring>
+
+    <!--
+    Input lists:
+    Definition of the variables for filling the ROOT tree.
+    This File contain default variables and should not be modified
+    -->
+
+    <inputList group="META" name="META1" enabled="True">
+
+	<variable name="event_timestamp" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
+
+ 	<variable name="meta_context_run_id" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+   </inputList>
+
+</monitoring>
