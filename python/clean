@@ -20,5 +20,9 @@ echo 'Removing Default Root File...'
 echo $CMD
 $CMD
 
+export CMD='rm -rf doc'
+echo 'Removing doxygen doc directory...'
+echo $CMD
+$CMD
 
 echo 'Done.'
