@@ -58,6 +58,8 @@ class pDataProcessor:
         writer.writeIterator()
         writer = pCALcontributionIteratorWriter(self.__XmlParser)
         writer.writeIterator()
+        writer = pAEMcontributionIteratorWriter(self.__XmlParser)
+        writer.writeIterator()
 
     def __updateContributions(self):
         writer = pGEMcontributionWriter(self.__XmlParser)
