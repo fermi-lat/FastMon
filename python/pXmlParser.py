@@ -22,6 +22,9 @@ class pXmlParser:
     #  The class instance.
     ## @param configFilePath
     #  Path to the input xml configuration file.
+    ## @param baseConfigFilePath
+    #  Path to the base input xml configuration file (the one containing the
+    #  input variables which should *not* be disabled).
 
     def __init__(self, configFilePath,\
                  baseConfigFilePath='../xml/baseConfig.xml'):
@@ -49,9 +52,9 @@ class pXmlParser:
         self.EnabledVariablesDict = {} 
         self.OutputListsDict      = {}
         self.EnabledPlotRepsDict  = {} 
-        logging.info('Parsing input xml file...')
         filePathsList = [baseConfigFilePath, configFilePath]
         for filePath in filePathsList:
+            logging.info('Parsing input xml file %s...' % filePath)
             if os.path.exists(filePath):
                 self.XmlDoc = minidom.parse(file(filePath))
             else:
@@ -59,7 +62,7 @@ class pXmlParser:
                          filePath)
             self.populateInputLists()
             self.populateOutputLists()
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+            logging.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Populate the input lists from the xml config file.
     ## @param self
@@ -86,6 +89,13 @@ class pXmlParser:
             if list.Enabled:
                 for (key, value) in list.EnabledPlotRepsDict.items():
                     self.EnabledPlotRepsDict[key] = value
+
+    ## @brief Cross check the input and output lists to make sure that all the
+    #  variables which are necessary for the processing of the tree are
+    #  correctly filled.
+    ## @todo To be implemented.
+    ## @param self
+    #  The class instance.
 
     def crossCheckLists(self):
         pass
