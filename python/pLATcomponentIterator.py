@@ -4,6 +4,7 @@ import LDF
 
 from pTKRcontributionIterator import pTKRcontributionIterator
 from pCALcontributionIterator import pCALcontributionIterator
+from pAEMcontributionIterator import pAEMcontributionIterator
 #from pERRcontributionIterator import pERRcontributionIterator
 from pGEMcontribution         import pGEMcontribution
 
@@ -35,6 +36,13 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
         calIterator.iterate()
         calIterator.fillEventContribution()
         self.CALend(calIterator.CALend())
+        return 0
+
+    def ACDcomponent(self, event, contribution):
+        aemIterator = pAEMcontributionIterator(event, contribution,\
+                                               self.__TreeMaker)					       
+        aemIterator.iterate()        
+	aemIterator.fillEventContribution()
         return 0
 
 ##     def error(self, event, contribution):
