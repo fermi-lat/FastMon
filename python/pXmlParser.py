@@ -20,10 +20,11 @@ class pXmlParser:
     ## @brief Constructor
     ## @param self
     #  The class instance.
-    ## @param filePath
+    ## @param configFilePath
     #  Path to the input xml configuration file.
 
-    def __init__(self, configFilePath):
+    def __init__(self, configFilePath,\
+                 baseConfigFilePath='../xml/baseConfig.xml'):
 
         ## @var InputListsDict
         ## @brief Dictionary containing the input lists.
@@ -42,30 +43,52 @@ class pXmlParser:
         ## @var XmlDoc
         ## @brief Representation of the xml configuration file from the
         #  xml.dom.minidom module.
-        
-        logging.info('Parsing input xml file...')
-        if os.path.exists(configFilePath):
-            self.XmlDoc           = minidom.parse(file(configFilePath))
-        else:
-            sys.exit('Input configuration file not found. Exiting...')
-        startTime                 = time.time()
+
+        startTime = time.time()
         self.InputListsDict       = {}
         self.EnabledVariablesDict = {} 
         self.OutputListsDict      = {}
-        self.EnabledPlotRepsDict  = {}
+        self.EnabledPlotRepsDict  = {} 
+        logging.info('Parsing input xml file...')
+        filePathsList = [baseConfigFilePath, configFilePath]
+        for filePath in filePathsList:
+            if os.path.exists(filePath):
+                self.XmlDoc = minidom.parse(file(filePath))
+            else:
+                sys.exit('Input configuration file %s not found. Exiting...' %\
+                         filePath)
+            self.populateInputLists()
+            self.populateOutputLists()
+        logging.info('Done in %s s.\n' % (time.time() - startTime))
+
+    ## @brief Populate the input lists from the xml config file.
+    ## @param self
+    #  The class instance.
+
+    def populateInputLists(self):
+        logging.debug('Populating input lists...')
         for element in self.XmlDoc.getElementsByTagName('inputList'):
             list = pXmlInputList(element)
             self.InputListsDict[list.getName()] = list
             if list.Enabled:
                 for (key, value) in list.EnabledVariablesDict.items():
                     self.EnabledVariablesDict[key] = value
+
+    ## @brief Populate the output lists from the xml config file.
+    ## @param self
+    #  The class instance.
+
+    def populateOutputLists(self):
+        logging.debug('Populating output lists...')
         for element in self.XmlDoc.getElementsByTagName('outputList'):
             list = pXmlOutputList(element)
             self.OutputListsDict[list.getName()] = list
             if list.Enabled:
                 for (key, value) in list.EnabledPlotRepsDict.items():
                     self.EnabledPlotRepsDict[key] = value
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+
+    def crossCheckLists(self):
+        pass
 
     ## @brief Return the number of input lists.
     ## @param self
@@ -110,5 +133,5 @@ class pXmlParser:
 
 
 if __name__ == '__main__':
-    parser = pXmlParser('config.xml')
+    parser = pXmlParser('../xml/config.xml')
     print parser
