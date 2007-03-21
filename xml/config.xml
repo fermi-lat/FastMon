@@ -138,6 +138,11 @@
 	    <shape>(NUM_TOWERS)</shape>
 	</variable>
 
+	<variable name="cal_hit_map" enabled="False">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER, NUM_CAL_COLUMN_PER_TOWER)</shape>
+	</variable>
+
 	<variable name="cal_tower_count" enabled="True">
 	    <type>int</type>
 	    <shape>(1)</shape>
