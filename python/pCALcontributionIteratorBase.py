@@ -26,3 +26,5 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
         if self.contribution().numLogAccepts() > 0:
 	    self.getVariable("cal_tower_count")[0] += 1
 
+    def cal_hit_map__log__(self, tower, layer, calLog):
+        self.getVariable("cal_hit_map")[tower][layer][calLog.column()]  = 1
