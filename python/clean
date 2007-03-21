@@ -10,7 +10,7 @@ echo 'Removing assembled bytecode...'
 echo $CMD
 $CMD
 
-export CMD='rm -f pGEMcontribution.py pTKRcontributionIterator.py pCALcontributionIterator.py'
+export CMD='rm -f pGEMcontribution.py pTKRcontributionIterator.py pCALcontributionIterator.py pAEMcontributionIterator.py'
 echo 'Removing self written code...'
 echo $CMD
 $CMD
