@@ -1,5 +1,5 @@
+ + Missing ? meta.context().current().flagsValid()
  + implement cal log iterator
- + ACD iterator
  + OSW Iterator
  + Gem Discarded Time ?
  + timeIntervalElapsed - deltaEventTime - zoom - rollover 
