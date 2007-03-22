@@ -1,13 +1,10 @@
  + Missing ? meta.context().current().flagsValid()
- + implement cal log iterator
+ + ACD GEM ID ?
  + OSW Iterator
  + Gem Discarded Time ?
  + timeIntervalElapsed - deltaEventTime - zoom - rollover 
- + EPU - crate number  = meta.context().open().crate()
- + Histograms : Level Layer
  + Think about autoscale (move root object creation to the TreeProcessor?)
  + each stripchart name needs to be unique
- + add XY axis title in xml
 
  + PLOTS
    + Trigger Word calculated by triggerAlg ? (cal_le vector ???)
@@ -16,8 +13,6 @@
    timestamp, not restricted to 128s !!!
    + gem_live_time : unit ?
    + periodic trigger : gem_condition_summary bit 5
-   + CUTs required
-     #Project(const char* hname, const char* varexp, const char* selection = "", Option_t* option = "", Long64_t nentries = 1000000000, Long64_t firstentry = 0)
    + automatic consistency check
 
  + CAL plots

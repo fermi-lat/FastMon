@@ -108,6 +108,16 @@
             <shape>(1)</shape>
 	</variable>
 
+	<variable name="acd_tile_hitmap" enabled="False">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+
+	<variable name="acd_cable_tile_count" enabled="True">
+	    <type>int</type>
+            <shape>(NUM_ACD_CABLES)</shape>
+	</variable>
+
     </inputList>
 
 
@@ -247,6 +257,8 @@
 	    <xbins>220</xbins>
 	    <xmin>0</xmin>
 	    <xmax>220</xmax>
+	    <xlabel>Number of events</xlabel>
+	    <ylabel>Number of tile hits</ylabel>
             <expression>acd_tile_count</expression>
         </TH1F>
 
