@@ -191,6 +191,8 @@
 	    <xbins>100</xbins>
 	    <xmin>0</xmin>
 	    <xmax>100</xmax>
+	    <xlabel>Number of hits</xlabel>
+	    <ylog>True</ylog>
             <expression>tkr_strip_count</expression>
             <cut><![CDATA[ tkr_strip_count > 0 ]]></cut>
         </TH1F>
@@ -263,6 +265,8 @@
             <expression>tkr_strip_count</expression>
 	    <ymin>0</ymin>
 	    <ymax>300</ymax>
+	    <xlabel>Elapsed time (s)</xlabel>
+	    <ylabel>Average hit multiplicity</ylabel>
             <cut><![CDATA[ tkr_strip_count > 0 ]]></cut>
        </StripChart>
 

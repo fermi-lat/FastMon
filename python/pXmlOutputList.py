@@ -49,6 +49,18 @@ class pPlotXmlRep(pXmlElement):
         ## @var Cut
         ## @brief An optional cut which can be applied on the plot.
 
+        ## @var XLabel
+        ## @brief The x axis label.
+
+        ## @var YLabel
+        ## @brief the y axis label.
+
+        ## @var XLog
+        ## @brief Flag for the log scale on the x axis (used for the report).
+
+        ## @var YLog
+        ## @brief Flag for the log scale on the y axis (used for the report).
+
         ## @var RootObjects
         ## @brief A dictionary containing the actual ROOT object(s)
         #  (maybe more than one, depending on the Level) to be written
@@ -60,9 +72,11 @@ class pPlotXmlRep(pXmlElement):
             self.Level = LAT_LEVEL
         self.Title       = self.getTagValue('title')
         self.Expression  = self.getTagValue('expression')
-        self.Cut         = self.getTagValue('cut')
-        if self.Cut is None:
-            self.Cut = ''
+        self.Cut         = self.getTagValue('cut'   , '')
+        self.XLabel      = self.getTagValue('xlabel', '')
+        self.YLabel      = self.getTagValue('ylabel', '')
+        self.XLog        = self.evalTagValue('xlog', False)
+        self.YLog        = self.evalTagValue('ylog', False)
         self.RootObjects = {}
 
     ## @brief Return the suffix to be attached to the plot name or
@@ -193,6 +207,8 @@ class pTH1FXmlRep(pPlotXmlRep):
         name      = '%s%s' % (self.getName(), self.getSuffix(tower, layer))
         title     = '%s%s' % (self.Title, self.getSuffix(tower, layer))
         histogram = ROOT.TH1F(name, title, self.NumXBins, self.XMin, self.XMax)
+        histogram.GetXaxis().SetTitle(self.XLabel)
+        histogram.GetYaxis().SetTitle(self.YLabel)
         expression = self.getExpression(tower, layer)
         cut        = self.getCut(tower, layer)
         rootTree.Project(histogram.GetName(), expression, cut)
@@ -249,6 +265,8 @@ class pTH2FXmlRep(pTH1FXmlRep):
         histogram = ROOT.TH2F(name, title,\
                               self.NumXBins, self.XMin, self.XMax,\
                               self.NumYBins, self.YMin, self.YMax)
+        histogram.GetXaxis().SetTitle(self.XLabel)
+        histogram.GetYaxis().SetTitle(self.YLabel)
         expression = self.getExpression(tower, layer)
         cut        = self.getCut(tower, layer)
         rootTree.Project(histogram.GetName(), expression, cut)
@@ -278,7 +296,7 @@ class pStripChartXmlRep(pPlotXmlRep):
 
     def getRootObject(self, rootTree, tower=None, layer=None):
         name       = '%s%s' % (self.getName(), self.getSuffix(tower, layer))
-        title      = '%s%s' % (self.Title, self.getSuffix(tower, later))
+        title      = '%s%s' % (self.Title, self.getSuffix(tower, layer))
 	tmin = rootTree.GetMinimum('event_timestamp')
         tmax = rootTree.GetMaximum('event_timestamp')
 
@@ -301,6 +319,8 @@ class pStripChartXmlRep(pPlotXmlRep):
 	rootTree.Project('htemp', '%s:event_timestamp'% expression, cut)
         profile = htemp.ProfileX()
         profile.SetNameTitle(name, title)
+        profile.GetXaxis().SetTitle(self.XLabel)
+        profile.GetYaxis().SetTitle(self.YLabel)
         del htemp
 	return  profile
 

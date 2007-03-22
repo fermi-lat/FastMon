@@ -123,15 +123,18 @@ class pXmlElement:
     #  The class instance.
     ## @param tagName
     #  The tag name.
+    ## defaultValue
+    #  The value to be returned in case the element does not have the
+    #  specified tag.
 
-    def getTagValue(self, tagName):
+    def getTagValue(self, tagName, defaultValue=None):
         elementsList = self.Element.getElementsByTagName(tagName)
         if len(elementsList) > 1:
             sys.exit('Multiple definition of tag %s. Exiting...' % tagName)
         try:
             return str(elementsList[0].childNodes[0].data).strip()
         except:
-            return None
+            return defaultValue
 
     ## @brief Return the value of the child tag corresponding to a
     #  given tag name, as returned by an eval statement.
@@ -142,14 +145,15 @@ class pXmlElement:
     #  The class instance.
     ## @param tagName
     #  The tag name.
+    ## defaultValue
+    #  The value to be returned in case it's not possible to eval the
+    #  specified tag.
 
-    def evalTagValue(self, tagName):
+    def evalTagValue(self, tagName, defaultValue=None):
         try:
             return eval(self.getTagValue(tagName))
         except:
-            logging.warn('Could not eval tag "%s" for element "%s"' %\
-                         (tagName, self.Name))
-            return None
+            return defaultValue
 
     ## @brief Class representation.
     ## @param self
