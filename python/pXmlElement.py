@@ -129,7 +129,7 @@ class pXmlElement:
         if len(elementsList) > 1:
             sys.exit('Multiple definition of tag %s. Exiting...' % tagName)
         try:
-            return str(elementsList[0].childNodes[0].data)
+            return str(elementsList[0].childNodes[0].data).strip()
         except:
             return None
 

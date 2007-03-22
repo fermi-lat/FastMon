@@ -192,6 +192,7 @@
 	    <xmin>0</xmin>
 	    <xmax>100</xmax>
             <expression>tkr_strip_count</expression>
+            <cut><![CDATA[ tkr_strip_count > 0 ]]></cut>
         </TH1F>
 
         <TH1F name="tkr_tot" enabled="True" level="tower">
@@ -256,12 +257,13 @@
 	    <ymax>1000</ymax>
        </StripChart>
 
-        <StripChart name="trending_tkr_strip_count" enabled="True" level="tower">
+       <StripChart name="trending_tkr_strip_count" enabled="True" level="tower">
 	    <title>Tkr_Trending</title>
  	    <dtime>10</dtime>
             <expression>tkr_strip_count</expression>
 	    <ymin>0</ymin>
 	    <ymax>300</ymax>
+            <cut><![CDATA[ tkr_strip_count > 0 ]]></cut>
        </StripChart>
 
     </outputList>

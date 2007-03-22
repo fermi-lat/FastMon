@@ -46,6 +46,9 @@ class pPlotXmlRep(pXmlElement):
         ## @var Expression
         ## @brief The input variable(s) for the plot.
 
+        ## @var Cut
+        ## @brief An optional cut which can be applied on the plot.
+
         ## @var RootObjects
         ## @brief A dictionary containing the actual ROOT object(s)
         #  (maybe more than one, depending on the Level) to be written
@@ -57,6 +60,9 @@ class pPlotXmlRep(pXmlElement):
             self.Level = LAT_LEVEL
         self.Title       = self.getTagValue('title')
         self.Expression  = self.getTagValue('expression')
+        self.Cut         = self.getTagValue('cut')
+        if self.Cut is None:
+            self.Cut = ''
         self.RootObjects = {}
 
     ## @brief Return the suffix to be attached to the plot name or
@@ -100,6 +106,22 @@ class pPlotXmlRep(pXmlElement):
             expression += '[%d]' % layer
         return expression
 
+    ## @brief Modify the base Cut for a particular object (e.g. tower
+    #  or tkr layer), in case the Level requires it. 
+    #
+    #  Other levels (i.e. cal rows, columns or crystals) can be implemented
+    #  if needed.
+    ## @param self
+    #  The class instance.
+    ## @param tower
+    #  The tower Id.
+    ## @param layer
+    #  The TKR layer Id.
+
+    def getCut(self, tower=None, layer=None):
+        return self.Cut.replace(self.getExpression(),\
+                                self.getExpression(tower, layer))
+  
     ## @brief Create the actual ROOT objects.
     ## @param self
     #  The class instance.
@@ -126,10 +148,11 @@ class pPlotXmlRep(pXmlElement):
     #  The class instance.
 
     def __str__(self):
-        return pXmlElement.__str__(self)       +\
-               'Level     : %s\n' % self.Level +\
-               'Title     : %s\n' % self.Title +\
-               'Expression: %s\n' % self.Expression
+        return pXmlElement.__str__(self)            +\
+               'Level     : %s\n' % self.Level      +\
+               'Title     : %s\n' % self.Title      +\
+               'Expression: %s\n' % self.Expression +\
+               'Cut       : %s\n' % self.Cut
 
 
 ## @brief Class describing the representation of a 1-D histogram.
@@ -171,7 +194,8 @@ class pTH1FXmlRep(pPlotXmlRep):
         title     = '%s%s' % (self.Title, self.getSuffix(tower, layer))
         histogram = ROOT.TH1F(name, title, self.NumXBins, self.XMin, self.XMax)
         expression = self.getExpression(tower, layer)
-        rootTree.Project(histogram.GetName(), expression)
+        cut        = self.getCut(tower, layer)
+        rootTree.Project(histogram.GetName(), expression, cut)
         return histogram
 
     ## @brief Class representation.
@@ -226,7 +250,8 @@ class pTH2FXmlRep(pTH1FXmlRep):
                               self.NumXBins, self.XMin, self.XMax,\
                               self.NumYBins, self.YMin, self.YMax)
         expression = self.getExpression(tower, layer)
-        rootTree.Project(histogram.GetName(), expression)
+        cut        = self.getCut(tower, layer)
+        rootTree.Project(histogram.GetName(), expression, cut)
         return histogram
 
     ## @brief Class representation.
@@ -251,9 +276,9 @@ class pStripChartXmlRep(pPlotXmlRep):
         self.YMin     = self.evalTagValue('ymin')
         self.YMax     = self.evalTagValue('ymax')
 
-    def getRootObject(self, rootTree, tower=None):
-        name       = '%s%s' % (self.getName(), self.getSuffix(tower))
-        title      = '%s%s' % (self.Title, self.getSuffix(tower))
+    def getRootObject(self, rootTree, tower=None, layer=None):
+        name       = '%s%s' % (self.getName(), self.getSuffix(tower, layer))
+        title      = '%s%s' % (self.Title, self.getSuffix(tower, later))
 	tmin = rootTree.GetMinimum('event_timestamp')
         tmax = rootTree.GetMaximum('event_timestamp')
 
@@ -266,13 +291,14 @@ class pStripChartXmlRep(pPlotXmlRep):
         if self.YMax is None:
 	  self.YMax = rootTree.GetMaximum(expression)
 	  
-	expression = self.getExpression(tower)
         #logging.debug('StripChart %s: tmin=%d tmax=%d ymin=%d ymax=%d' %\
 	#		(expression, tmin, tmax, self.YMin, self.YMax) )
         nTimeBin = int((tmax-tmin)/self.DTime)
 	htemp = ROOT.TH2F('htemp', 'htemp', nTimeBin, tmin, tmax, 100, self.YMin,self.YMax)
 	#Cut is always on the variable itself now : should come from xml
-	rootTree.Project('htemp', '%s:event_timestamp'% expression, '%s>0'% expression)
+        expression = self.getExpression(tower, layer)
+        cut        = self.getCut(tower, layer)
+	rootTree.Project('htemp', '%s:event_timestamp'% expression, cut)
         profile = htemp.ProfileX()
         profile.SetNameTitle(name, title)
         del htemp
@@ -311,12 +337,15 @@ class pXmlOutputList(pXmlList):
 
     def __str__(self):
         return pXmlList.__str__(self)         +\
-               'Variables        : %s\n' % self.PlotRepsDict.keys() +\
+               'Variables        : %s\n' % self.PlotRepsDict.keys()       +\
                'Enabled variabled: %s\n' % self.EnabledPlotRepsDict.keys()
 
 
 if __name__ == '__main__':
     from xml.dom  import minidom
-    doc = minidom.parse(file('config.xml'))
+    doc = minidom.parse(file('../xml/config.xml'))
     for element in doc.getElementsByTagName('outputList'):
-        print pXmlOutputList(element)
+        list = pXmlOutputList(element)
+        print list
+        for plotRep in list.PlotRepsDict.values():
+            print plotRep
