@@ -8,6 +8,14 @@
     This File contain default variables and should not be modified
     l : a 64 bit unsigned integer (ULong64_t)
     -->
+    <inputList group="GLOBAL" name="GLOBAL" enabled="True">
+
+	<variable name="processor_event_number" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	
+    </inputList>
 
     <inputList group="META" name="META" enabled="True">
 
