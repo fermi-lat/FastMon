@@ -26,5 +26,5 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
         self.getVariable("tkr_layer_strip_count")[self.TemId][layerEnd/2] += 1
 
     def tkr_layer_tot__TOT__(self, tower, layerEnd, tot):
-        self.getVariable("tkr_layer_tot")[self.TemId][layerEnd/2] = tot
+        self.getVariable("tkr_layer_tot")[self.TemId][layerEnd/2][layerEnd%2] = tot
 

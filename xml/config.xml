@@ -135,7 +135,7 @@
 	
 	<variable name="tkr_layer_tot" enabled="True">
 	    <type>int</type>
-	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
 	</variable>
 	
     </inputList>
