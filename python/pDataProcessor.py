@@ -21,6 +21,8 @@ from pContributionIteratorWriter      import *
 from pContributionWriter              import *
 from pMetaEventProcessor	      import *
 
+import struct
+
 logging.basicConfig(level=logging.DEBUG)
 
 class pDataProcessor:
@@ -41,6 +43,7 @@ class pDataProcessor:
         self.ldbi        = LDF.LATdataBufferIterator(self.ldi)
         self.NumEvents   = 0
         self.LsfMerger   = None
+        self.LdfFile     = None
         self.OutROOTFile = None
         self.ROOTTree    = None
         self.openFile(inputFilePath)
@@ -48,10 +51,24 @@ class pDataProcessor:
     def openFile(self, filePath):
         logging.info('Opening the input data file...')
         if os.path.exists(filePath):
-            self.LsfMerger   = LsfMerger(filePath)
+	    fileType = filePath.split('.')[-1]
+	    if fileType == 'lsf':
+                self.LsfMerger   = LsfMerger(filePath)
+	    elif fileType == 'ldf':
+	        self.LdfFile = file(filePath, 'rb')
+	    else:
+	    	sys.exit('Unknown file type (%s).' % fileType)
             logging.info('Done.')
         else:
             sys.exit('Input data file not found. Exiting...')
+
+    def start(self, maxEvents=1000):
+        if self.LsfMerger is not None:
+	    self.startProcessing(maxEvents)
+	elif self.LdfFile is not None:
+	    self.startLDFProcessing(maxEvents)
+	else:
+	    sys.exit('Not Possible')
 
     def __updateContributionIterators(self):
         writer = pTKRcontributionIteratorWriter(self.__XmlParser)
@@ -89,12 +106,12 @@ class pDataProcessor:
 	self.TreeMaker.resetVariables()
         self.processMetaEvent(meta)
         self.processEvent(event)
+	self.TreeMaker.VariablesDictionary["processor_event_number"][0] = self.NumEvents
 	self.TreeMaker.fillTree()
 	
 	self.NumEvents += 1
         if not self.NumEvents%100:
             logging.debug('%d events processed' % self.NumEvents)
-
 
     def startProcessing(self, maxEvents = 1000):
         logging.info('Beginning data processing...')
@@ -113,6 +130,36 @@ class pDataProcessor:
                      (self.NumEvents, elapsedTime, averageRate))
         self.TreeMaker.close()
 
+    def processLDF(self, event):
+	self.TreeMaker.resetVariables()
+        self.processEvent(event)
+	self.TreeMaker.VariablesDictionary["processor_event_number"][0] = self.NumEvents
+	self.TreeMaker.fillTree()
+	
+	self.NumEvents += 1
+        if not self.NumEvents%100:
+            logging.debug('%d events processed' % self.NumEvents)
+        
+    
+    def startLDFProcessing(self, maxEvents = 1000):
+        logging.info('Beginning data processing...')
+        startTime = time.time()
+		
+        while (self.NumEvents != maxEvents):
+    	    event = self.LdfFile.read(8)
+    	    if len(event) < 8:
+    	      logging.info("End of File reached.")
+              break
+    	    else:
+    	      (identity, length) = struct.unpack('!LL', event)
+    	      event += self.LdfFile.read(length - 8)
+	      self.processLDF(event)
+
+        elapsedTime = time.time() - startTime
+        averageRate = self.NumEvents/elapsedTime
+        logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
+                     (self.NumEvents, elapsedTime, averageRate))
+        self.TreeMaker.close()
      
 
 if __name__ == '__main__':
@@ -135,4 +182,4 @@ if __name__ == '__main__':
     
     dataProcessor  = pDataProcessor(options.config_file, args[0],\
                                     options.output_file)
-    dataProcessor.startProcessing(options.events)
+    dataProcessor.start(options.events)
