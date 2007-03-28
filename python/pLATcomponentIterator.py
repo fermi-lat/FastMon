@@ -54,6 +54,7 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
             offset = TKRend()
         errIterator = pERRcontributionIteratorBase(event, contribution,\
                                                    offset, self.__ErrorCounter)
+	errIterator.iterate()
         return 0
     
     def handleError(self, contribution, code, p1, p2):
