@@ -2,13 +2,13 @@
 ## @brief Includes all the tools to keep track of the events with error in
 #  the data run.
 
-
 ## @brief Implementation of an error counter.
 #
-#  The statistics of the errors is implemented as a pyhton dictionary in whihc
+#  The statistics of the errors is implemented as a pyhton dictionary in which
 #  the errors themselves are indexed based on their error code.
-#  This approach is flexible in that it is not necessary to know all the error codes
-#  in advance. The counter is filled by a suitable event iterator using the
+#  This approach is flexible in that it is not necessary to know all the error
+#  codes in advance.
+#  The counter is filled by a suitable event iterator using the
 #  fill() method, which requires the error code as a parameter, and in case no
 #  errors of that type have been detected, yet, the error code is added to the
 #  keys of the dictionary.
@@ -54,7 +54,8 @@ class pEventErrorCounter:
         except KeyError:
             self.__Counter[errorCode] = 1
 
-    ## @brief Return the number of errors corresponding to a particular error code.
+    ## @brief Return the number of errors corresponding to a particular
+    #  error code.
     ## @param self
     #  The class instance.
     ## @param errorCode
@@ -66,14 +67,15 @@ class pEventErrorCounter:
         except KeyError:
             return 0
 
-    ## @brief Return the number of errors for a particular error code, along with
-    #  the error code itself, nicely formatted to be printed on the screen.
+    ## @brief Return the number of errors for a particular error code,
+    #  along with the error code itself, nicely formatted to be printed
+    #  on the screen.
     ## @param self
     #  The class instance.
     ## @param errorCode
     #  The The error code.
     
-    def getFormattedNumErrors(self, errorCode, codeLength=25):
+    def getFormattedNumErrors(self, errorCode, codeLength=30):
         numSpaces = max((codeLength - len(errorCode)), 0)
         return '%s%s: %d\n' % (errorCode, ' '*numSpaces,\
                                self.getNumErrors(errorCode))
