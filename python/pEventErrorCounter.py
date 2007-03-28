@@ -90,7 +90,7 @@ class pEventErrorCounter:
             out += 'No errors found in this run.\n'
         else:
             for errorCode in self.__Counter.keys():
-                out += self.getFormattedErrors(errorCode)
+                out += self.getFormattedNumErrors(errorCode)
         return out
 
 
