@@ -223,7 +223,7 @@
             <expression>tkr_layer_tot</expression>
         </TH1F>
 
-        <CUSTOM name="tkr_tot" enabled="True">
+        <CUSTOM name="tkr_tot_Test" enabled="True">
 	    <title>Tracker TOT</title>
         </CUSTOM>
 
