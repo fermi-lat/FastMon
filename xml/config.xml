@@ -205,6 +205,14 @@
 	    <ylog>True</ylog>
             <expression>tkr_strip_count</expression>
             <cut><![CDATA[ tkr_strip_count > 0 ]]></cut>
+	    <alarm type="xaverage" enabled="True">
+	    	<min>5.0</min>
+		<max>10.0</max>
+	    </alarm>
+	    <alarm type="xrms" enabled="True">
+	    	<min>2.0</min>
+		<max>7.3</max>
+	    </alarm>
         </TH1F>
 
         <TH1F name="tkr_tot" enabled="True" level="tower">

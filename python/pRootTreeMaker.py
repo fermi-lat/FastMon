@@ -14,10 +14,11 @@ class pRootTreeMaker:
         self.__RootTree  = TTree('IsocDataTree', 'IsocDataTree')
         self.__XmlParser = xmlParser
         self.__Processor = pRootTreeProcessor(self.__RootTree,\
-                                              self.__XmlParser)					      	
-        self.VariablesDictionary = {}        
+                                              self.__XmlParser)
+        self.VariablesDictionary = {}
         self.__createBranches()
-        logging.info('Created File %s with Tree %s\n' % (outputFilePath, self.__RootTree.GetName()) )
+        logging.info('Created File %s with Tree %s\n' %\
+                     (outputFilePath, self.__RootTree.GetName()) )
 
     def __createBranches(self):
         for variable in self.__XmlParser.EnabledVariablesDict.values():
@@ -42,8 +43,10 @@ class pRootTreeMaker:
             variable.reset()	    
 	    
 
-    def close(self):
+    def processTree(self):
         self.__Processor.process()
+
+    def closeFile(self):
         self.__RootFile.Write()
         self.__RootFile.Close()
 

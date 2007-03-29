@@ -25,6 +25,7 @@ from pContributionIteratorWriter      import *
 from pContributionWriter              import *
 from pMetaEventProcessor	      import *
 from pEventErrorCounter               import pEventErrorCounter
+from pAlarmHandler                    import pAlarmHandler
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -93,6 +94,8 @@ class pDataProcessor:
         self.__XmlParser  = pXmlParser(configFilePath)
         self.TreeMaker    = pRootTreeMaker(self.__XmlParser, outputFilePath)
         self.ErrorCounter = pEventErrorCounter()
+        self.AlarmHandler = pAlarmHandler()
+        self.__setupAlarmHandler()
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)	
         self.__updateContributionIterators()
         self.__updateContributions()
@@ -132,6 +135,24 @@ class pDataProcessor:
         writer = pGEMcontributionWriter(self.__XmlParser)
         writer.writeComponent()
 
+    ## @brief Setup the alarm handler, based on the input configuration file.
+    ## @param self
+    #  The class instance.
+
+    def __setupAlarmHandler(self):
+        logging.info('Setting up the alarm handler...')
+        startTime = time.time()
+        for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
+            plotRep.addAlarms(self.AlarmHandler)
+        logging.info('Done in %s s.\n' % (time.time() - startTime))
+
+    def __activateAlarmHandler(self):
+        logging.info('Activating the alarm handler...')
+        startTime = time.time()
+        for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
+            plotRep.activateAlarms(self.AlarmHandler)
+        logging.info('Done in %s s.\n' % (time.time() - startTime))
+
     ## @brief Open the input raw data file.
     #
     #  Both ldf and lsf data files are supported at this level.
@@ -151,7 +172,7 @@ class pDataProcessor:
 	        self.LdfFile = file(filePath, 'rb')
 	    else:
 	    	sys.exit('Unknown file type (%s).' % fileType)
-            logging.info('Done.')
+            logging.info('Done.\n')
         else:
             sys.exit('Input data file not found. Exiting...')
 
@@ -186,8 +207,11 @@ class pDataProcessor:
         averageRate   = self.NumEvents/elapsedTime
         logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
-        self.TreeMaker.close()
+        self.TreeMaker.processTree()
+        self.__activateAlarmHandler()
+        self.TreeMaker.closeFile()
         print self.ErrorCounter
+        print self.AlarmHandler
 
     ## @brief Process an event.
     #
