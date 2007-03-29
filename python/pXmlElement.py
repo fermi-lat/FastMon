@@ -58,11 +58,8 @@ class pXmlElement:
     #  The attribute name.
 
     def getAttribute(self, attributeName):
-        try:
-            return str(self.Element.getAttribute(attributeName))
-        except:
-             return None
-
+        return str(self.Element.getAttribute(attributeName))
+ 
     ## @brief Return the element attribute corresponing to a
     #  given attribute name, as processed by an eval statement.
     #
