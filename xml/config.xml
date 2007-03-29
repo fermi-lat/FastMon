@@ -90,12 +90,12 @@
 	</variable>
 
 	<variable name="gem_delta_event_time" enabled="True">
-	    <type>int</type>
+	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
 
 	<variable name="gem_delta_window_open_time" enabled="True">
-	    <type>int</type>
+	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
 
@@ -168,21 +168,35 @@
 
     <outputList group="GEM" name="GEM1" enabled="True">
 
-        <TH1F name="gem_condition_summary" enabled="True" level="lat">
+        <TH1F name="gem_condition_summary" enabled="True">
 	    <title>GEM condition summary</title>
 	    <xbins>64</xbins>
 	    <xmin>0</xmin>
 	    <xmax>64</xmax>
+	    <xlabel>GEM condition summary word</xlabel>
+	    <ylabel>Number of events</ylabel>
             <expression>gem_condition_summary</expression>
         </TH1F>
 
-        <TH1F name="gem_delta_event_time" enabled="True" level="lat">
+        <TH1F name="gem_delta_event_time" enabled="True">
 	    <title>GEM delta event time</title>
 	    <xbins>200</xbins>
 	    <xmin>0</xmin>
-	    <xmax>70000</xmax>
+	    <xmax>4</xmax>
+	    <xlabel>GEM delta event time (ms)</xlabel>
+	    <ylabel>Number of events</ylabel>
             <expression>gem_delta_event_time</expression>
         </TH1F>
+	
+        <TH1F name="gem_delta_window_open_time" enabled="True">
+	    <title>GEM delta window open time</title>
+	    <xbins>200</xbins>
+	    <xmin>0</xmin>
+	    <xmax>4</xmax>
+	    <xlabel>GEM delta window open time (ms)</xlabel>
+	    <ylabel>Number of events</ylabel>
+            <expression>gem_delta_window_open_time</expression>
+        </TH1F>	
 
     </outputList>
 
