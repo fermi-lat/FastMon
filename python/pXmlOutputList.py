@@ -13,7 +13,11 @@ from pXmlList      import pXmlList
 from pAlarmHandler import *
 from pGlobals      import *
 
-SUPPORTED_PLOT_TYPES = ['TH1F', 'TH2F', 'StripChart']
+import pCUSTOMplots
+from pCUSTOMplots    import *
+
+
+SUPPORTED_PLOT_TYPES = ['TH1F', 'TH2F', 'StripChart', 'CUSTOM']
 LAT_LEVEL            = 'lat'
 TOWER_LEVEL          = 'tower'
 TKR_LAYER_LEVEL      = 'tkr_layer'
@@ -72,7 +76,7 @@ class pPlotXmlRep(pXmlElement):
         
         pXmlElement.__init__(self, element)
         self.Level       = self.getAttribute('level')
-        if self.Level == None:
+        if self.Level == '':
             self.Level = LAT_LEVEL
         self.Title        = self.getTagValue('title')
         self.Expression   = self.getTagValue('expression')
@@ -382,6 +386,40 @@ class pStripChartXmlRep(pPlotXmlRep):
         return pPlotXmlRep.__str__(self)
     
 
+## @brief Class describing the representation of a CUSTOM plot
+
+class pCUSTOMXmlRep(pPlotXmlRep):
+
+    ## @brief Constructor
+    ## @param self
+    #  The class instance.
+    ## @param element
+    #  The xml element object representing the histogram. 
+
+    def __init__(self, element):
+
+        ## @brief The number of bins on the x axis.
+	## Basically need to take title
+	## Potentialy also axis labels
+        
+        pPlotXmlRep.__init__(self, element)
+
+    ## @brief Return the custom ROOT histogram
+    ## @param self
+    #  The class instance.
+    ## @param tower
+    #  The tower ID for the specified Level.
+    ## @param layer
+    #  The TKR layer ID for the specified Level.
+
+    def getRootObject(self, rootTree, tower=None, layer=None):
+        name       = '%s%s' % (self.getName(), self.getSuffix(tower, layer))
+        title      = '%s%s' % (self.Title, self.getSuffix(tower, layer))
+        cmd = 'pCUSTOMplots.%s(rootTree, "%s", "%s")' % (name, name, title)
+	histogram = eval(cmd)
+        return histogram
+
+
 ## @brief Class describing an output list for the data monitor (i.e. a
 #  list of representations of the ROOT plots to be filled and saved when
 #  the output tree is completed).
@@ -413,7 +451,7 @@ class pXmlOutputList(pXmlList):
                 self.PlotRepsDict[plotRep.Name] = plotRep
                 if plotRep.Enabled:
                     self.EnabledPlotRepsDict[plotRep.Name] = plotRep
-
+	
     ## @brief Class representation.
     ## @param self
     #  The class instance.
@@ -421,7 +459,7 @@ class pXmlOutputList(pXmlList):
     def __str__(self):
         return pXmlList.__str__(self)         +\
                'Variables        : %s\n' % self.PlotRepsDict.keys()       +\
-               'Enabled variabled: %s\n' % self.EnabledPlotRepsDict.keys()
+               'Enabled variables: %s\n' % self.EnabledPlotRepsDict.keys()
 
 
 if __name__ == '__main__':
