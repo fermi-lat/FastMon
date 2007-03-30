@@ -1,6 +1,7 @@
 ## @package pUtils
 ## @brief Package containing utilities of general interest.
 
+import logging
 
 ## @brief Expand a specified string to a given length added spaces on the
 #  right.
@@ -13,10 +14,14 @@
 #  The goal string length.
 
 def expandString(string, length=10):
-    if len(string) > length:
-        return string[:length]
-    numSpaces = length - len(string)
-    return '%s%s' % (string, ' '*numSpaces)
+    try:
+        if len(string) > length:
+            return string[:length]
+        numSpaces = length - len(string)
+        return '%s%s' % (string, ' '*numSpaces)
+    except:
+        logging.error('Could not convert %s.' % string)
+        return string
 
 
 ## @brief Format a number with a given number of decimal places, then expand
@@ -29,9 +34,13 @@ def expandString(string, length=10):
 #  The goal string length.
 
 def expandNumber(number, numDecPlaces=3, length=10):
-    formatSpec = '%s.%df' % ('%', numDecPlaces)
-    string = formatSpec % number
-    return expandString(string, length)
+    try:
+        formatSpec = '%s.%df' % ('%', numDecPlaces)
+        string = formatSpec % number
+        return expandString(string, length)
+    except:
+        logging.error('Could not convert %s.' % number)
+        return str(number)
 
 
 if __name__ == '__main__':
