@@ -17,7 +17,8 @@ import pCUSTOMplots
 from pCUSTOMplots    import *
 
 
-SUPPORTED_PLOT_TYPES = ['TH1F', 'TH2F', 'StripChart', 'CUSTOM']
+SUPPORTED_PLOT_TYPES = ['TH1F', 'TH2F', 'StripChart', 'RateStripChart',\
+                        'CUSTOM']
 LAT_LEVEL            = 'lat'
 TOWER_LEVEL          = 'tower'
 TKR_LAYER_LEVEL      = 'tkr_layer'
@@ -100,12 +101,14 @@ class pPlotXmlRep(pXmlElement):
     ## @param layer
     #  The TKR layer Id.
         
-    def getSuffix(self, tower=None, layer=None):
+    def getSuffix(self, tower=None, layer=None, end=None):
         suffix = ''
         if tower is not None:
             suffix += '_tower_%d' % tower
         if layer is not None:
             suffix += '_layer_%d' % layer
+        if end is not None:
+            suffix += '_end_%d' % end
         return suffix
 
 
@@ -118,8 +121,8 @@ class pPlotXmlRep(pXmlElement):
     ## @param layer
     #  The TKR layer Id.
 
-    def getExpandedName(self, tower=None, layer=None):
-        return '%s%s' % (self.Name, self.getSuffix(tower, layer))
+    def getExpandedName(self, tower=None, layer=None, end=None):
+        return '%s%s' % (self.Name, self.getSuffix(tower, layer, end))
 
     ## @brief Return the plot title for a particular object (e.g. tower or
     #  tkr layer), in case the Level requires it.
@@ -130,8 +133,8 @@ class pPlotXmlRep(pXmlElement):
     ## @param layer
     #  The TKR layer Id.
 
-    def getExpandedTitle(self, tower=None, layer=None):
-        return '%s%s' % (self.Title, self.getSuffix(tower, layer))
+    def getExpandedTitle(self, tower=None, layer=None, end=None):
+        return '%s%s' % (self.Title, self.getSuffix(tower, layer, end))
 
     ## @brief Modify the base Expression for a particular object (e.g. tower
     #  or tkr layer), in case the Level requires it. 
@@ -145,12 +148,14 @@ class pPlotXmlRep(pXmlElement):
     ## @param layer
     #  The TKR layer Id.
 
-    def getExpandedExpression(self, tower=None, layer=None):
+    def getExpandedExpression(self, tower=None, layer=None, end=None):
         expression = self.Expression
         if tower is not None:
             expression += '[%d]' % tower
         if layer is not None:
             expression += '[%d]' % layer
+        if end is not None:
+            expression += '[%d]' % end
         return expression
 
     ## @brief Modify the base Cut for a particular object (e.g. tower
@@ -165,9 +170,9 @@ class pPlotXmlRep(pXmlElement):
     ## @param layer
     #  The TKR layer Id.
 
-    def getExpandedCut(self, tower=None, layer=None):
+    def getExpandedCut(self, tower=None, layer=None, end=None):
         return self.Cut.replace(self.getExpandedExpression(),\
-                                self.getExpandedExpression(tower, layer))
+                                self.getExpandedExpression(tower, layer, end))
 
     ## @brief Add the alarms defined for the plot rep to the specified
     #  alarm handler.
@@ -348,8 +353,8 @@ class pStripChartXmlRep(pPlotXmlRep):
     def __init__(self, element):
         pPlotXmlRep.__init__(self, element)
         self.DTime = float(self.getTagValue('dtime'))
-        self.YMin     = self.evalTagValue('ymin')
-        self.YMax     = self.evalTagValue('ymax')
+        self.YMin  = self.evalTagValue('ymin')
+        self.YMax  = self.evalTagValue('ymax')
 
     def getRootObject(self, rootTree, tower=None, layer=None):
 	tmin = rootTree.GetMinimum('event_timestamp')
@@ -384,7 +389,19 @@ class pStripChartXmlRep(pPlotXmlRep):
 
     def __str__(self):
         return pPlotXmlRep.__str__(self)
-    
+
+
+class pRateStripChartXmlRep(pStripChartXmlRep):
+
+    def __init__(self, element):
+        pStripChartXmlRep.__init__(self, element)
+
+    def getRootObject(self, rootTree, tower=None, layer=None):
+        profileTemp = pStripChartXmlRep.getRootObject(self, rootTree,\
+                                                      tower=None, layer=None)
+        profileTemp.Scale(profileTemp.GetSumOfWeights()/self.DTime)
+        return profileTemp
+
 
 ## @brief Class describing the representation of a CUSTOM plot
 
@@ -403,6 +420,7 @@ class pCUSTOMXmlRep(pPlotXmlRep):
 	## Potentialy also axis labels
         
         pPlotXmlRep.__init__(self, element)
+	self.Type = element.getAttribute('type')
 
     ## @brief Return the custom ROOT histogram
     ## @param self
@@ -412,11 +430,10 @@ class pCUSTOMXmlRep(pPlotXmlRep):
     ## @param layer
     #  The TKR layer ID for the specified Level.
 
-    def getRootObject(self, rootTree, tower=None, layer=None):
-        name       = '%s%s' % (self.getName(), self.getSuffix(tower, layer))
-        title      = '%s%s' % (self.Title, self.getSuffix(tower, layer))
-        cmd = 'pCUSTOMplots.%s(rootTree, "%s", "%s")' % (name, name, title)
-	histogram = eval(cmd)
+    def getRootObject(self, rootTree):
+        histogram = eval('pCUSTOMplots.%s(rootTree, self)' % self.Type)
+        histogram.GetXaxis().SetTitle(self.XLabel)
+        histogram.GetYaxis().SetTitle(self.YLabel)
         return histogram
 
 

@@ -122,18 +122,19 @@
 
 
     <inputList group="TKR" name="TKR1" enabled="True">
-
 	<variable name="tkr_strip_count" enabled="True">
+	    <type>int</type>
+	    <shape>(1)</shape>
+	</variable>
+	<variable name="tkr_tower_strip_count" enabled="True">
 	    <type>int</type>
 	    <shape>(NUM_TOWERS)</shape>
 	</variable>
-	
-	<variable name="tkr_layer_strip_count" enabled="True">
+	<variable name="tkr_layer_end_strip_count" enabled="True">
 	    <type>int</type>
-	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
 	</variable>
-	
-	<variable name="tkr_layer_tot" enabled="True">
+	<variable name="tkr_layer_end_tot" enabled="True">
 	    <type>int</type>
 	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
 	</variable>
@@ -166,8 +167,10 @@
     Definition of the plot which are filled from the ROOT tree.
     -->
 
-    <outputList group="GEM" name="GEM1" enabled="True">
-
+    <!--
+    GEM group.
+    -->
+    <outputList group="GEM" name="GEM base" enabled="True">
         <TH1F name="gem_condition_summary" enabled="True">
 	    <title>GEM condition summary</title>
 	    <xbins>64</xbins>
@@ -177,70 +180,126 @@
 	    <ylabel>Number of events</ylabel>
             <expression>gem_condition_summary</expression>
         </TH1F>
-
         <TH1F name="gem_delta_event_time" enabled="True">
 	    <title>GEM delta event time</title>
 	    <xbins>200</xbins>
 	    <xmin>0</xmin>
-	    <xmax>4</xmax>
-	    <xlabel>GEM delta event time (ms)</xlabel>
+	    <xmax>70000</xmax>
+	    <xlabel>GEM delta event time (clock tics)</xlabel>
 	    <ylabel>Number of events</ylabel>
             <expression>gem_delta_event_time</expression>
         </TH1F>
-	
         <TH1F name="gem_delta_window_open_time" enabled="True">
 	    <title>GEM delta window open time</title>
 	    <xbins>200</xbins>
 	    <xmin>0</xmin>
-	    <xmax>4</xmax>
-	    <xlabel>GEM delta window open time (ms)</xlabel>
+	    <xmax>70000</xmax>
+	    <xlabel>GEM delta window open time (clock tics)</xlabel>
 	    <ylabel>Number of events</ylabel>
             <expression>gem_delta_window_open_time</expression>
-        </TH1F>	
-
+        </TH1F>
     </outputList>
+    
+    <outputList group="GEM" name="GEM arrival times" enabled="True">
+        <TH1F name="gem_cond_arr_time_roi" enabled="True">
+	    <title>GEM condition arrival time for ROI</title>
+	    <xbins>35</xbins>
+	    <xmin>0</xmin>
+	    <xmax>35</xmax>
+	    <xlabel>Arrival time (clock tics)</xlabel>
+	    <ylabel>Number of events</ylabel>
+            <expression>gem_cond_arr_time_roi</expression>
+        </TH1F>
+        <TH1F name="gem_cond_arr_time_tkr" enabled="True">
+	    <title>GEM condition arrival time for TKR</title>
+	    <xbins>35</xbins>
+	    <xmin>0</xmin>
+	    <xmax>35</xmax>
+	    <xlabel>Arrival time (clock tics)</xlabel>
+	    <ylabel>Number of events</ylabel>
+            <expression>gem_cond_arr_time_tkr</expression>
+        </TH1F>
+        <TH1F name="gem_cond_arr_time_cal_le" enabled="True">
+	    <title>GEM condition arrival time for CAL LE</title>
+	    <xbins>35</xbins>
+	    <xmin>0</xmin>
+	    <xmax>35</xmax>
+	    <xlabel>Arrival time (clock tics)</xlabel>
+	    <ylabel>Number of events</ylabel>
+            <expression>gem_cond_arr_time_cal_le</expression>
+        </TH1F>
+        <TH1F name="gem_cond_arr_time_cal_he" enabled="True">
+	    <title>GEM condition arrival time for CAL HE</title>
+	    <xbins>35</xbins>
+	    <xmin>0</xmin>
+	    <xmax>35</xmax>
+	    <xlabel>Arrival time (clock tics)</xlabel>
+	    <ylabel>Number of events</ylabel>
+            <expression>gem_cond_arr_time_cal_he</expression>
+        </TH1F>
+        <TH1F name="gem_cond_arr_time_cno" enabled="True">
+	    <title>GEM condition arrival time for CNO</title>
+	    <xbins>35</xbins>
+	    <xmin>0</xmin>
+	    <xmax>35</xmax>
+	    <xlabel>Arrival time (clock tics)</xlabel>
+	    <ylabel>Number of events</ylabel>
+            <expression>gem_cond_arr_time_cno</expression>
+        </TH1F>
+    </outputList>
+    
+    <!--
+    Meta event group.
+    -->
+    <outputList group="META" name="Meta event base" enabled="True">
+        <TH1F name="meta_context_open_crate" enabled="True">
+	    <title>Crate number</title>
+	    <xbins>10</xbins>
+	    <xmin>0</xmin>
+	    <xmax>10</xmax>
+	    <xlabel>Crate number (EPU0, EPU1, EPU2, SIU0, SIU1, AUX)</xlabel>
+	    <ylabel>Number of events</ylabel>
+            <expression>meta_context_open_crate</expression>
+        </TH1F>
+    </outputList>    
+    
 
-    <outputList group="TKR" name="TKR1" enabled="True">
-
-        <TH1F name="tkr_strip_count_lat" enabled="True" level="lat">
+    <!--
+    TKR group.
+    -->
+    <outputList group="TKR" name="TKR base" enabled="True">
+        <TH1F name="tkr_strip_count" enabled="True">
 	    <title>Tracker hit multiplicity</title>
 	    <xbins>100</xbins>
 	    <xmin>0</xmin>
 	    <xmax>300</xmax>
             <expression>tkr_strip_count</expression>
         </TH1F>
-
-        <TH1F name="tkr_strip_count" enabled="True" level="tower">
+        <TH1F name="tkr_tower_strip_count" enabled="True" level="tower">
 	    <title>Tracker hit multiplicity</title>
 	    <xbins>100</xbins>
 	    <xmin>0</xmin>
 	    <xmax>100</xmax>
 	    <xlabel>Number of hits</xlabel>
 	    <ylog>True</ylog>
-            <expression>tkr_strip_count</expression>
-            <cut><![CDATA[ tkr_strip_count > 0 ]]></cut>
+            <expression>tkr_tower_strip_count</expression>
+            <cut><![CDATA[ tkr_tower_strip_count > 0 ]]></cut>
 	    <alarm type="xaverage" enabled="True">
-	    	<min>5.0</min>
-		<max>10.0</max>
+	    	<min>10.0</min>
+		<max>30.0</max>
 	    </alarm>
 	    <alarm type="xrms" enabled="True">
-	    	<min>2.0</min>
-		<max>7.3</max>
+	    	<min>10.0</min>
+		<max>30.0</max>
 	    </alarm>
         </TH1F>
-
-        <TH1F name="tkr_tot" enabled="True" level="tower">
-	    <title>Tracker TOT</title>
-	    <xbins>256</xbins>
-	    <xmin>0</xmin>
-	    <xmax>256</xmax>
-            <expression>tkr_layer_tot</expression>
-        </TH1F>
-
-        <CUSTOM name="tkr_tot_Test" enabled="True">
-	    <title>Tracker TOT</title>
+        <CUSTOM type="tkr_2d_map" name="tkr_hitmap" enabled="True">
+	    <title>Average number of strip hits in a Tracker plane</title>
+	    <xlabel>Plane</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <expression>tkr_layer_end_strip_count</expression>
+            <cut><![CDATA[ tkr_layer_end_strip_count > 0 ]]></cut>
         </CUSTOM>
-
     </outputList>
 
 
@@ -300,12 +359,12 @@
        <StripChart name="trending_tkr_strip_count" enabled="True" level="tower">
 	    <title>Tkr_Trending</title>
  	    <dtime>10</dtime>
-            <expression>tkr_strip_count</expression>
+            <expression>tkr_tower_strip_count</expression>
 	    <ymin>0</ymin>
 	    <ymax>300</ymax>
 	    <xlabel>Elapsed time (s)</xlabel>
 	    <ylabel>Average hit multiplicity</ylabel>
-            <cut><![CDATA[ tkr_strip_count > 0 ]]></cut>
+            <cut><![CDATA[ tkr_tower_strip_count > 0 ]]></cut>
        </StripChart>
 
     </outputList>

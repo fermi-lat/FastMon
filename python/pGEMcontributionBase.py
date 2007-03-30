@@ -74,23 +74,19 @@ class pGEMcontributionBase:
 	#print 'GEM Time Seconds ',  self.onePPStime().seconds()
 
     ## @brief Fill the gem_delta_event_time variable.
-    #
-    #  The variable is converted from clock tics to ms.
     ## @param self
     #  The class instance.
 
     def gem_delta_event_time(self):
-        value = self.deltaEventTime()*CLOCK_TIC_MILLISECONDS
+        value = self.deltaEventTime()
         self.getVariable('gem_delta_event_time')[0] = copy(value)
 
     ## @brief Fill the gem_delta_window_open_time variable.
-    #
-    #  The variable is converted from clock tics to ms.
     ## @param self
     #  The class instance.
     
     def gem_delta_window_open_time(self):
-        value = self.deltaWindowOpenTime()*CLOCK_TIC_MILLISECONDS
+        value = self.deltaWindowOpenTime()
         self.getVariable('gem_delta_window_open_time')[0] = copy(value)
 
 	
