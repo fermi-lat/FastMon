@@ -2,6 +2,7 @@
 ## @brief Module managing the data automated alarm system.
 
 import logging
+import pUtils
 
 from pGlobals    import *
 from pXmlElement import pXmlElement
@@ -21,8 +22,24 @@ class pAlarmHandler:
     #  The class instance.
 
     def __init__(self):
+
+        ## @var __EnabledAlarmsDict
+        ## @brief Base dictionary containing all the alarms.
+        #
+        #  The alarms are store as (name, alarms) pairs, where
+        #  name is the name of the plot the alarms refer to and alarms
+        #  is a list of pAlarm instances set on the plot itself.
+        
         self.__EnabledAlarmsDict = {}
 
+    ## @brief Add an alarm for the specified plot.
+    ## @param self
+    #  The class instance.
+    ## @param alarm
+    #  The alarm to be added to the dictionary.
+    ## @param plotName
+    #  The name of the plot the alarm refers to.
+        
     def addAlarm(self, alarm, plotName):
         if not alarm.isEnabled():
             return
@@ -31,6 +48,15 @@ class pAlarmHandler:
         else:
             self.__EnabledAlarmsDict[plotName].append(alarm)
 
+    ## @brief Activate all the alarms set on a specified plot.
+    #
+    #  This actually verifies that the plot parameters lie in the desired
+    #  ranges.
+    ## @param self
+    #  The class instance.
+    ## @param plot
+    #  The plot (a ROOT object),
+
     def activateAlarms(self, plot):
         try:
             for alarm in self.__EnabledAlarmsDict[plot.GetName()]:
@@ -38,24 +64,30 @@ class pAlarmHandler:
         except KeyError:
             pass
 
-    ## @todo Put this in util module.
-
-    def xpand(self, object, length):
-        string = '%s' % object
-        if len(string) > length:
-            return string[:length]
-        numSpaces = length - len(string)
-        return '%s%s' % (string, ' '*numSpaces)
+    ## @brief Return the alarm handler summary, nicely formatted to be
+    #  printed on the screen.
+    ## @param self
+    #  The class instance.
 
     def getFormattedSummary(self, verbose=False):
         header  = 'Plot name                    %s' % ALARM_HEADER
         summary = '** Alarm handler summary **\n%s\n' % header
         for (plotName, alarmsList) in self.__EnabledAlarmsDict.items():
              for alarm in alarmsList:
-                 summary += '%s %s\n' %\
-                            (self.xpand(plotName, 28),\
-                             alarm.getFormattedStatus())
+                 if not alarm.isClean():
+                     summary += '%s %s\n' %\
+                                (pUtils.expandString(plotName, 28),\
+                                 alarm.getFormattedStatus())
+                 else:
+                     if verbose:
+                         summary += '%s %s\n' %\
+                                    (pUtils.expandString(plotName, 28),\
+                                     alarm.getFormattedStatus())
         return summary
+
+    ## @brief Class representation.
+    ## @param self
+    #  The class instance.
 
     def __str__(self):
         return self.getFormattedSummary()
@@ -133,6 +165,8 @@ class pAlarm(pXmlElement):
 
     ## @brief Check if the Parameter member lies in the [Min, Max] interval
     #  and set the Status accordingly.
+    ## @todo Some refinement is needed here to handle the cases in which Min
+    #  or Max are not defined.
     ## @param self
     #  The class instance.
 
@@ -164,15 +198,6 @@ class pAlarm(pXmlElement):
         self.Parameter = plot.GetRMS()
         self.__checkParameter()
 
-    ## @todo Put this in util module.
-
-    def xpand(self, object, length=10):
-        string = '%s' % object
-        if len(string) > length:
-            return string[:length]
-        numSpaces = length - len(string)
-        return '%s%s' % (string, ' '*numSpaces)
-
     ## @brief Return the Min, Max pair formatted to be printed on the screen.
     ## @param self
     #  The class instance.
@@ -180,21 +205,13 @@ class pAlarm(pXmlElement):
     def getFormattedLimits(self):
         return '[%s, %s]' % (self.Min, self.Max)
 
-    ## @brief Return the Parameter member formatted to be printed on
-    #  the screen.
-    ## @param self
-    #  The class instance.
-
-    def getFormattedParameter(self):
-        return '%.3f' % self.Parameter
-
     ## @brief Return all the relevant information on the alarm status,
     #  nicely formatted.
     ## @param self
     #  The class instance.
 
     def getFormattedStatus(self):
-        return '%s %s %s %s' % (self.xpand(self.Type)                   ,\
-                                self.xpand(self.Status)                 ,\
-                                self.xpand(self.getFormattedParameter()),\
-                                self.getFormattedLimits())
+        return '%s %s %s %s' % (pUtils.expandString(self.Type)      ,\
+                                pUtils.expandString(self.Status)    ,\
+                                pUtils.expandNumber(self.Parameter) ,\
+                                pUtils.expandString(self.getFormattedLimits()))
