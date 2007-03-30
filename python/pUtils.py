@@ -20,7 +20,6 @@ def expandString(string, length=10):
         numSpaces = length - len(string)
         return '%s%s' % (string, ' '*numSpaces)
     except:
-        logging.error('Could not convert %s.' % string)
         return string
 
 
@@ -39,8 +38,7 @@ def expandNumber(number, numDecPlaces=3, length=10):
         string = formatSpec % number
         return expandString(string, length)
     except:
-        logging.error('Could not convert %s.' % number)
-        return str(number)
+        return expandString(number, length)
 
 
 if __name__ == '__main__':
