@@ -2,6 +2,7 @@
 ## @brief Includes all the tools to keep track of the events with error in
 #  the data run.
 
+
 ## @brief Implementation of an error counter.
 #
 #  The statistics of the errors is implemented as a pyhton dictionary in which
@@ -12,6 +13,7 @@
 #  fill() method, which requires the error code as a parameter, and in case no
 #  errors of that type have been detected, yet, the error code is added to the
 #  keys of the dictionary.
+## @todo Implement support for error counting at the event level.
 
 class pEventErrorCounter:
 
@@ -70,6 +72,7 @@ class pEventErrorCounter:
     ## @brief Return the number of errors for a particular error code,
     #  along with the error code itself, nicely formatted to be printed
     #  on the screen.
+    ## @todo use pUtils functions here.
     ## @param self
     #  The class instance.
     ## @param errorCode
