@@ -496,9 +496,15 @@ class pCUSTOMXmlRep(pPlotXmlRep):
         #  The type is defined in the xml configuration file and a
         #  corresponding function, whose name must match the type exactly,
         #  must be defined in the @ref pCUSTOMplots package.
+
+        ## @brief ExcludedValues
+        #  Relevant for the @ref tkr_2d_map custom plot type.
+        #
+        #  See the code for details.
         
         pPlotXmlRep.__init__(self, element)
-	self.Type = element.getAttribute('type')
+	self.Type           = element.getAttribute('type')
+        self.ExcludedValues = self.evalTagValue('exclude')
 
     ## @brief Return the custom ROOT histogram
     ## @param self

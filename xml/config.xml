@@ -8,97 +8,82 @@
     -->
 
     <inputList group="GEM" name="GEM1" enabled="True">
-
 	<variable name="gem_timebase" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_discarded" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_dead_zone" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_live_time" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_condition_summary" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_tkr_vector" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	
+	<variable name="gem_roi_vector" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>	
 	<variable name="gem_cal_le_vector" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	
 	<variable name="gem_cal_he_vector" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	
 	<variable name="gem_cond_arr_time_tkr" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_cond_arr_time_cal_le" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_cond_arr_time_cal_he" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_cond_arr_time_roi" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_cond_arr_time_cno" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_trigger_time" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_one_pps_time_time_base" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_one_pps_time_seconds" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_delta_event_time" enabled="True">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="gem_delta_window_open_time" enabled="True">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
-
     </inputList>
 
     <inputList group="ACD" name="ACD1" enabled="True">
@@ -247,6 +232,33 @@
             <expression>gem_cond_arr_time_cno</expression>
         </TH1F>
     </outputList>
+ 
+    <outputList group="GEM" name="GEM trigger vectors" enabled="True">
+        <CUSTOM type="gem_vector_map" name="gem_tkr_vector" enabled="True">
+	    <title>TKR triggers statistics</title>
+	    <xlabel>Tower</xlabel>
+	    <ylabel>Number of triggers</ylabel>
+	    <expression>gem_tkr_vector</expression>
+        </CUSTOM>
+        <CUSTOM type="gem_vector_map" name="gem_roi_vector" enabled="True">
+	    <title>ROI triggers statistics</title>
+	    <xlabel>Tower</xlabel>
+	    <ylabel>Number of triggers</ylabel>
+	    <expression>gem_roi_vector</expression>
+        </CUSTOM>
+        <CUSTOM type="gem_vector_map" name="gem_cal_le_vector" enabled="True">
+	    <title>CAL LE triggers statistics</title>
+	    <xlabel>Tower</xlabel>
+	    <ylabel>Number of triggers</ylabel>
+	    <expression>gem_cal_le_vector</expression>
+        </CUSTOM>
+        <CUSTOM type="gem_vector_map" name="gem_cal_he_vector" enabled="True">
+	    <title>CAL HE triggers statistics</title>
+	    <xlabel>Tower</xlabel>
+	    <ylabel>Number of triggers</ylabel>
+	    <expression>gem_cal_he_vector</expression>
+        </CUSTOM>
+    </outputList>
     
     <!--
     Meta event group.
@@ -262,7 +274,6 @@
             <expression>meta_context_open_crate</expression>
         </TH1F>
     </outputList>    
-    
 
     <!--
     TKR group.
@@ -294,6 +305,20 @@
 	    </alarm>
         </TH1F>
         <CUSTOM type="tkr_2d_map" name="tkr_hitmap" enabled="True">
+	    <title>Average number of strip hits per GTRC</title>
+	    <xlabel>Plane</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <expression>tkr_layer_end_strip_count</expression>
+	    <exclude>[0]</exclude>
+        </CUSTOM>
+        <CUSTOM type="tkr_2d_map" name="tkr_totmap" enabled="True">
+	    <title>Average TOT per GTRC</title>
+	    <xlabel>Plane</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <expression>tkr_layer_end_tot</expression>
+	    <exclude>[0, 255]</exclude>
+        </CUSTOM>
+        <CUSTOM type="tkr_2d_map_project" name="tkr_hitmap_project" enabled="False">
 	    <title>Average number of strip hits in a Tracker plane</title>
 	    <xlabel>Plane</xlabel>
 	    <ylabel>Tower</ylabel>

@@ -38,6 +38,9 @@ class pGEMcontributionBase:
     def gem_tkr_vector(self):
         self.getVariable('gem_tkr_vector')[0] = copy(self.tkrVector())
 
+    def gem_roi_vector(self):
+        self.getVariable('gem_roi_vector')[0] = copy(self.roiVector())
+
     def gem_cal_le_vector(self):
         self.getVariable('gem_cal_le_vector')[0] = copy(self.calLEvector())
 
