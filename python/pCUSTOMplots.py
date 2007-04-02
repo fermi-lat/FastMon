@@ -48,20 +48,20 @@ def tkr_2d_map(rootTree, plotRep):
     startTime = time.time()
     xmin      = 0
     xmax      = NUM_TKR_LAYERS_PER_TOWER
-    xbins     = 2*xmax
+    xbins     = NUM_GTRC_PER_LAYER*xmax
     ymin      = 0
     ymax      = NUM_TOWERS
     ybins     = ymax
     histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
                           ybins, ymin, ymax)
-    means   = numpy.zeros((1152), dtype=int)
-    entries = numpy.zeros((1152), dtype=int)
+    means   = numpy.zeros((NUM_TKR_GTRC), dtype=int)
+    entries = numpy.zeros((NUM_TKR_GTRC), dtype=int)
     for entry in rootTree:
-        values = numpy.zeros((1152), dtype=int)
+        values = numpy.zeros((NUM_TKR_GTRC), dtype=int)
         buffer = eval('entry.%s' % plotRep.Expression)
-        for i in range(1152):
+        for i in range(NUM_TKR_GTRC):
             values[i] = buffer[i]
-        status = numpy.ones((1152), dtype=int)
+        status = numpy.ones((NUM_TKR_GTRC), dtype=int)
         means += values
         for value in plotRep.ExcludedValues:
             status = status*(values != value)
@@ -69,7 +69,8 @@ def tkr_2d_map(rootTree, plotRep):
     for tower in range(NUM_TOWERS):
         for layer in range(NUM_TKR_LAYERS_PER_TOWER):
             for end in range(NUM_GTRC_PER_LAYER):
-                index = tower*36*2 + layer*2 +end
+                index = tower*NUM_TKR_LAYERS_PER_TOWER*NUM_GTRC_PER_LAYER +\
+                        layer*NUM_GTRC_PER_LAYER +end
                 if entries[index] == 0:
                     mean  = 0
                 else:
@@ -93,7 +94,7 @@ def tkr_2d_map_project(rootTree, plotRep):
     startTime = time.time()
     xmin      = 0
     xmax      = NUM_TKR_LAYERS_PER_TOWER
-    xbins     = 2*xmax
+    xbins     = NUM_GTRC_PER_LAYER*xmax
     ymin      = 0
     ymax      = NUM_TOWERS
     ybins     = ymax
@@ -114,3 +115,38 @@ def tkr_2d_map_project(rootTree, plotRep):
     return histogram
 
 
+## @brief Return a...
+
+def cal_2d_map(rootTree, plotRep):
+    startTime = time.time()
+    xmin      = 0
+    xmax      = NUM_CAL_LAYERS_PER_TOWER
+    xbins     = xmax
+    ymin      = 0
+    ymax      = NUM_TOWERS
+    ybins     = ymax
+    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+    means   = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+    entries = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+    for entry in rootTree:
+        values = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+        buffer = eval('entry.%s' % plotRep.Expression)
+        for i in range(NUM_CAL_LAYERS):
+            values[i] = buffer[i]
+        status = numpy.ones((NUM_CAL_LAYERS), dtype=int)
+        means += values
+        for value in plotRep.ExcludedValues:
+            status = status*(values != value)
+        entries += status
+    for tower in range(NUM_TOWERS):
+        for layer in range(NUM_CAL_LAYERS_PER_TOWER):
+            index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
+            if entries[index] == 0:
+                mean  = 0
+            else:
+                mean  = means[index]/float(entries[index])
+            histogram.Fill((layer + 0.25), tower, mean)
+    logging.debug('Custom plot %s created in %s s.' %\
+                  (plotRep.Name, time.time() - startTime))
+    return histogram
