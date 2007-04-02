@@ -2,6 +2,7 @@
 ## @brief Includes all the tools to keep track of the events with error in
 #  the data run.
 
+import pUtils
 
 ## @brief Implementation of an error counter.
 #
@@ -72,16 +73,14 @@ class pEventErrorCounter:
     ## @brief Return the number of errors for a particular error code,
     #  along with the error code itself, nicely formatted to be printed
     #  on the screen.
-    ## @todo use pUtils functions here.
     ## @param self
     #  The class instance.
     ## @param errorCode
     #  The The error code.
     
-    def getFormattedNumErrors(self, errorCode, codeLength=30):
-        numSpaces = max((codeLength - len(errorCode)), 0)
-        return '%s%s: %d\n' % (errorCode, ' '*numSpaces,\
-                               self.getNumErrors(errorCode))
+    def getFormattedNumErrors(self, errorCode):
+        return '%s: %d\n' % (pUtils.expandString(errorCode, 30),\
+                             self.getNumErrors(errorCode))
 
     ## @brief Class representation.
     ## @param self
