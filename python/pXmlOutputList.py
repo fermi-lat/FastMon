@@ -100,6 +100,8 @@ class pPlotXmlRep(pXmlElement):
     #  The tower Id.
     ## @param layer
     #  The TKR layer Id.
+    ## @param end
+    #  The TKR layer end (namely the id of the GTRC).
         
     def getSuffix(self, tower=None, layer=None, end=None):
         suffix = ''
@@ -120,6 +122,8 @@ class pPlotXmlRep(pXmlElement):
     #  The tower Id.
     ## @param layer
     #  The TKR layer Id.
+    ## @param end
+    #  The TKR layer end (namely the id of the GTRC).
 
     def getExpandedName(self, tower=None, layer=None, end=None):
         return '%s%s' % (self.Name, self.getSuffix(tower, layer, end))
@@ -132,6 +136,8 @@ class pPlotXmlRep(pXmlElement):
     #  The tower Id.
     ## @param layer
     #  The TKR layer Id.
+    ## @param end
+    #  The TKR layer end (namely the id of the GTRC).
 
     def getExpandedTitle(self, tower=None, layer=None, end=None):
         return '%s%s' % (self.Title, self.getSuffix(tower, layer, end))
@@ -147,6 +153,8 @@ class pPlotXmlRep(pXmlElement):
     #  The tower Id.
     ## @param layer
     #  The TKR layer Id.
+    ## @param end
+    #  The TKR layer end (namely the id of the GTRC).
 
     def getExpandedExpression(self, tower=None, layer=None, end=None):
         expression = self.Expression
@@ -169,6 +177,8 @@ class pPlotXmlRep(pXmlElement):
     #  The tower Id.
     ## @param layer
     #  The TKR layer Id.
+    ## @param end
+    #  The TKR layer end (namely the id of the GTRC).
 
     def getExpandedCut(self, tower=None, layer=None, end=None):
         return self.Cut.replace(self.getExpandedExpression(),\
@@ -216,6 +226,15 @@ class pPlotXmlRep(pXmlElement):
                     object = self.getRootObject(rootTree, tower, layer)
                     self.RootObjects[object.GetName()] = object
 
+    ## @brief Activate all the alarms defined for the plot rep to the specified
+    #  alarm handler.
+    #
+    #  This function perform the actual check on the plots.
+    ## @param self
+    #  The class instance.
+    ## @param handler
+    #  The alarm handler.
+
     def activateAlarms(self, handler):
         for plot in self.RootObjects.values():
             handler.activateAlarms(plot)
@@ -261,6 +280,9 @@ class pTH1FXmlRep(pPlotXmlRep):
     ## @brief Return the actual ROOT histogram for the specified Level.
     ## @param self
     #  The class instance.
+    ## @param rootTree
+    #  The ROOT tree containing the (filled) branches from which the
+    #  plots are created.
     ## @param tower
     #  The tower ID for the specified Level.
     ## @param layer
@@ -317,12 +339,15 @@ class pTH2FXmlRep(pTH1FXmlRep):
     ## @brief Return the actual ROOT histogram for the specified Level.
     ## @param self
     #  The class instance.
+    ## @param rootTree
+    #  The ROOT tree containing the (filled) branches from which the
+    #  plots are created.
     ## @param tower
     #  The tower ID for the specified Level.
     ## @param layer
     #  The TKR layer ID for the specified Level.
 
-    def getRootObject(self, tower=None, layer=None):
+    def getRootObject(self, rootTree, tower=None, layer=None):
         histogram = ROOT.TH2F(self.getExpandedName(tower, layer),\
                               self.getExpandedTitle(tower, layer),\
                               self.NumXBins, self.XMin, self.XMax,\
@@ -350,11 +375,38 @@ class pTH2FXmlRep(pTH1FXmlRep):
 
 class pStripChartXmlRep(pPlotXmlRep):
 
+    ## @brief Constructor
+    ## @param self
+    #  The class instance.
+    ## @param element
+    #  The xml element object representing the histogram. 
+
     def __init__(self, element):
+
+        ## @var DTime
+        ## @brief The width of the time bin.
+
+        ## @var YMin
+        ## @brief The minimum value on the y axis.
+
+        ## @var YMax
+        ## @brief The maximum value on the y axis.
+        
         pPlotXmlRep.__init__(self, element)
         self.DTime = float(self.getTagValue('dtime'))
         self.YMin  = self.evalTagValue('ymin')
         self.YMax  = self.evalTagValue('ymax')
+
+    ## @brief Return the actual ROOT histogram for the specified Level.
+    ## @param self
+    #  The class instance.
+    ## @param rootTree
+    #  The ROOT tree containing the (filled) branches from which the
+    #  plots are created.
+    ## @param tower
+    #  The tower ID for the specified Level.
+    ## @param layer
+    #  The TKR layer ID for the specified Level.
 
     def getRootObject(self, rootTree, tower=None, layer=None):
 	tmin = rootTree.GetMinimum('event_timestamp')
@@ -391,11 +443,34 @@ class pStripChartXmlRep(pPlotXmlRep):
         return pPlotXmlRep.__str__(self)
 
 
+## @brief Class describing the representation of a different strip chart
+#  variant.
+#
+#  The profile histogram is scaled to the width of the time bin so that
+#  it eventually contains rates, rather than number of events.
+
 class pRateStripChartXmlRep(pStripChartXmlRep):
+
+    ## @brief Constructor
+    ## @param self
+    #  The class instance.
+    ## @param element
+    #  The xml element object representing the histogram. 
 
     def __init__(self, element):
         pStripChartXmlRep.__init__(self, element)
 
+    ## @brief Return the actual ROOT histogram for the specified Level.
+    ## @param self
+    #  The class instance.
+    ## @param rootTree
+    #  The ROOT tree containing the (filled) branches from which the
+    #  plots are created.
+    ## @param tower
+    #  The tower ID for the specified Level.
+    ## @param layer
+    #  The TKR layer ID for the specified Level.
+    
     def getRootObject(self, rootTree, tower=None, layer=None):
         profileTemp = pStripChartXmlRep.getRootObject(self, rootTree,\
                                                       tower=None, layer=None)
@@ -403,7 +478,7 @@ class pRateStripChartXmlRep(pStripChartXmlRep):
         return profileTemp
 
 
-## @brief Class describing the representation of a CUSTOM plot
+## @brief Class describing the representation of a custom plot.
 
 class pCUSTOMXmlRep(pPlotXmlRep):
 
@@ -415,9 +490,12 @@ class pCUSTOMXmlRep(pPlotXmlRep):
 
     def __init__(self, element):
 
-        ## @brief The number of bins on the x axis.
-	## Basically need to take title
-	## Potentialy also axis labels
+        ## @var Type
+        ## @brief The type of custom plot.
+        #
+        #  The type is defined in the xml configuration file and a
+        #  corresponding function, whose name must match the type exactly,
+        #  must be defined in the @ref pCUSTOMplots package.
         
         pPlotXmlRep.__init__(self, element)
 	self.Type = element.getAttribute('type')
@@ -425,10 +503,8 @@ class pCUSTOMXmlRep(pPlotXmlRep):
     ## @brief Return the custom ROOT histogram
     ## @param self
     #  The class instance.
-    ## @param tower
-    #  The tower ID for the specified Level.
-    ## @param layer
-    #  The TKR layer ID for the specified Level.
+    ## @param rootTree
+    #  The ROOT tree.
 
     def getRootObject(self, rootTree):
         histogram = eval('pCUSTOMplots.%s(rootTree, self)' % self.Type)

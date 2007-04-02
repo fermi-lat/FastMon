@@ -1,3 +1,7 @@
+## @package pCUSTOMplots
+## @brief package containing the definition of the methods to be called
+#  whenever a CUSTOM plot is declared in the xml configuration file.
+
 import logging
 import ROOT
 import time
@@ -5,10 +9,7 @@ import numpy
 
 from pGlobals    import *
 
-## @brief pCUSTOMplots 
-#
-#  It contains the definition of the method to be called by CUSTOM plots
-#  as declared in the xml configuration file.
+
 
 ## @brief Must return the custom ROOT histogram
 ## @param rootTree

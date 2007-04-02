@@ -1,24 +1,36 @@
+## @package pMetaEventProcessor
+## @brief Class dealing with the lsf meta event.
+
 from copy      import copy
 from pGlobals  import *
 
-## @brief Class to handle the Meta part of an event
+## @brief Class to handle the lsf meta event.
 #
-#  The MetaEvent contains some usefull information about
-#  the context in which the event was acquired :
-#  counters, timestamp, errors
+#  The meta event contains some usefull information about the context
+#  in which the event was acquired: counters, timestamp, errors...
 
 class pMetaEventProcessor:
+
     ## @brief Constructor
     ## @param self
     #  The class instance.
+    ## @param treeMaker
+    #  The pRootTreeMaker object responsible for filling the ROOT tree.
 
     def __init__(self, treeMaker):
 
         ## @var TreeMaker
-        ## @brief The TreeMaker object to be filled with the MetaEvent information
+        ## @brief The TreeMaker object which is responsible to fill the tree
+        #  with the meta event information.
 
-        self.TreeMaker = treeMaker
-	self.TimeHackRollOverNum = 0
+        ## @var TimeHackRollOverNum
+        ## @brief The number of time hack rollovers.
+
+        ## @var TimeHackHasJustRolledOver
+        ## @brief Flag set after a rollover.
+
+        self.TreeMaker                 = treeMaker
+	self.TimeHackRollOverNum       = 0
 	self.TimeHackHasJustRolledOver = False
 
     def getVariable(self, name):
@@ -31,7 +43,6 @@ class pMetaEventProcessor:
 	clockTicksEvt1PPS = timeTics - timeHack_tics	
 	if(clockTicksEvt1PPS <0):
 	    clockTicksEvt1PPS += CLOCK_ROLLOVER
-
 	#Check for timeHack rollover
 	hPrevious = meta.context().previous().timeHack().hacks()
 	hCurrent  = meta.context().current().timeHack().hacks()

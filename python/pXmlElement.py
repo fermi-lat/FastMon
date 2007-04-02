@@ -120,7 +120,7 @@ class pXmlElement:
     #  The class instance.
     ## @param tagName
     #  The tag name.
-    ## defaultValue
+    ## @param defaultValue
     #  The value to be returned in case the element does not have the
     #  specified tag.
 
@@ -142,7 +142,7 @@ class pXmlElement:
     #  The class instance.
     ## @param tagName
     #  The tag name.
-    ## defaultValue
+    ## @param defaultValue
     #  The value to be returned in case it's not possible to eval the
     #  specified tag.
 
