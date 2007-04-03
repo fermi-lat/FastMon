@@ -11,6 +11,7 @@ import LDF
 import ROOT
 import logging
 import struct
+import pConfig
 
 from copy 			      import copy
 from array                            import array
@@ -27,8 +28,6 @@ from pMetaEventProcessor	      import *
 from pEventErrorCounter               import pEventErrorCounter
 from pAlarmHandler                    import pAlarmHandler
 from pRootTreeProcessor               import pRootTreeProcessor
-
-logging.basicConfig(level=logging.DEBUG)
 
 
 ## @brief The data processor implementation.
@@ -105,10 +104,10 @@ class pDataProcessor:
             outputFilePath  = '%s.root' % inputFilePath.split('.')[0]
         self.__ProcessTree  = processTree
         self.__XmlParser    = pXmlParser(configFilePath)
-        self.__TreeMaker    = pRootTreeMaker(self.__XmlParser, outputFilePath)
+        self.__OutputFilePath= outputFilePath
+        self.__TreeMaker    = pRootTreeMaker(self.__XmlParser,\
+                                             self.__OutputFilePath)
         self.__ErrorCounter = pEventErrorCounter()
-        self.__AlarmHandler = pAlarmHandler()
-        self.__setupAlarmHandler()
 	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
         self.__updateContributionIterators()
         self.__updateContributions()
@@ -147,28 +146,6 @@ class pDataProcessor:
     def __updateContributions(self):
         writer = pGEMcontributionWriter(self.__XmlParser)
         writer.writeComponent()
-
-    ## @brief Setup the alarm handler, based on the input configuration file.
-    ## @param self
-    #  The class instance.
-
-    def __setupAlarmHandler(self):
-        logging.info('Setting up the alarm handler...')
-        startTime = time.time()
-        for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
-            plotRep.addAlarms(self.__AlarmHandler)
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
-
-    ## @brief Setup the alarm handler.
-    ## @param self
-    #  The class instance.
-
-    def __activateAlarmHandler(self):
-        logging.info('Activating the alarm handler...')
-        startTime = time.time()
-        for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
-            plotRep.activateAlarms(self.__AlarmHandler)
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Open the input raw data file.
     #
@@ -222,16 +199,17 @@ class pDataProcessor:
         self.StopTime = time.time()
         elapsedTime   = self.StopTime - self.StartTime
         averageRate   = self.NumEvents/elapsedTime
+        self.__TreeMaker.closeFile()
         logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
         if self.__ProcessTree:
-            rootTree      = self.__TreeMaker.getRootTree()
-            treeProcessor = pRootTreeProcessor(rootTree, self.__XmlParser)
-            treeProcessor.process()
-            self.__activateAlarmHandler()
-            print self.__AlarmHandler
-        self.__TreeMaker.closeFile()
+            self.processTree()
         print self.__ErrorCounter
+
+    def processTree(self):
+        treeProcessor = pRootTreeProcessor(self.__XmlParser,\
+                                           self.__OutputFilePath)
+        treeProcessor.process()
 
     ## @brief Process an event.
     #

@@ -5,8 +5,12 @@
 import time
 import ROOT
 import logging
+import sys
+import pConfig
 
-from pXmlParser import pXmlParser
+from pXmlParser    import pXmlParser
+from pGlobals      import *
+from pAlarmHandler import pAlarmHandler
 
 
 ## @brief Implementation of the ROOT tree processor.
@@ -16,12 +20,12 @@ class pRootTreeProcessor:
     ## @brief Constructor.
     ## @param self
     #  The class instance.
-    ## @param rootTree
-    #  The input ROOT tree.
+    ## @param rootFilePath
+    #  Path to the input ROOT file.
     ## @param xmlParser
     #  The xml parser containing the requested output lists.
 
-    def __init__(self, rootTree, xmlParser):
+    def __init__(self, xmlParser, inputFilePath, outputFilePath=None):
 
         ## @var __XmlParser
         ## @brief The xml parser containing the requested output lists.
@@ -29,8 +33,56 @@ class pRootTreeProcessor:
         ## @var __RootTree
         ## @brief The input ROOT tree.
         
-        self.__XmlParser = xmlParser
-        self.__RootTree  = rootTree
+        self.__XmlParser      = xmlParser
+        self.__InputRootFile  = ROOT.TFile(inputFilePath)
+        if outputFilePath is None:
+            outputFilePath = inputFilePath.replace('.root', '_processed.root')
+        self.__OutputFilePath = outputFilePath
+        self.__OutputRootFile = None
+        self.__RootTree       = self.__getRootTree()
+        self.__AlarmHandler = pAlarmHandler()
+        self.__setupAlarmHandler()
+
+    ## @brief Dive into the input ROOT file and try and get the ROOT tree.
+    ## @param self
+    #  The class instance.
+    
+    def __getRootTree(self):
+        rootTree = self.__InputRootFile.Get(ROOT_TREE_NAME)
+        if rootTree is None:
+            sys.exit('Could not find the %s ROOT tree in the input file %s.' %\
+                     (ROOT_TREE_NAME, self.__InputRootFile.GetName()))
+        else:
+            return rootTree
+
+    def openOutputFile(self):
+        self.__OutputRootFile = ROOT.TFile(self.__OutputFilePath, 'recreate')
+
+    def closeOutputFile(self):
+        self.__OutputRootFile.Write()
+        self.__OutputRootFile.Close()
+
+    ## @brief Setup the alarm handler, based on the input configuration file.
+    ## @param self
+    #  The class instance.
+
+    def __setupAlarmHandler(self):
+        logging.info('Setting up the alarm handler...')
+        startTime = time.time()
+        for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
+            plotRep.addAlarms(self.__AlarmHandler)
+        logging.info('Done in %s s.\n' % (time.time() - startTime))
+
+    ## @brief Setup the alarm handler.
+    ## @param self
+    #  The class instance.
+
+    def __activateAlarmHandler(self):
+        logging.info('Activating the alarm handler...')
+        startTime = time.time()
+        for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
+            plotRep.activateAlarms(self.__AlarmHandler)
+        logging.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Process the ROOT tree.
     ## @param self
@@ -39,8 +91,12 @@ class pRootTreeProcessor:
     def process(self):
         logging.info('Processing the root tree and writing histograms...')
         startTime = time.time()
+        self.openOutputFile()
         self.__createObjects()
         logging.info('Done in %s s.\n' % (time.time() - startTime))
+        self.__activateAlarmHandler()
+        print self.__AlarmHandler
+        self.closeOutputFile()
 
     ## @brief Create the ROOT objects defined in the enabled output lists
     #  of the xml configuration file.
@@ -53,12 +109,7 @@ class pRootTreeProcessor:
 
 
 if __name__ == '__main__':
-    f = ROOT.TFile('IsocDataFile.root')
-    tree = f.Get('IsocDataTree')
-    parser = pXmlParser('config.xml')
-    processor = pRootTreeProcessor(tree, parser)
-    outputFile = ROOT.TFile('data/output.root', 'recreate')
-    processor.process()       
-    processor.stripchart()
-    outputFile.Write()
-    outputFile.Close()
+    parser    = pXmlParser('../xml/config.xml')
+    processor = pRootTreeProcessor(parser, 'IsocDataFile.root')
+    processor.process()
+
