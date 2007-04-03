@@ -1,3 +1,5 @@
+#! /bin/env python
+
 ## @package pRootTreeProcessor
 ## @brief Module responsible for processing the output ROOT tree and creating
 #  all the requested plots.
@@ -109,7 +111,26 @@ class pRootTreeProcessor:
 
 
 if __name__ == '__main__':
-    parser    = pXmlParser('../xml/config.xml')
-    processor = pRootTreeProcessor(parser, 'IsocDataFile.root')
+    from optparse import OptionParser
+    parser = OptionParser(usage='usage: %prog [options] data_file')
+    parser.add_option('-c', '--config-file', dest='config_file',\
+                      default='../xml/config.xml', type=str,   \
+                      help='path to the input xml configuration file')
+    parser.add_option('-o', '--output-file', dest='output_file',
+                      default=None, type=str,
+                      help='path to the output ROOT file')
+    (options, args) = parser.parse_args()
+    if len(args) != 1:
+        parser.print_help()
+        parser.error('incorrect number of arguments')
+        sys.exit()
+
+    parser    = pXmlParser(options.config_file)
+    processor = pRootTreeProcessor(parser, args[0], options.output_file)
     processor.process()
+
+
+    
+
+
 
