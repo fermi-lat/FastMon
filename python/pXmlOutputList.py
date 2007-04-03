@@ -223,6 +223,19 @@ class pPlotXmlRep(pXmlElement):
                     object = self.getRootObject(rootTree, tower, layer)
                     self.RootObjects[object.GetName()] = object
 
+    def getRootObjectsName(self):
+        namesList = []
+        if self.Level == LAT_LEVEL:
+            namesList.append(self.getExpandedName())
+        elif self.Level == TOWER_LEVEL:
+            for tower in range(NUM_TOWERS):
+                namesList.append(self.getExpandedName(tower))
+        elif self.Level == TKR_LAYER_LEVEL:
+            for tower in range(NUM_TOWERS):
+                for layer in range(NUM_TKR_LAYERS_PER_TOWER):
+                    namesList.append(self.getExpandedName(tower, layer))
+        return namesList
+
     ## @brief Activate all the alarms defined for the plot rep to the specified
     #  alarm handler.
     #

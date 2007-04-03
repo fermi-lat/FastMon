@@ -150,8 +150,8 @@ if __name__ == '__main__':
         parser.error('incorrect number of arguments')
         sys.exit()
 
-    parser    = pXmlParser(options.config_file)
-    processor = pRootTreeProcessor(parser, args[0], options.output_file)
+    xmlParser = pXmlParser(options.config_file)
+    processor = pRootTreeProcessor(xmlParser, args[0], options.output_file)
     processor.process()
 
 

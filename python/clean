@@ -15,7 +15,7 @@ echo 'Removing self written code...'
 echo $CMD
 $CMD
 
-export CMD='rm -f IsocDataFile.root'
+export CMD='rm -f IsocDataFile*.root'
 echo 'Removing Default Root File...'
 echo $CMD
 $CMD

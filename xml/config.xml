@@ -384,7 +384,7 @@
     <outputList group="Trending" name="TkrTrending" enabled="True">
 
         <StripChart name="trending_tkr_strip_count_lat" enabled="True" level="lat">
-	    <title>LAT_TKR_Trending</title>
+	    <title>LAT TKR Trending</title>
  	    <dtime>10</dtime>
             <expression>tkr_strip_count</expression>
 	    <ymin>0</ymin>
@@ -392,7 +392,7 @@
        </StripChart>
 
        <StripChart name="trending_tkr_strip_count" enabled="True" level="tower">
-	    <title>Tkr_Trending</title>
+	    <title>Tkr Trending</title>
  	    <dtime>10</dtime>
             <expression>tkr_tower_strip_count</expression>
 	    <ymin>0</ymin>
