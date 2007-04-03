@@ -26,6 +26,7 @@ from pContributionWriter              import *
 from pMetaEventProcessor	      import *
 from pEventErrorCounter               import pEventErrorCounter
 from pAlarmHandler                    import pAlarmHandler
+from pRootTreeProcessor               import pRootTreeProcessor
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -43,8 +44,15 @@ class pDataProcessor:
     #  Path to the input raw data file.
     ## @param outputFilePath
     #  Path to the output ROOT file.
+    ## @param processTree
+    #  Flag to launch the pRootTree processor after the tree has been created.
 
-    def __init__(self, configFilePath, inputFilePath, outputFilePath=None):
+    def __init__(self, configFilePath, inputFilePath, outputFilePath,\
+                 processTree):
+
+        ## @var __ProcessTree
+        ## @brief Flag to launch the pRootTree processor after the tree
+        #  has been created.
 
         ## @var __XmlParser
         ## @brief The xml parser object (pXmlParser instance).
@@ -94,8 +102,9 @@ class pDataProcessor:
         ## @brief The data processor stop time.
         
         if outputFilePath is None:
-            outputFilePath = '%s.root' % inputFilePath.split('.')[0]
-        self.__XmlParser  = pXmlParser(configFilePath)
+            outputFilePath  = '%s.root' % inputFilePath.split('.')[0]
+        self.__ProcessTree  = processTree
+        self.__XmlParser    = pXmlParser(configFilePath)
         self.__TreeMaker    = pRootTreeMaker(self.__XmlParser, outputFilePath)
         self.__ErrorCounter = pEventErrorCounter()
         self.__AlarmHandler = pAlarmHandler()
@@ -215,11 +224,14 @@ class pDataProcessor:
         averageRate   = self.NumEvents/elapsedTime
         logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
-        self.__TreeMaker.processTree()
-        self.__activateAlarmHandler()
+        if self.__ProcessTree:
+            rootTree      = self.__TreeMaker.getRootTree()
+            treeProcessor = pRootTreeProcessor(rootTree, self.__XmlParser)
+            treeProcessor.process()
+            self.__activateAlarmHandler()
+            print self.__AlarmHandler
         self.__TreeMaker.closeFile()
         print self.__ErrorCounter
-        print self.__AlarmHandler
 
     ## @brief Process an event.
     #
@@ -329,6 +341,9 @@ if __name__ == '__main__':
     parser.add_option('-o', '--output-file', dest='output_file',
                       default='IsocDataFile.root', type=str,
                       help='path to the output ROOT file')
+    parser.add_option('-p', '--process-tree', action='store_true',\
+                      dest='process_tree', default=False,\
+                      help='process the ROOT tree and create histograms')
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.print_help()
@@ -336,5 +351,5 @@ if __name__ == '__main__':
         sys.exit()
     
     dataProcessor  = pDataProcessor(options.config_file, args[0],\
-                                    options.output_file)
+                                    options.output_file, options.process_tree)
     dataProcessor.start(options.events)

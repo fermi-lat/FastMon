@@ -35,10 +35,6 @@ class pRootTreeMaker:
         ## @brief The pXmlParser object responsible for the parsing of the
         #  configuration file.
 
-        ## @var __Processor
-        ## @brief The pRootTreeProcessor object responsible for creating
-        #  the plots from the ROOT tree at the end of the analysis.
-
         ## @var VariablesDictionary
         ## @brief The dictionary containing the tree variables
         #  (which are numpy.array objects).
@@ -46,12 +42,17 @@ class pRootTreeMaker:
         self.__RootFile  = TFile(outputFilePath, 'recreate')
         self.__RootTree  = TTree('IsocDataTree', 'IsocDataTree')
         self.__XmlParser = xmlParser
-        self.__Processor = pRootTreeProcessor(self.__RootTree,\
-                                              self.__XmlParser)
         self.VariablesDictionary = {}
         self.__createBranches()
         logging.info('Created File %s with Tree %s\n' %\
                      (outputFilePath, self.__RootTree.GetName()) )
+
+    ## @brief Return the ROOT tree.
+    ## @param self
+    #  The class instance.   
+
+    def getRootTree(self):
+        return self.__RootTree
 
     ## @brief Create all the tree branches, based on the information
     #  from the xml parser.
@@ -97,15 +98,6 @@ class pRootTreeMaker:
     def resetVariables(self):
         for variable in self.__XmlParser.EnabledVariablesDict.values():
             variable.reset()	    
-
-    ## @brief Process the ROOT tree.
-    ## @todo This should be probably moved to pDataProcessor since the
-    #  the tree maker has nothing to do with the tree processor.
-    ## @param self
-    #  The class instance.
-    
-    def processTree(self):
-        self.__Processor.process()
 
     ## @brief Close the output ROOT file.
     ## @param self
