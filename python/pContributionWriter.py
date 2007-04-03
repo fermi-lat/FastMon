@@ -1,3 +1,6 @@
+## @package pContributionWriter
+## @brief Package responsible for dinamically writing the required event
+#  contributions.
 
 import time
 import logging
@@ -5,11 +8,21 @@ import logging
 from pCodeGenerator         import pCodeGenerator
 
 
+## @brief Base class for the contribution writer.
+
 class pContributionWriter(pCodeGenerator):
 
+    ## @var __CONSTRUCTOR_PARAMETERS
+    ## @brief Base constructor parameters.
+    
     __CONSTRUCTOR_PARAMETERS = '(self, event, contribution, treeMaker)'
     
     def __init__(self, className):
+
+        ## @brief Constructor
+        ## @param self
+        #  The clas instance
+        
         pCodeGenerator.__init__(self)
         self.ClassName     = className
         self.BaseClassName = '%sBase' % self.ClassName 

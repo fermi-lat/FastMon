@@ -49,13 +49,17 @@ class pDataProcessor:
         ## @var __XmlParser
         ## @brief The xml parser object (pXmlParser instance).
 
-        ## @var TreeMaker
+        ## @var __TreeMaker
         ## @brief The tree maker object (pRootTreeMaker instance).
 
-        ## @var ErrorCounter
+        ## @var __ErrorCounter
         ## @brief The error counter object (pEventErrorCounter instance).
 
-        ## @var MetaEventProcessor
+        ## @var __AlarmHandler
+        ## @brief The pAlarmHandler object resposible for the automated data
+        #  verification.
+
+        ## @var __MetaEventProcessor
         ## @brief The meta event processor (pMetaEventProcessor instance)
 
         ## @var LatCompIter
@@ -92,16 +96,16 @@ class pDataProcessor:
         if outputFilePath is None:
             outputFilePath = '%s.root' % inputFilePath.split('.')[0]
         self.__XmlParser  = pXmlParser(configFilePath)
-        self.TreeMaker    = pRootTreeMaker(self.__XmlParser, outputFilePath)
-        self.ErrorCounter = pEventErrorCounter()
-        self.AlarmHandler = pAlarmHandler()
+        self.__TreeMaker    = pRootTreeMaker(self.__XmlParser, outputFilePath)
+        self.__ErrorCounter = pEventErrorCounter()
+        self.__AlarmHandler = pAlarmHandler()
         self.__setupAlarmHandler()
-	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)	
+	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
-        self.LatCompIter    = pLATcomponentIterator(self.TreeMaker,\
-                                                    self.ErrorCounter)
+        self.LatCompIter    = pLATcomponentIterator(self.__TreeMaker,\
+                                                    self.__ErrorCounter)
         self.EbfEventIter   = pEBFeventIterator(self.LatCompIter)
         self.LatContrIter   = pLATcontributionIterator(self.EbfEventIter)
         self.LatDatagrIter  = pLATdatagramIterator(self.LatContrIter)
@@ -143,14 +147,18 @@ class pDataProcessor:
         logging.info('Setting up the alarm handler...')
         startTime = time.time()
         for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
-            plotRep.addAlarms(self.AlarmHandler)
+            plotRep.addAlarms(self.__AlarmHandler)
         logging.info('Done in %s s.\n' % (time.time() - startTime))
+
+    ## @brief Setup the alarm handler.
+    ## @param self
+    #  The class instance.
 
     def __activateAlarmHandler(self):
         logging.info('Activating the alarm handler...')
         startTime = time.time()
         for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
-            plotRep.activateAlarms(self.AlarmHandler)
+            plotRep.activateAlarms(self.__AlarmHandler)
         logging.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Open the input raw data file.
@@ -207,11 +215,11 @@ class pDataProcessor:
         averageRate   = self.NumEvents/elapsedTime
         logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
-        self.TreeMaker.processTree()
+        self.__TreeMaker.processTree()
         self.__activateAlarmHandler()
-        self.TreeMaker.closeFile()
-        print self.ErrorCounter
-        print self.AlarmHandler
+        self.__TreeMaker.closeFile()
+        print self.__ErrorCounter
+        print self.__AlarmHandler
 
     ## @brief Process an event.
     #
@@ -224,7 +232,7 @@ class pDataProcessor:
     def processEvent(self, event):
 	self.LatDataBufIter.iterate(event, len(event))
         label = 'processor_event_number'
-        self.TreeMaker.VariablesDictionary[label][0] = self.NumEvents
+        self.__TreeMaker.VariablesDictionary[label][0] = self.NumEvents
         self.NumEvents += 1
         if not self.NumEvents % 100:
             logging.debug('%d events processed' % self.NumEvents)
@@ -238,7 +246,7 @@ class pDataProcessor:
     #  The meta-event object.
 
     def processMetaEvent(self, meta):
-	self.MetaEventProcessor.process(meta)
+	self.__MetaEventProcessor.process(meta)
 
     ## @brief Global event processing sequence for lsf files.
     #
@@ -254,10 +262,10 @@ class pDataProcessor:
     #  The event object.
     
     def processLSF(self, meta, event):
-	self.TreeMaker.resetVariables()
+	self.__TreeMaker.resetVariables()
         self.processMetaEvent(meta)
         self.processEvent(event)
-	self.TreeMaker.fillTree()
+	self.__TreeMaker.fillTree()
 
     ## @brief Start the event loop for lsf files.
     ## @param self
@@ -286,9 +294,9 @@ class pDataProcessor:
     #  The event object.
 
     def processLDF(self, event):
-	self.TreeMaker.resetVariables()
+	self.__TreeMaker.resetVariables()
         self.processEvent(event)
-	self.TreeMaker.fillTree()
+	self.__TreeMaker.fillTree()
 
     ## @brief Start the event loop for ldf files.
     ## @param self

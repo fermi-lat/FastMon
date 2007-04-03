@@ -11,7 +11,7 @@ UNDEFINED_STATUS = 'UNDEFINED'
 PASSED_STATUS    = 'PASSED'
 WARNING_STATUS   = 'WARNING'
 ERROR_STATUS     = 'ERROR'
-ALARM_HEADER     = 'Type       Status     Parameter  Limits'
+ALARM_HEADER     = 'Type      Status  Parameter Limits'
 
 ## @brief Base class handling all the alarms.
 
@@ -68,20 +68,24 @@ class pAlarmHandler:
     #  printed on the screen.
     ## @param self
     #  The class instance.
+    ## @param verbose
+    #  If the flag is set, the status is printed out for all the alarms,
+    #  otherwise only for those which are set (i.e. for the plots which do
+    #  not satisfy the required conditions).
 
     def getFormattedSummary(self, verbose=False):
-        header  = 'Plot name                    %s' % ALARM_HEADER
+        header  = 'Plot name                        %s' % ALARM_HEADER
         summary = '** Alarm handler summary **\n%s\n' % header
         for (plotName, alarmsList) in self.__EnabledAlarmsDict.items():
              for alarm in alarmsList:
                  if not alarm.isClean():
                      summary += '%s %s\n' %\
-                                (pUtils.expandString(plotName, 28),\
+                                (pUtils.expandString(plotName, 32),\
                                  alarm.getFormattedStatus())
                  else:
                      if verbose:
                          summary += '%s %s\n' %\
-                                    (pUtils.expandString(plotName, 28),\
+                                    (pUtils.expandString(plotName, 32),\
                                      alarm.getFormattedStatus())
         return summary
 
@@ -106,7 +110,7 @@ class pAlarm(pXmlElement):
     ## @brief Constructor
     ## @param self
     #  The class instance.
-    ## element
+    ## @param element
     #  The xml element from which the alarm is constructed.
     
     def __init__(self, element):
@@ -211,7 +215,7 @@ class pAlarm(pXmlElement):
     #  The class instance.
 
     def getFormattedStatus(self):
-        return '%s %s %s %s' % (pUtils.expandString(self.Type)      ,\
-                                pUtils.expandString(self.Status)    ,\
-                                pUtils.expandNumber(self.Parameter) ,\
-                                pUtils.expandString(self.getFormattedLimits()))
+        return '%s%s%s%s' % (pUtils.expandString(self.Type)      ,\
+                             pUtils.expandString(self.Status, 8)    ,\
+                             pUtils.expandNumber(self.Parameter) ,\
+                             pUtils.expandString(self.getFormattedLimits(),15))

@@ -67,9 +67,6 @@ class pPlotXmlRep(pXmlElement):
         ## @var YLog
         ## @brief Flag for the log scale on the y axis (used for the report).
 
-        ## @var AlarmHandler
-        ## @brief The Alarm handler for the plot.
-
         ## @var RootObjects
         ## @brief A dictionary containing the actual ROOT object(s)
         #  (maybe more than one, depending on the Level) to be written
