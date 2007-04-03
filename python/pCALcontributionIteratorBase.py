@@ -83,7 +83,7 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
 
     def cal_tower_count(self):
         if self.contribution().numLogAccepts() > 0:
-	    self.TreeMaker.getVariable("cal_log_count")[0] += 1
+	    self.TreeMaker.getVariable("cal_tower_count")[0] += 1
 
 
 
