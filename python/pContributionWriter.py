@@ -16,18 +16,38 @@ class pContributionWriter(pCodeGenerator):
     ## @brief Base constructor parameters.
     
     __CONSTRUCTOR_PARAMETERS = '(self, event, contribution, treeMaker)'
+
+    ## @brief Constructor
+    ## @param self
+    #  The class instance.
+    ## @param className
+    #  The contribution class name.
     
     def __init__(self, className):
 
-        ## @brief Constructor
-        ## @param self
-        #  The clas instance
+        ## @var ClassName
+        ## @brief The contribution class name.
+
+        ## @var BaseClassName
+        ## @brief The name of the base class from which the contribution class 
+        #  inherits.
+        #
+        #  It is the class name itself with a "Base" postpended.
+
+        ## @var FileName
+        ## @brief The file name in which the class declaration is written.
+        #
+        #  It is the class name with a ".py" postpended.
         
         pCodeGenerator.__init__(self)
         self.ClassName     = className
         self.BaseClassName = '%sBase' % self.ClassName 
         self.FileName      = '%s.py'  % self.ClassName
         self.openFile(self.FileName)
+
+    ## @brief Write the actual component to file.
+    ## @param self
+    #  The class instance.    
 
     def writeComponent(self):
         logging.info('Writing %s...' % self.FileName)
@@ -43,20 +63,49 @@ class pContributionWriter(pCodeGenerator):
         self.backup()
         logging.info('Done in %s s.\n' % (time.time() - startTime))
 
+    ## @brief Implement the component according to the xml configuration
+    #  file.
+    #
+    #  This is actually implemented in the sub-classes.
+    ## @param self
+    #  The class instance.     
+
     def implementComponent(self):
         pass
 
 
+## @brief Implementation of the contribution writer for the GEM.
+
 class pGEMcontributionWriter(pContributionWriter):
+
+    ## @var __CLASS_NAME
+    ## @brief The GEM contribution class name.
 
     __CLASS_NAME       = 'pGEMcontribution'
 
+    ## @brief Constructor
+    ## @param self
+    #  The class instance.
+    ## @param xmlParser
+    #  The pXmlParser object containing the definition of the relevant
+    #  variabled.
+
     def __init__(self, xmlParser):
+
+        ## @var __Variables
+        ## @brief List of the GEM enabled variables, as passed by the
+        #  xml parser.
+        
         pContributionWriter.__init__(self, self.__CLASS_NAME)
         self.__Variables = xmlParser.getEnabledVariablesByGroup('GEM')
-        baseClassName = '%sBase'            % (self.__CLASS_NAME)
+        baseClassName    = '%sBase'         % (self.__CLASS_NAME)
         exec('from %s import %s'            % (baseClassName, baseClassName))
         exec('self.BaseFunctions = dir(%s)' % (baseClassName))
+
+    ## @brief Implement the component according to the xml configuration
+    #  file.
+    ## @param self
+    #  The class instance.
 
     def implementComponent(self):
         somethingDone = False

@@ -56,15 +56,17 @@ class pDataProcessor:
         ## @var __XmlParser
         ## @brief The xml parser object (pXmlParser instance).
 
+        ## @var __OutputFilePath
+        ## @brief The path to the output ROOT file containing the ROOT tree.
+        #
+        #  Not that this is the input file for the tree processor, if the
+        #  data processor is called with the corresponding option.
+
         ## @var __TreeMaker
         ## @brief The tree maker object (pRootTreeMaker instance).
 
         ## @var __ErrorCounter
         ## @brief The error counter object (pEventErrorCounter instance).
-
-        ## @var __AlarmHandler
-        ## @brief The pAlarmHandler object resposible for the automated data
-        #  verification.
 
         ## @var __MetaEventProcessor
         ## @brief The meta event processor (pMetaEventProcessor instance)
@@ -101,28 +103,28 @@ class pDataProcessor:
         ## @brief The data processor stop time.
         
         if outputFilePath is None:
-            outputFilePath  = '%s.root' % inputFilePath.split('.')[0]
-        self.__ProcessTree  = processTree
-        self.__XmlParser    = pXmlParser(configFilePath)
-        self.__OutputFilePath= outputFilePath
-        self.__TreeMaker    = pRootTreeMaker(self.__XmlParser,\
-                                             self.__OutputFilePath)
-        self.__ErrorCounter = pEventErrorCounter()
+            outputFilePath    = '%s.root' % inputFilePath.split('.')[0]
+        self.__ProcessTree    = processTree
+        self.__XmlParser      = pXmlParser(configFilePath)
+        self.__OutputFilePath = outputFilePath
+        self.__TreeMaker      = pRootTreeMaker(self.__XmlParser,\
+                                               self.__OutputFilePath)
+        self.__ErrorCounter   = pEventErrorCounter()
 	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
-        self.LatCompIter    = pLATcomponentIterator(self.__TreeMaker,\
-                                                    self.__ErrorCounter)
-        self.EbfEventIter   = pEBFeventIterator(self.LatCompIter)
-        self.LatContrIter   = pLATcontributionIterator(self.EbfEventIter)
-        self.LatDatagrIter  = pLATdatagramIterator(self.LatContrIter)
-        self.LatDataBufIter = LDF.LATdataBufferIterator(self.LatDatagrIter)
-        self.NumEvents      = None
-        self.LsfMerger      = None
-        self.LdfFile        = None
-        self.StartTime      = None
-        self.StopTime       = None
+        self.LatCompIter      = pLATcomponentIterator(self.__TreeMaker,\
+                                                      self.__ErrorCounter)
+        self.EbfEventIter     = pEBFeventIterator(self.LatCompIter)
+        self.LatContrIter     = pLATcontributionIterator(self.EbfEventIter)
+        self.LatDatagrIter    = pLATdatagramIterator(self.LatContrIter)
+        self.LatDataBufIter   = LDF.LATdataBufferIterator(self.LatDatagrIter)
+        self.NumEvents        = None
+        self.LsfMerger        = None
+        self.LdfFile          = None
+        self.StartTime        = None
+        self.StopTime         = None
         self.openFile(inputFilePath)
 
     ## @brief Update the event contribution iterators, based on the xml
@@ -206,6 +208,12 @@ class pDataProcessor:
             self.processTree()
         print self.__ErrorCounter
 
+    ## @brief Process the ROOT tree.
+    #
+    #  This function creates a pRootTreeProcessor object which re-opens
+    #  the data processor output files and produces a second ROOT file
+    #  containing the histogram defined in the xml configuration file.
+        
     def processTree(self):
         treeProcessor = pRootTreeProcessor(self.__XmlParser,\
                                            self.__OutputFilePath)

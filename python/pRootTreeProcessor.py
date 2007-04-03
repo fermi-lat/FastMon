@@ -22,27 +22,43 @@ class pRootTreeProcessor:
     ## @brief Constructor.
     ## @param self
     #  The class instance.
-    ## @param rootFilePath
-    #  Path to the input ROOT file.
     ## @param xmlParser
     #  The xml parser containing the requested output lists.
+    ## @param inputFilePath
+    #  Path to the input ROOT file.
+    ## @param outputFilePath
+    #  Path to the output ROOT file.
 
     def __init__(self, xmlParser, inputFilePath, outputFilePath=None):
 
         ## @var __XmlParser
         ## @brief The xml parser containing the requested output lists.
 
+        ## @var __InputRootFile
+        ## @brief The input ROOT TFile object.
+
+        ## @var __OutputFilePath
+        ## @brief Path to the output ROOT file.
+
+        ## @var __OutputRootFile
+        ## @brief The output ROOT TFile object.
+
         ## @var __RootTree
-        ## @brief The input ROOT tree.
+        ## @brief The ROOT TTree object to be read from the input file.
+
+        ## @var __AlarmHandler
+        ## @brief The pAlarmHandler object implementing the automated controls
+        #  on the ROOT plots.
         
         self.__XmlParser      = xmlParser
         self.__InputRootFile  = ROOT.TFile(inputFilePath)
         if outputFilePath is None:
-            outputFilePath = inputFilePath.replace('.root', '_processed.root')
+            outputFilePath    = inputFilePath.replace('.root',\
+                                                      '_processed.root')
         self.__OutputFilePath = outputFilePath
         self.__OutputRootFile = None
         self.__RootTree       = self.__getRootTree()
-        self.__AlarmHandler = pAlarmHandler()
+        self.__AlarmHandler   = pAlarmHandler()
         self.__setupAlarmHandler()
 
     ## @brief Dive into the input ROOT file and try and get the ROOT tree.
@@ -57,8 +73,16 @@ class pRootTreeProcessor:
         else:
             return rootTree
 
+    ## @brief Open the output ROOT file.
+    ## @param self
+    #  The class instance.
+
     def openOutputFile(self):
         self.__OutputRootFile = ROOT.TFile(self.__OutputFilePath, 'recreate')
+
+    ## @brief Close the output ROOT file.
+    ## @param self
+    #  The class instance.
 
     def closeOutputFile(self):
         self.__OutputRootFile.Write()
@@ -108,6 +132,7 @@ class pRootTreeProcessor:
     def __createObjects(self):
         for rep in self.__XmlParser.EnabledPlotRepsDict.values():
             rep.createRootObjects(self.__RootTree)
+
 
 
 if __name__ == '__main__':
