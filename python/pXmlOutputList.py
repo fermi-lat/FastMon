@@ -223,6 +223,16 @@ class pPlotXmlRep(pXmlElement):
                     object = self.getRootObject(rootTree, tower, layer)
                     self.RootObjects[object.GetName()] = object
 
+    ## @brief Get the list of names of the ROOT objects, as they would be
+    #  created by createRootObjects().
+    #
+    #  This is ugly, but for the test report one needs to know this list
+    #  to retrieve the objects from the ROOT file produced by the
+    #  pRootTreeDataProcessor via the TFile.Get() function.
+    ## @todo This could be probably implemented better.
+    ## @param self
+    #  The class instance.   
+
     def getRootObjectsName(self):
         namesList = []
         if self.Level == LAT_LEVEL:

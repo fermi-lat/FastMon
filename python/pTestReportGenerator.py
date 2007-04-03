@@ -1,3 +1,8 @@
+#! /bin/env python
+
+## @package pTestReportGenerator
+## @brief Package for generating test reports.
+
 
 import os
 import sys
@@ -8,15 +13,60 @@ import ROOT
 from pXmlParser import pXmlParser
 
 
+## @brief Implementation of the test report generator.
+
 class pTestReportGenerator:
+
+    ## @var __DOXY_CONFIG_FILE_NAME
+    ## @brief Name of the doxygen configuration file.
+
+    ## @var __DOXY_MAIN_FILE_NAME
+    ## @brief Name of the doxygen main page file.
+
+    ## @var __HTML_DIR_NAME
+    ## @brief Name of the html report dir.
+
+    ## @var __LATEX_DIR_NAME
+    ## @brief Name of the LaTeX report dir.
 
     __DOXY_CONFIG_FILE_NAME = 'config.doxygen'
     __DOXY_MAIN_FILE_NAME   = 'mainpage.doxygen'
     __HTML_DIR_NAME         = 'html'
     __LATEX_DIR_NAME        = 'latex'
 
-    def __init__(self, inputFile, outputDirPath, xmlParser):
-        self.__InputRootFilePath = inputFile
+    ## @brief Constructor.
+    ## @param self
+    #  The class instance.
+    ## @param inputRootFilePath
+    #  Path to the input ROOT file containing the ROOT plots.
+    ## @param outputDirPath
+    #  Path to the output directory for the report.
+    ## @param xmlParser
+    #  The pXmlParser object containing the information about the
+    #  data processor configuration.
+
+    def __init__(self, inputRootFilePath, outputDirPath, xmlParser):
+
+        ## @var __InputRootFilePath
+        ## @brief Path to the input ROOT file containing the ROOT plots.
+
+        ## @var __OutputDirPath
+        ## @brief Path to the output directory for the report.
+
+        ## @var __XmlParser
+        ## @brief The pXmlParser object containing the information about the
+        #  data processor configuration.
+
+        ## @var __HtmlDirPath
+        ## @brief Path to the html report directory.
+
+        ## @var __LatexDirPath
+        ## @brief Path to the LaTeX report directory.
+
+        ## @var __DoxyMainFile
+        ## @brief Doxygen main page file.
+        
+        self.__InputRootFilePath = inputRootFilePath
         self.__OutputDirPath     = outputDirPath
         self.__XmlParser         = xmlParser
         self.__HtmlDirPath       = os.path.join(self.__OutputDirPath,\
@@ -25,18 +75,42 @@ class pTestReportGenerator:
                                                 self.__LATEX_DIR_NAME)
         self.__DoxyMainFile      = None
 
-    def __createOutputDir(self):
+    ## @brief Create the output directory for the report.
+    ## @param self
+    #  The class instance.
+    ## @param force
+    #  If this flag is set, existing files are overwritten without prompting.
+    
+    def __createOutputDir(self, force=False):
         if os.path.exists(self.__OutputDirPath):
-            logging.warn('Output directory already exists (will be replaced).')
+            logging.warn('Output directory already exists.')
+            answer = None
+            while answer not in ['y', 'n']:
+                answer = raw_input('Do you want to overwrite the old files ' +\
+                                   '(y or n)?\n')
+            if answer == 'n':
+                sys.exit('Aborting...')
             os.system('rm -rf %s' % self.__OutputDirPath)
         os.makedirs(self.__OutputDirPath)
 
+    ## @brief Create the output html report directory.
+    ## @param self
+    #  The class instance.
+    
     def __createHtmlDir(self):
         os.makedirs(self.__HtmlDirPath)
+
+    ## @brief Create the output LaTeX report directory.
+    ## @param self
+    #  The class instance.
 
     def __createLatexDir(self):
         os.makedirs(self.__LatexDirPath)
 
+    ## @brief Create all the necessary output directories.
+    ## @param self
+    #  The class instance.
+    
     def createDirs(self):
         self.__createOutputDir()
         self.__createHtmlDir()
@@ -47,6 +121,14 @@ class pTestReportGenerator:
             return file(filePath, 'w')
         except:
             sys.exit('Could not open output file %s' % filePath)
+
+    def __openInputRootFile(self):
+        rootFile = ROOT.TFile(self.__InputRootFilePath)
+        if rootFile.GetFd() != -1:
+            return rootFile
+        else:
+            sys.exit('Could not open input ROOT file %s. Aborting...' %\
+                     self.__InputRootFilePath)
 
     def __write(self, line):
         self.__DoxyMainFile.writelines(line)
@@ -72,7 +154,7 @@ class pTestReportGenerator:
 
     def addPlots(self):
         ROOT.gROOT.SetBatch(1)
-        rootFile   = ROOT.TFile(self.__InputRootFilePath)
+        rootFile   = self.__openInputRootFile()
         rootCanvas = ROOT.TCanvas()
         for list in self.__XmlParser.OutputListsDict.values():
             name  = list.Name
