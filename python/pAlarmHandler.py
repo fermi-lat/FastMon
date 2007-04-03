@@ -74,11 +74,14 @@ class pAlarmHandler:
     #  not satisfy the required conditions).
 
     def getFormattedSummary(self, verbose=False):
+        allAlarmsClean = True
         header  = 'Plot name                        %s' % ALARM_HEADER
-        summary = '** Alarm handler summary **\n%s\n' % header
+        label   = '** Alarm handler summary **\n'
+        summary = '%s%s\n' % (label, header)
         for (plotName, alarmsList) in self.__EnabledAlarmsDict.items():
              for alarm in alarmsList:
                  if not alarm.isClean():
+                     allAlarmsClean = False
                      summary += '%s %s\n' %\
                                 (pUtils.expandString(plotName, 32),\
                                  alarm.getFormattedStatus())
@@ -87,7 +90,10 @@ class pAlarmHandler:
                          summary += '%s %s\n' %\
                                     (pUtils.expandString(plotName, 32),\
                                      alarm.getFormattedStatus())
-        return summary
+        if allAlarmsClean:
+            return '%sAll alarms clean.\n' % label
+        else:
+            return summary
 
     ## @brief Class representation.
     ## @param self
