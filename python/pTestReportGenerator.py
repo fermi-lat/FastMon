@@ -69,8 +69,13 @@ class pTestReportGenerator:
     ## @param xmlParser
     #  The pXmlParser object containing the information about the
     #  data processor configuration.
+    ## @param forceOverwrite
+    #  Flag to overwrite existing files without asking the user.
+    ## @param verbose
+    #  Print additional informations.
 
-    def __init__(self, inputRootFilePath, outputDirPath, xmlParser):
+    def __init__(self, xmlParser, inputRootFilePath, outputDirPath=None,
+                 forceOverwrite=False, verbose=False):
 
         ## @var __InputRootFilePath
         ## @brief Path to the input ROOT file containing the ROOT plots.
@@ -81,6 +86,9 @@ class pTestReportGenerator:
         ## @var __XmlParser
         ## @brief The pXmlParser object containing the information about the
         #  data processor configuration.
+
+        ## @var __ForceOverwrite
+        ## @brief Flag to overwrite existing files without asking the user.
 
         ## @var __HtmlDirPath
         ## @brief Path to the html report directory.
@@ -97,10 +105,15 @@ class pTestReportGenerator:
         ## @var __AuxRootCanvas
         ## @brief A temporary canvas used to draw the plots and save them
         #  as images.
-        
+
+        self.__XmlParser         = xmlParser
         self.__InputRootFilePath = inputRootFilePath
         self.__OutputDirPath     = outputDirPath
-        self.__XmlParser         = xmlParser
+        if self.__OutputDirPath is None:
+            inputFileDirPath     = os.path.dirname(self.__InputRootFilePath)
+            self.__OutputDirPath = os.path.join(inputFileDirPath, 'report')
+        self.__Verbose           = verbose
+        self.__ForceOverwrite    = forceOverwrite
         self.__HtmlDirPath       = os.path.join(self.__OutputDirPath,\
                                                 self.__HTML_DIR_NAME)
         self.__LatexDirPath      = os.path.join(self.__OutputDirPath,\
@@ -142,13 +155,14 @@ class pTestReportGenerator:
     
     def __createOutputDir(self, force=False):
         if os.path.exists(self.__OutputDirPath):
-            logging.warn('Output directory already exists.')
-            answer = None
-            while answer not in ['y', 'n']:
-                answer = raw_input('Do you want to overwrite the old files ' +\
-                                   '(y or n)?\n')
-            if answer == 'n':
-                sys.exit('Aborting...')
+            if not self.__ForceOverwrite:
+                logging.warn('Output directory already exists.')
+                answer = None
+                while answer not in ['y', 'n']:
+                    answer = raw_input('Do you want to overwrite the old ' +\
+                                       'files (y or n)?\n')
+                if answer == 'n':
+                    sys.exit('Aborting...')
             os.system('rm -rf %s' % self.__OutputDirPath)
         os.makedirs(self.__OutputDirPath)
 
@@ -311,6 +325,8 @@ class pTestReportGenerator:
     def addPlot(self, plotRep, name):
         epsImagePath = os.path.join(self.__LatexDirPath, ('%s.eps' % name))
         gifImagePath = os.path.join(self.__HtmlDirPath , ('%s.gif' % name))
+        epsImageName = os.path.basename(epsImagePath)
+        gifImageName = os.path.basename(gifImagePath)
         self.__AuxRootCanvas.SetLogx(plotRep.XLog)
         self.__AuxRootCanvas.SetLogy(plotRep.YLog)
         self.__InputRootFile.Get(name).Draw(plotRep.DrawOptions)
@@ -335,8 +351,8 @@ class pTestReportGenerator:
                    '@latexonly\n'                                      +\
                    '\\nopagebreak\n'                                   +\
                    '@endlatexonly\n\n')                                %\
-                   (title, caption, gifImagePath, gifImagePath,         \
-                    self.__LATEX_IMAGES_WIDTH, epsImagePath, title, caption)
+                   (title, caption, gifImageName, gifImageName,         \
+                    self.__LATEX_IMAGES_WIDTH, epsImageName, title, caption)
         self.__write(block)
 
     ## @brief Add all the plots to the test report.
@@ -374,32 +390,30 @@ class pTestReportGenerator:
     ## @brief Run doxygen on the main page.
     ## @param self
     #  The class instance.
-    ## @param verbose
-    #  If this flag is set, the output from doxygen is printed on the screen.
     
-    def doxygenate(self, verbose=False):
+    def doxygenate(self):
         logging.info('Running doxygen...')
         startTime = time.time()
         command = 'cd %s; doxygen %s' % (self.__OutputDirPath,\
                                          self.__DOXY_CONFIG_FILE_NAME)
-        output  = commands.getoutput(command)
-        if verbose:
-            print output
+        if self.__Verbose:
+            os.system(command)
+        else:
+            commands.getoutput(command)
         logging.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Compile the LaTeX report and make ps and pdf files.
     ## @param self
     #  The class instance.
-    ## @param verbose
-    #  If this flag is set, the output from LaTeX is printed on the screen.
 
-    def compileLatex(self, verbose=False):
+    def compileLatex(self):
         logging.info('Compiling LaTeX report...')
         startTime = time.time()
         command = 'cd %s; make pdf' % self.__LatexDirPath
-        output  = commands.getoutput(command)
-        if verbose:
-            print output
+        if self.__Verbose:
+            os.system(command)
+        else:
+            commands.getoutput(command)
         logging.info('Done in %s s.\n' % (time.time() - startTime))
 
 
@@ -411,20 +425,24 @@ if __name__ == '__main__':
     parser.add_option('-c', '--config-file', dest='config_file',\
                       default='../xml/config.xml', type=str,   \
                       help='path to the input xml configuration file')
-    parser.add_option('-o', '--report-dir', dest='report_dir', type=str,
-                      help='path to the output report directory')
+    parser.add_option('-d', '--report-dir', dest='report_dir', type=str,
+                      default=None, help='path to the output report directory')
+    parser.add_option('-f', '--force-overwrite', action='store_true',
+                      dest='force_overwrite', default=False,
+                      help='overwrite files without asking')
+    parser.add_option('-v', '--verbose', action='store_true',
+                      dest='verbose', default=False,
+                      help='print a lot of ROOT/doxygen/LaTeX related stuff')
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.print_help()
         parser.error('incorrect number of arguments.')
         sys.exit()
-    if options.report_dir is None:
-        parser.print_help()
-        parser.error('please specify the output report directory.')
-        sys.exit()
 
     xmlParser = pXmlParser(options.config_file)
-    reportGenerator = pTestReportGenerator(args[0], options.report_dir,\
-                                           xmlParser)
+    reportGenerator = pTestReportGenerator(xmlParser, args[0],\
+                                           options.report_dir,\
+                                           options.force_overwrite,\
+                                           options.verbose)
     reportGenerator.run()
 
