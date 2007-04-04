@@ -31,10 +31,26 @@ class pTestReportGenerator:
     ## @var __LATEX_DIR_NAME
     ## @brief Name of the LaTeX report dir.
 
+    ## @var __AUX_CANVAS_WIDTH
+    ## @brief The width of the auxiliary ROOT canvas used to save plots as
+    #  images (in number of pixels).
+
+    ## @var __AUX_CANVAS_HEIGHT
+    ## @brief The height of the auxiliary ROOT canvas used to save plots as
+    #  images (in number of pixels).
+
+    ## @var __LATEX_IMAGES_WIDTH
+    ## @brief The width of the images to be included in the LaTeX version
+    #  of the report (in cm).
+
     __DOXY_CONFIG_FILE_NAME = 'config.doxygen'
     __DOXY_MAIN_FILE_NAME   = 'mainpage.doxygen'
     __HTML_DIR_NAME         = 'html'
     __LATEX_DIR_NAME        = 'latex'
+    __AUX_CANVAS_WIDTH      = 500
+    __AUX_CANVAS_HEIGHT     = 400
+    __AUX_CANVAS_COLOR      = 10
+    __LATEX_IMAGES_WIDTH    = 11.0
 
     ## @brief Constructor.
     ## @param self
@@ -300,8 +316,8 @@ class pTestReportGenerator:
                    '@latexonly\n'                                      +\
                    '\\begin{figure}[H]\n'                              +\
                    '\\begin{center}\n'                                 +\
-                   '\\includegraphics[width=9.0cm]{%s}\n'              +\
-                   '\\caption{{\\bf %s.} %s}\n'                        +\
+                   '\\includegraphics[width=%scm]{%s}\n'               +\
+                   '\\caption{{\\bf %s.} %s.}\n'                       +\
                    '\\end{center}\n'                                   +\
                    '\\end{figure}\n'                                   +\
                    '@endlatexonly\n'                                   +\
@@ -309,7 +325,7 @@ class pTestReportGenerator:
                    '\\nopagebreak\n'                                   +\
                    '@endlatexonly\n\n')                                %\
                    (title, caption, gifImagePath, gifImagePath,         \
-                    epsImagePath, title, caption)
+                    self.__LATEX_IMAGES_WIDTH, epsImagePath, title, caption)
         self.__write(block)
 
     ## @brief Add all the plots to the test report.
@@ -319,7 +335,10 @@ class pTestReportGenerator:
     def addPlots(self):
         ROOT.gROOT.SetBatch(1)
         self.__InputRootFile = self.__openInputRootFile()
-        self.__AuxRootCanvas = ROOT.TCanvas()    
+        self.__AuxRootCanvas = ROOT.TCanvas('canvas', 'canvas',\
+                                            self.__AUX_CANVAS_WIDTH,\
+                                            self.__AUX_CANVAS_HEIGHT)
+        self.__AuxRootCanvas.SetFillColor(self.__AUX_CANVAS_COLOR)
         for list in self.__XmlParser.OutputListsDict.values():
             self.addOutputListSection(list)
             for plotRep in list.EnabledPlotRepsDict.values():
