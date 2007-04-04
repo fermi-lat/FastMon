@@ -39,6 +39,9 @@ class pTestReportGenerator:
     ## @brief The height of the auxiliary ROOT canvas used to save plots as
     #  images (in number of pixels).
 
+    ## @var __AUX_CANVAS_COLOR
+    ## @brief The fill color of the ROOT auxiliary canvas.
+
     ## @var __LATEX_IMAGES_WIDTH
     ## @brief The width of the images to be included in the LaTeX version
     #  of the report (in cm).
