@@ -90,6 +90,9 @@ class pTestReportGenerator:
         ## @var __ForceOverwrite
         ## @brief Flag to overwrite existing files without asking the user.
 
+        ## @var __Verbose
+        ## @brief Print additional informations.
+
         ## @var __HtmlDirPath
         ## @brief Path to the html report directory.
 
@@ -142,7 +145,6 @@ class pTestReportGenerator:
     #  The class instance.
 
     def run(self):
-        self.createDirs()
         self.writeReport()
         self.doxygenate()
         self.compileLatex()
@@ -361,7 +363,6 @@ class pTestReportGenerator:
     
     def addPlots(self):
         ROOT.gROOT.SetBatch(1)
-        self.__InputRootFile = self.__openInputRootFile()
         self.__AuxRootCanvas = ROOT.TCanvas('canvas', 'canvas',\
                                             self.__AUX_CANVAS_WIDTH,\
                                             self.__AUX_CANVAS_HEIGHT)
@@ -371,7 +372,6 @@ class pTestReportGenerator:
             for plotRep in list.EnabledPlotRepsDict.values():
                 for name in plotRep.getRootObjectsName():
                     self.addPlot(plotRep, name)
-        self.__InputRootFile.Close()
         self.__AuxRootCanvas.Delete()
         ROOT.gROOT.SetBatch(0)
 
@@ -380,12 +380,15 @@ class pTestReportGenerator:
     #  The class instance.
     
     def writeReport(self):
+        self.__InputRootFile = self.__openInputRootFile()
+        self.createDirs()
         self.createDoxyConfigFile()
         self.openDoxyMainFile()
         self.writeHeader()
         self.addPlots()
         self.writeTrailer()
         self.closeDoxyMainFile()
+        self.__InputRootFile.Close()
 
     ## @brief Run doxygen on the main page.
     ## @param self
@@ -429,7 +432,7 @@ if __name__ == '__main__':
                       default=None, help='path to the output report directory')
     parser.add_option('-f', '--force-overwrite', action='store_true',
                       dest='force_overwrite', default=False,
-                      help='overwrite files without asking')
+                      help='overwrite existing files without asking')
     parser.add_option('-v', '--verbose', action='store_true',
                       dest='verbose', default=False,
                       help='print a lot of ROOT/doxygen/LaTeX related stuff')
@@ -440,9 +443,9 @@ if __name__ == '__main__':
         sys.exit()
 
     xmlParser = pXmlParser(options.config_file)
-    reportGenerator = pTestReportGenerator(xmlParser, args[0],\
-                                           options.report_dir,\
-                                           options.force_overwrite,\
+    reportGenerator = pTestReportGenerator(xmlParser, args[0],
+                                           options.report_dir,
+                                           options.force_overwrite,
                                            options.verbose)
     reportGenerator.run()
 

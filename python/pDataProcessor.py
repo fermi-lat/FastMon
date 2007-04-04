@@ -14,7 +14,6 @@ import struct
 import pConfig
 
 from copy 			      import copy
-from array                            import array
 from LICOS_Scripts.analysis.LsfMerger import LsfMerger
 from pRootTreeMaker                   import pRootTreeMaker
 from pLATdatagramIterator             import pLATdatagramIterator
@@ -28,6 +27,7 @@ from pMetaEventProcessor	      import *
 from pEventErrorCounter               import pEventErrorCounter
 from pAlarmHandler                    import pAlarmHandler
 from pRootTreeProcessor               import pRootTreeProcessor
+from pTestReportGenerator             import pTestReportGenerator
 
 
 ## @brief The data processor implementation.
@@ -45,13 +45,35 @@ class pDataProcessor:
     #  Path to the output ROOT file.
     ## @param processTree
     #  Flag to launch the pRootTree processor after the tree has been created.
+    ## @param generateReport
+    #  Flag to generate a report at the end of the analysis.
+    ## @param reportDirPath
+    #  The report output directory.
+    ## @param forceOverwrite
+    #  Flag to overwrite existing files without asking the user.
+    ## @param verbose
+    #  Print additional informations.
 
-    def __init__(self, configFilePath, inputFilePath, outputFilePath,\
-                 processTree):
+    def __init__(self, configFilePath, inputFilePath, outputFilePath=None,\
+                 processTree=False, generateReport=False, reportDirPath=None,\
+                 forceOverwrite=False, verbose=False):
 
         ## @var __ProcessTree
         ## @brief Flag to launch the pRootTree processor after the tree
         #  has been created.
+
+        ## @var __GenerateReport
+        ## @brief Flag to run the report generation at the end of the
+        #  analysis.
+
+        ## @var __ReportDirPath
+        ## @brief The path to the output report directory.
+
+        ## @var __ForceOverwrite
+        ## @brief Flag to overwrite existing files without asking the user.
+
+        ## @var __Verbose
+        ## @brief Print additional informations.
 
         ## @var __XmlParser
         ## @brief The xml parser object (pXmlParser instance).
@@ -105,6 +127,10 @@ class pDataProcessor:
         if outputFilePath is None:
             outputFilePath    = '%s.root' % inputFilePath.split('.')[0]
         self.__ProcessTree    = processTree
+        self.__GenerateReport = generateReport
+        self.__ReportDirPath  = reportDirPath
+        self.__ForceOverwrite = forceOverwrite
+        self.__Verbose        = verbose
         self.__XmlParser      = pXmlParser(configFilePath)
         self.__OutputFilePath = outputFilePath
         self.__TreeMaker      = pRootTreeMaker(self.__XmlParser,\
@@ -204,20 +230,44 @@ class pDataProcessor:
         self.__TreeMaker.closeFile()
         logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
-        if self.__ProcessTree:
-            self.processTree()
         print self.__ErrorCounter
+        if self.__ProcessTree:
+            processedFilePath = self.processTree()
+        if self.__GenerateReport:
+            self.generateReport(processedFilePath)
 
     ## @brief Process the ROOT tree.
     #
     #  This function creates a pRootTreeProcessor object which re-opens
     #  the data processor output files and produces a second ROOT file
     #  containing the histogram defined in the xml configuration file.
+    ## @param self
+    #  The class instance.
         
     def processTree(self):
         treeProcessor = pRootTreeProcessor(self.__XmlParser,\
                                            self.__OutputFilePath)
         treeProcessor.process()
+        return treeProcessor.getProcessedFileAbsPath()
+
+    ## @brief Generate the rerport.
+    ## @param self
+    #  The class instance.
+    ## @param processedFilePath
+    #  The path to the ROOT file created by the tree processor (i.e. the
+    #  one containing the plots).
+
+    def generateReport(self, processedFilePath):
+        if processedFilePath is None:
+            logging.error('Cannot generate the report.\n'         +\
+                          'The processed file %s does not exist.' %\
+                          processedFilePath)
+        reportGenerator = pTestReportGenerator(self.__XmlParser,\
+                                               processedFilePath,\
+                                               self.__ReportDirPath,\
+                                               self.__ForceOverwrite,
+                                               self.__Verbose)
+        reportGenerator.run()
 
     ## @brief Process an event.
     #
@@ -318,24 +368,41 @@ class pDataProcessor:
 if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
-    parser.add_option('-c', '--config-file', dest='config_file',\
-                      default='../xml/config.xml', type=str,   \
+    parser.add_option('-c', '--config-file', dest='config_file',
+                      default='../xml/config.xml', type=str,
                       help='path to the input xml configuration file')
-    parser.add_option('-n', '--num-events', dest='events',      \
-                      default=-1, type=int,       \
+    parser.add_option('-n', '--num-events', dest='events',
+                      default=-1, type=int,
                       help='number of events to be processed')
     parser.add_option('-o', '--output-file', dest='output_file',
                       default='IsocDataFile.root', type=str,
                       help='path to the output ROOT file')
-    parser.add_option('-p', '--process-tree', action='store_true',\
-                      dest='process_tree', default=False,\
+    parser.add_option('-p', '--process-tree', action='store_true',
+                      dest='process_tree', default=False,
                       help='process the ROOT tree and create histograms')
+    parser.add_option('-r', '--create-report', action='store_true',
+                      dest='create_report', default=False,
+                      help='generate the report from the processed ROOT file')
+    parser.add_option('-d', '--report-dir', dest='report_dir',
+                      default=None, type=str,
+                      help='path to the output report directory')
+    parser.add_option('-f', '--force-overwrite', action='store_true',
+                      dest='force_overwrite', default=False,
+                      help='overwrite existing files without asking')
+    parser.add_option('-v', '--verbose', action='store_true',
+                      dest='verbose', default=False,
+                      help='print a lot of ROOT/doxygen/LaTeX related stuff')
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.print_help()
         parser.error('incorrect number of arguments')
         sys.exit()
+    if options.create_report and not options.process_tree:
+        parser.print_help()
+        parser.error('please run with the -p option if you want the report.')
     
-    dataProcessor  = pDataProcessor(options.config_file, args[0],\
-                                    options.output_file, options.process_tree)
+    dataProcessor  = pDataProcessor(options.config_file, args[0],
+                                    options.output_file, options.process_tree,
+                                    options.create_report, options.report_dir,
+                                    options.verbose)
     dataProcessor.start(options.events)
