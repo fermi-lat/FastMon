@@ -314,8 +314,6 @@ class pTestReportGenerator:
     #  could write a method in pXmlPlotRep to return a list of plot reps
     #  for all the levels - with their names, titles, etc - and avoid
     #  the name parameter in this function).
-    ## @todo Try and understand how to get rid of the ROOT info output
-    #  while saving to eps format.
     ## @param self
     #  The class instance.
     ## @param plotRep
@@ -362,6 +360,7 @@ class pTestReportGenerator:
     #  The class instance.
     
     def addPlots(self):
+        guard = ROOT.TRedirectOutputGuard('/dev/null', 'w')
         ROOT.gROOT.SetBatch(1)
         self.__AuxRootCanvas = ROOT.TCanvas('canvas', 'canvas',\
                                             self.__AUX_CANVAS_WIDTH,\
@@ -380,6 +379,8 @@ class pTestReportGenerator:
     #  The class instance.
     
     def writeReport(self):
+        logging.info('Writing doxygen report files...')
+        startTime = time.time()
         self.__InputRootFile = self.__openInputRootFile()
         self.createDirs()
         self.createDoxyConfigFile()
@@ -389,6 +390,7 @@ class pTestReportGenerator:
         self.writeTrailer()
         self.closeDoxyMainFile()
         self.__InputRootFile.Close()
+        logging.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Run doxygen on the main page.
     ## @param self
