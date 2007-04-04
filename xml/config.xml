@@ -312,6 +312,8 @@
 	    <title>Average number of strip hits per GTRC</title>
 	    <xlabel>Plane</xlabel>
 	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <caption>Events with no hits have been removed.</caption>
 	    <expression>tkr_layer_end_strip_count</expression>
 	    <exclude>[0]</exclude>
         </CUSTOM>
@@ -319,6 +321,8 @@
 	    <title>Average TOT per GTRC</title>
 	    <xlabel>Plane</xlabel>
 	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <caption>Events with TOT 0 or 255 (saturated) have been removed.</caption>
 	    <expression>tkr_layer_end_tot</expression>
 	    <exclude>[0, 255]</exclude>
         </CUSTOM>
@@ -326,6 +330,7 @@
 	    <title>Average number of strip hits in a Tracker plane</title>
 	    <xlabel>Plane</xlabel>
 	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
 	    <expression>tkr_layer_end_strip_count</expression>
             <cut><![CDATA[ tkr_layer_end_strip_count > 0 ]]></cut>
         </CUSTOM>
@@ -348,6 +353,7 @@
 	    <xbins>100</xbins>
 	    <xmin>0</xmin>
 	    <xmax>100</xmax>
+	    <ylog>True</ylog>
             <expression>cal_tower_log_count</expression>
         </TH1F>
         <TH1F name="cal_tower_count" enabled="True" level="lat">
@@ -361,6 +367,7 @@
 	    <title>Average number of log hit per layer</title>
 	    <xlabel>Layer</xlabel>
 	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
 	    <expression>cal_layer_log_count</expression>
 	    <exclude>[0]</exclude>
         </CUSTOM>

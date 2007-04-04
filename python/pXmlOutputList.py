@@ -54,18 +54,39 @@ class pPlotXmlRep(pXmlElement):
 
         ## @var Cut
         ## @brief An optional cut which can be applied on the plot.
+        #
+        #  Default is "".
 
         ## @var XLabel
         ## @brief The x axis label.
-
+        #
+        #  Default is "".
+        
         ## @var YLabel
         ## @brief the y axis label.
+        #
+        #  Default is "".
 
         ## @var XLog
         ## @brief Flag for the log scale on the x axis (used for the report).
+        #
+        #  Default is False.
 
         ## @var YLog
         ## @brief Flag for the log scale on the y axis (used for the report).
+        #
+        #  Default is "".
+
+        ## @var DrawOptions
+        ## @brief Draw options used when the corresponding ROOT object(s)
+        #  is (are) drawn on a canvas to be saved as image(s).
+        #
+        #  Default is "".
+
+        ## @var Caption
+        ## @brief The text of the plot caption for the test report.
+        #
+        #  Default is "".
 
         ## @var RootObjects
         ## @brief A dictionary containing the actual ROOT object(s)
@@ -83,6 +104,8 @@ class pPlotXmlRep(pXmlElement):
         self.YLabel       = self.getTagValue('ylabel', '')
         self.XLog         = self.evalTagValue('xlog', False)
         self.YLog         = self.evalTagValue('ylog', False)
+        self.DrawOptions  = self.getTagValue('drawoptions', '')
+        self.Caption      = self.getTagValue('caption', '')
         self.RootObjects  = {}
 
     ## @brief Return the suffix to be attached to the plot name or

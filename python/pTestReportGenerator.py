@@ -31,6 +31,9 @@ class pTestReportGenerator:
     ## @var __LATEX_DIR_NAME
     ## @brief Name of the LaTeX report dir.
 
+    ## @var __ROOT_PALETTE
+    ## @brief The ROOT palette.
+
     ## @var __AUX_CANVAS_WIDTH
     ## @brief The width of the auxiliary ROOT canvas used to save plots as
     #  images (in number of pixels).
@@ -50,6 +53,7 @@ class pTestReportGenerator:
     __DOXY_MAIN_FILE_NAME   = 'mainpage.doxygen'
     __HTML_DIR_NAME         = 'html'
     __LATEX_DIR_NAME        = 'latex'
+    __ROOT_PALETTE          = 1
     __AUX_CANVAS_WIDTH      = 500
     __AUX_CANVAS_HEIGHT     = 400
     __AUX_CANVAS_COLOR      = 10
@@ -110,12 +114,14 @@ class pTestReportGenerator:
     #
     #  If a valid folder path is passed as one of the arguments to the
     #  python script, ROOT cd into it the first time ROOT itself is called.
+    #
+    #  By the way... we set the ROOT.gStyle palette here!
     ## @brief self
     #  The class instance.
 
     def fuckRoot(self):
         currentDirPath = os.path.abspath(os.curdir)
-        suck = ROOT.gROOT.IsBatch()
+        ROOT.gStyle.SetPalette(self.__ROOT_PALETTE)
         os.chdir(currentDirPath)
 
     ## @brief Produce the report in html, ps and pdf formats.
@@ -305,11 +311,13 @@ class pTestReportGenerator:
     def addPlot(self, plotRep, name):
         epsImagePath = os.path.join(self.__LatexDirPath, ('%s.eps' % name))
         gifImagePath = os.path.join(self.__HtmlDirPath , ('%s.gif' % name))
-        self.__InputRootFile.Get(name).Draw()
+        self.__AuxRootCanvas.SetLogx(plotRep.XLog)
+        self.__AuxRootCanvas.SetLogy(plotRep.YLog)
+        self.__InputRootFile.Get(name).Draw(plotRep.DrawOptions)
         self.__AuxRootCanvas.SaveAs(epsImagePath)
         self.__AuxRootCanvas.SaveAs(gifImagePath)
         title   = plotRep.Title
-        caption = plotRep.Title
+        caption = plotRep.Caption
         block   = ('@htmlonly\n'                                       +\
                    '<div align="center">\n'                            +\
                    '<p><strong>%s.</strong> %s</p>\n'                  +\
@@ -320,7 +328,7 @@ class pTestReportGenerator:
                    '\\begin{figure}[H]\n'                              +\
                    '\\begin{center}\n'                                 +\
                    '\\includegraphics[width=%scm]{%s}\n'               +\
-                   '\\caption{{\\bf %s.} %s.}\n'                       +\
+                   '\\caption{{\\bf %s.} %s}\n'                        +\
                    '\\end{center}\n'                                   +\
                    '\\end{figure}\n'                                   +\
                    '@endlatexonly\n'                                   +\
