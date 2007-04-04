@@ -4,6 +4,7 @@
 ## @brief Module responsible for processing the output ROOT tree and creating
 #  all the requested plots.
 
+import os
 import time
 import ROOT
 import logging
@@ -60,6 +61,19 @@ class pRootTreeProcessor:
         self.__RootTree       = self.__getRootTree()
         self.__AlarmHandler   = pAlarmHandler()
         self.__setupAlarmHandler()
+
+    ## @brief Return the path to the processed ROOT file (i.e. the one
+    #  including the plots).
+    #
+    #  Return None if the file does not exists.
+    ## @param self
+    #  The class instance.   
+
+    def getProcessedFileAbsPath(self):
+        if os.path.exists(self.__OutputFilePath):
+            return os.path.abspath(self.__OutputFilePath)
+        else:
+            return None
 
     ## @brief Dive into the input ROOT file and try and get the ROOT tree.
     ## @param self
