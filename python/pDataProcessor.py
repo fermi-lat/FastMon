@@ -130,6 +130,7 @@ class pDataProcessor:
         self.__GenerateReport = generateReport
         self.__ReportDirPath  = reportDirPath
         self.__ForceOverwrite = forceOverwrite
+        print self.__ForceOverwrite
         self.__Verbose        = verbose
         self.__XmlParser      = pXmlParser(configFilePath)
         self.__OutputFilePath = outputFilePath
@@ -262,9 +263,9 @@ class pDataProcessor:
             logging.error('Cannot generate the report.\n'         +\
                           'The processed file %s does not exist.' %\
                           processedFilePath)
-        reportGenerator = pTestReportGenerator(self.__XmlParser,\
-                                               processedFilePath,\
-                                               self.__ReportDirPath,\
+        reportGenerator = pTestReportGenerator(self.__XmlParser,
+                                               processedFilePath,
+                                               self.__ReportDirPath,
                                                self.__ForceOverwrite,
                                                self.__Verbose)
         reportGenerator.run()
@@ -404,5 +405,5 @@ if __name__ == '__main__':
     dataProcessor  = pDataProcessor(options.config_file, args[0],
                                     options.output_file, options.process_tree,
                                     options.create_report, options.report_dir,
-                                    options.verbose)
+                                    options.force_overwrite, options.verbose)
     dataProcessor.start(options.events)
