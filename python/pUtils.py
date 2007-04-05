@@ -40,6 +40,13 @@ def expandNumber(number, numDecPlaces=3, length=10):
     except:
         return expandString(number, length)
 
+## @brief Format a string to be put in the LaTeX version of the report.
+#
+#  The following operations are performed:
+#  @li Replace '_' with '\\_' (to allow the '_' out of the math mode).
+## @param string
+#  The string to be formatted.
+
 def formatForLatex(string):
     return string.replace('_', '\_')
 

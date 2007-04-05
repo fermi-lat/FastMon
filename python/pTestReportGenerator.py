@@ -62,13 +62,19 @@ class pTestReportGenerator:
     ## @brief Constructor.
     ## @param self
     #  The class instance.
-    ## @param inputRootFilePath
-    #  Path to the input ROOT file containing the ROOT plots.
-    ## @param outputDirPath
-    #  Path to the output directory for the report.
     ## @param xmlParser
     #  The pXmlParser object containing the information about the
-    #  data processor configuration.
+    #  data processor configuration.    
+    ## @param inputRootFilePath
+    #  Path to the input ROOT file containing the ROOT plots.
+    ## @param inputErrorsFilePath
+    #  Path to the input file containing the errors statistics summary from
+    #  the data provessor.
+    ## @param inputAlarmsFilePath
+    #  The path to the input file containing the alarm handler summary from
+    #  the root tree processor.
+    ## @param outputDirPath
+    #  Path to the output directory for the report.
     ## @param forceOverwrite
     #  Flag to overwrite existing files without asking the user.
     ## @param verbose
@@ -78,15 +84,23 @@ class pTestReportGenerator:
                  inputAlarmsFilePath=None, outputDirPath=None,
                  forceOverwrite=False, verbose=False):
 
-        ## @var __InputRootFilePath
-        ## @brief Path to the input ROOT file containing the ROOT plots.
-
-        ## @var __OutputDirPath
-        ## @brief Path to the output directory for the report.
-
         ## @var __XmlParser
         ## @brief The pXmlParser object containing the information about the
         #  data processor configuration.
+
+        ## @var __InputRootFilePath
+        ## @brief Path to the input ROOT file containing the ROOT plots.
+
+        ## @var __InputErrorsFilePath
+        ## @brief Path to the input file containing the errors statistics
+        #  summary from the data provessor.
+        
+        ## @var __InputAlarmsFilePath
+        ## @brief The path to the input file containing the alarm handler
+        #  summary from the root tree processor.
+    
+        ## @var __OutputDirPath
+        ## @brief Path to the output directory for the report.
 
         ## @var __ForceOverwrite
         ## @brief Flag to overwrite existing files without asking the user.
@@ -284,7 +298,7 @@ class pTestReportGenerator:
         self.__write(header)
         self.__skipLine()
 
-    ## @brif Write to the doxygen file the preliminary sections provided by
+    ## @brief Write to the doxygen file the preliminary sections provided by
     #  the data processor, the root tree processor and the alarm handler.
     ## @param self
     #  The class instance.

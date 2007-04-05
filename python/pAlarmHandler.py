@@ -111,7 +111,11 @@ class pAlarmHandler:
     #  We may think oh having more tables (one per list of per plot?).
     ## @param self
     #  The class instance.
-
+    ## @param verbose
+    #  If the flag is set, the status is printed out for all the alarms,
+    #  otherwise only for those which are set (i.e. for the plots which do
+    #  not satisfy the required conditions).
+    
     def getDoxygenFormattedSummary(self, verbose=False):   
         caption = 'Summary table'
         label   = 'alarmHandlerTable'
@@ -188,6 +192,7 @@ class pAlarmHandler:
 
     def __str__(self):
         return self.getFormattedSummary()
+
 
 
 ## @brief Class describing an alarm to be activated on a plot.
@@ -313,11 +318,21 @@ class pAlarm(pXmlElement):
                              pUtils.expandNumber(self.Parameter) ,\
                              pUtils.expandString(self.getFormattedLimits(),15))
 
+    ## @brief Return all the relevant information on the alarm status,
+    #  formatted for the html report.
+    ## @param self
+    #  The class instance.
+    
     def getHtmlFormattedStatus(self):
         return '\t\t<td>%s</td>\n' % self.Type      +\
                '\t\t<td>%s</td>\n' % self.Status    +\
                '\t\t<td>%s</td>\n' % self.Parameter +\
                '\t\t<td>%s</td>\n' % self.getFormattedLimits()
+
+    ## @brief Return all the relevant information on the alarm status,
+    #  formatted for the LaTeX report.
+    ## @param self
+    #  The class instance.
 
     def getLatexFormattedStatus(self):
         return '%s & %s & %s & %s \\\\\n' % (self.Type, self.Status,\

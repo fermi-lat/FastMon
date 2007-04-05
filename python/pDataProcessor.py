@@ -84,6 +84,10 @@ class pDataProcessor:
         #  Not that this is the input file for the tree processor, if the
         #  data processor is called with the corresponding option.
 
+        ## @var __ErrorsFilePath
+        ## @brief The path to the output file where the errors summary is
+        #  saved.
+
         ## @var __TreeMaker
         ## @brief The tree maker object (pRootTreeMaker instance).
 

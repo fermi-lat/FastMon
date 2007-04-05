@@ -26,11 +26,21 @@ class pRootTreeProcessor:
     #  The class instance.
     ## @param xmlParser
     #  The xml parser containing the requested output lists.
-    ## @param inputFilePath
+    ## @param inputRootFilePath
     #  Path to the input ROOT file.
     ## @param outputFilePath
     #  Path to the output ROOT file.
-
+    ## @param generateReport
+    #  Flag to generate the report at the end of the analysis.
+    ## @param reportDirPath
+    #  The output directory for the report.
+    ## @param inputErrorsFilePath
+    #  The input file containing the error summary from the data processor.
+    ## @param forceOverwrite
+    #  Flag passed to test report generator.
+    ## @param verbose
+    #  Flag passed to the test report generator.
+    
     def __init__(self, xmlParser, inputRootFilePath, outputFilePath=None,
                  generateReport=False, reportDirPath=None,\
                  inputErrorsFilePath=None, forceOverwrite=False,\
@@ -39,11 +49,30 @@ class pRootTreeProcessor:
         ## @var __XmlParser
         ## @brief The xml parser containing the requested output lists.
 
+        ## @var __InputRootFilePath
+        ## @brief Path to the input ROOT TFile object.
+
         ## @var __InputRootFile
         ## @brief The input ROOT TFile object.
 
         ## @var __OutputFilePath
         ## @brief Path to the output ROOT file.
+
+        ## @var __GenerateReport
+        ## @brief Flag to generate the report at the end of the analysis.
+
+        ## @var __ReportDirPath
+        ## @brief The output directory for the report.
+
+        ## @var __InputErrorsFilePath
+        ## @brief The input file containing the error summary from the
+        #  data processor.
+
+        ## @var __ForceOverwrite
+        ## @brief Flag passed to test report generator.
+
+        ## @var __Verbose
+        ## @brief Flag passed to the test report generator.
 
         ## @var __OutputRootFile
         ## @brief The output ROOT TFile object.
@@ -54,6 +83,10 @@ class pRootTreeProcessor:
         ## @var __AlarmHandler
         ## @brief The pAlarmHandler object implementing the automated controls
         #  on the ROOT plots.
+
+        ## @var __AlarmsFilePath
+        ## @brief The path for the ouput file containing the alarm handler
+        #  summary.
         
         self.__XmlParser           = xmlParser
         self.__InputRootFilePath   = inputRootFilePath
@@ -142,6 +175,10 @@ class pRootTreeProcessor:
         self.closeOutputFile()
         if self.__GenerateReport:
             self.generateReport()
+
+    ## @brief Generate the report.
+    ## @param self
+    #  The class instance.
 
     def generateReport(self):
         reportGenerator = pTestReportGenerator(self.__XmlParser,
