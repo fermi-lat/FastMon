@@ -3,6 +3,7 @@
 
 import logging
 import pUtils
+import time
 
 from pGlobals    import *
 from pXmlElement import pXmlElement
@@ -64,6 +65,17 @@ class pAlarmHandler:
         except KeyError:
             pass
 
+    ## @brief Return true if all the activated alarms are clean.
+    ## @param self
+    #  The class instance.        
+
+    def allAlarmsClean(self):
+        for (plotName, alarmsList) in self.__EnabledAlarmsDict.items():
+            for alarm in alarmsList:
+                if not alarm.isClean():
+                    return False
+        return True
+
     ## @brief Return the alarm handler summary, nicely formatted to be
     #  printed on the screen.
     ## @param self
@@ -74,26 +86,101 @@ class pAlarmHandler:
     #  not satisfy the required conditions).
 
     def getFormattedSummary(self, verbose=False):
-        allAlarmsClean = True
-        header  = 'Plot name                        %s' % ALARM_HEADER
-        label   = '** Alarm handler summary **\n'
-        summary = '%s%s\n' % (label, header)
-        for (plotName, alarmsList) in self.__EnabledAlarmsDict.items():
-             for alarm in alarmsList:
-                 if not alarm.isClean():
-                     allAlarmsClean = False
-                     summary += '%s %s\n' %\
-                                (pUtils.expandString(plotName, 32),\
-                                 alarm.getFormattedStatus())
-                 else:
-                     if verbose:
-                         summary += '%s %s\n' %\
-                                    (pUtils.expandString(plotName, 32),\
-                                     alarm.getFormattedStatus())
-        if allAlarmsClean:
-            return '%sAll alarms clean.\n' % label
+        summary = '** Alarm handler summary **\n'
+        if self.allAlarmsClean():
+            summary += 'All alarms clean.\n'
         else:
-            return summary
+            summary += 'Plot name                        %s\n' % ALARM_HEADER
+            for (plotName, alarmsList) in self.__EnabledAlarmsDict.items():
+                for alarm in alarmsList:
+                    if not alarm.isClean():
+                        summary += '%s %s\n' %\
+                                   (pUtils.expandString(plotName, 32),\
+                                    alarm.getFormattedStatus())
+                    else:
+                        if verbose:
+                            summary += '%s %s\n' %\
+                                       (pUtils.expandString(plotName, 32),\
+                                        alarm.getFormattedStatus())
+        return summary
+
+    ## @brief Return the alarm handler summary, in a doxygen-like fashion,
+    #  to be included in the report.
+    ## @todo Probably some more work is needed here, cause when the
+    #  alarms table gets very long, the LaTeX part may screw up.
+    #  We may think oh having more tables (one per list of per plot?).
+    ## @param self
+    #  The class instance.
+
+    def getDoxygenFormattedSummary(self, verbose=False):   
+        caption = 'Summary table'
+        label   = 'alarmHandlerTable'
+        headers = ['Plot name', 'Type', 'Status', 'Parameter', 'Limits']
+        summary = '\n@section alarms_summary Alarm handler summary\n\n'
+        if self.allAlarmsClean():
+            summary += 'All alarms clean.\n'
+        else:
+            summary += '@htmlonly\n'                                      +\
+                       '<table border="1" width="100%">\n'                +\
+                       '<caption>%s</caption>\n' % caption                +\
+                       '\t<tr>\n'
+            for header in headers:
+                summary += '\t\t<td>%s</td>\n' % header
+            summary += '\t</tr>\n'
+            for (plotName, alarmsList) in self.__EnabledAlarmsDict.items():
+                for alarm in alarmsList:
+                    if not alarm.isClean():
+                        summary += '\t\t<td>%s</td>\n' % plotName         +\
+                                   alarm.getHtmlFormattedStatus()
+                    else:
+                        if verbose:
+                            summary += '\t\t<td>%s</td>\n' % plotName     +\
+                                       alarm.getHtmlFormattedStatus()
+            summary += '</table>\n'                                       +\
+                       '@endhtmlonly\n\n'                                 +\
+                       '@latexonly\n'                                     +\
+                       '\\begin{table}[!htb]\n'                           +\
+                       '\\begin{center}\n'                                +\
+                       '\\caption{%s}\n' % caption                        +\
+                       '\\label{%s}\n' % label                            +\
+                       '\\begin{tabular}{|c|c|c|c|c|}\n'                  +\
+                       '\\hline\n'
+            for header in headers[:-1]:
+                summary += '%s & ' % header
+            summary += '%s \\\\\n' % headers[-1]                          +\
+                       '\\hline\n'                                        +\
+                       '\\hline\n'
+            for (plotName, alarmsList) in self.__EnabledAlarmsDict.items():
+                for alarm in alarmsList:
+                    if not alarm.isClean():
+                        summary += pUtils.formatForLatex('%s & %s'        %\
+                                   (plotName,                              \
+                                    alarm.getLatexFormattedStatus()))     +\
+                                    '\\hline\n'
+                    else:
+                        if verbose:
+                            summary += pUtils.formatForLatex('%s & %s'    %\
+                                       (plotName,                          \
+                                        alarm.getLatexFormattedStatus())) +\
+                                    '\\hline\n'
+            summary += '\\end{tabular}\n'                                 +\
+                       '\\end{center}\n'                                  +\
+                       '\\end{table}\n'                                   +\
+                       '@endlatexonly\n'
+        return '%s\n\n' % summary
+
+    ## @brief Write the doxygen summary to a file, to be included in the
+    #  report at a later stage.
+    ## @param self
+    #  The class instance.
+    ## @param filePath
+    #  The output file path.
+    
+    def writeDoxygenFormattedSummary(self, filePath):
+        logging.info('Writing the alarms file for the report...')
+        startTime = time.time()
+        file(filePath, 'w').writelines(self.getDoxygenFormattedSummary())
+        logging.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Class representation.
     ## @param self
@@ -225,3 +312,14 @@ class pAlarm(pXmlElement):
                              pUtils.expandString(self.Status, 8)    ,\
                              pUtils.expandNumber(self.Parameter) ,\
                              pUtils.expandString(self.getFormattedLimits(),15))
+
+    def getHtmlFormattedStatus(self):
+        return '\t\t<td>%s</td>\n' % self.Type      +\
+               '\t\t<td>%s</td>\n' % self.Status    +\
+               '\t\t<td>%s</td>\n' % self.Parameter +\
+               '\t\t<td>%s</td>\n' % self.getFormattedLimits()
+
+    def getLatexFormattedStatus(self):
+        return '%s & %s & %s & %s \\\\\n' % (self.Type, self.Status,\
+                                             self.Parameter,\
+                                             self.getFormattedLimits())

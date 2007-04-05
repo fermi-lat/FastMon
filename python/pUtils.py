@@ -40,6 +40,9 @@ def expandNumber(number, numDecPlaces=3, length=10):
     except:
         return expandString(number, length)
 
+def formatForLatex(string):
+    return string.replace('_', '\_')
+
 
 if __name__ == '__main__':
     print '"%s"' % expandString('test')

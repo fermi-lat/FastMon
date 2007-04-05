@@ -3,6 +3,8 @@
 #  the data run.
 
 import pUtils
+import time
+import logging
 
 ## @brief Implementation of an error counter.
 #
@@ -82,18 +84,55 @@ class pEventErrorCounter:
         return '%s: %d\n' % (pUtils.expandString(errorCode, 30),\
                              self.getNumErrors(errorCode))
 
+    ## @brief Return the error counter summary, nicely formatted to be printed
+    #  on the screen.
+    ## @param self
+    #  The class instance.
+    
+    def getFormattedSummary(self):
+        summary = '** Event errors counter summary **\n'
+        if self.__Counter == {}:
+            summary += 'No errors found in this run.\n'
+        else:
+            for errorCode in self.__Counter.keys():
+                summary += self.getFormattedNumErrors(errorCode)
+        return summary
+
+    ## @brief Return the error counter summary, in a doxygen-like fashion,
+    #  to be included in the report.
+    ## @param self
+    #  The class instance.
+
+    def getDoxygenFormattedSummary(self):
+        summary = '\n@section errors_summary Error statistics summary\n\n'
+        if self.__Counter == {}:
+            summary += 'No errors have been found in this run.\n'
+        else:
+            for errorCode in self.__Counter.keys():
+                summary += ('@li There are %d events with '+\
+                            '@code%s@endcode errors.\n')   %\
+                            (self.getNumErrors(errorCode), errorCode)
+        return '%s\n\n' % summary
+
+    ## @brief Write the doxygen summary to a file, to be included in the
+    #  report at a later stage.
+    ## @param self
+    #  The class instance.
+    ## @param filePath
+    #  The output file path.
+    
+    def writeDoxygenFormattedSummary(self, filePath):
+        logging.info('Writing the errors file for the report...')
+        startTime = time.time()
+        file(filePath, 'w').writelines(self.getDoxygenFormattedSummary())
+        logging.info('Done in %s s.\n' % (time.time() - startTime))
+
     ## @brief Class representation.
     ## @param self
     #  The class instance.
     
     def __str__(self):
-        out = '** Event errors counter statistics **\n'
-        if self.__Counter == {}:
-            out += 'No errors found in this run.\n'
-        else:
-            for errorCode in self.__Counter.keys():
-                out += self.getFormattedNumErrors(errorCode)
-        return out
+        return self.getFormattedSummary()
 
 
 if __name__ == '__main__':
@@ -105,3 +144,4 @@ if __name__ == '__main__':
         counter.fill('GTCC timeout')
     counter.fill('GTFE phasing error')
     print counter
+    counter.writeDoxygenFormattedSummary('test.errors')

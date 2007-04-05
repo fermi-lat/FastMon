@@ -74,7 +74,8 @@ class pTestReportGenerator:
     ## @param verbose
     #  Print additional informations.
 
-    def __init__(self, xmlParser, inputRootFilePath, outputDirPath=None,
+    def __init__(self, xmlParser, inputRootFilePath, inputErrorsFilePath=None,\
+                 inputAlarmsFilePath=None, outputDirPath=None,
                  forceOverwrite=False, verbose=False):
 
         ## @var __InputRootFilePath
@@ -109,21 +110,29 @@ class pTestReportGenerator:
         ## @brief A temporary canvas used to draw the plots and save them
         #  as images.
 
-        self.__XmlParser         = xmlParser
-        self.__InputRootFilePath = inputRootFilePath
-        self.__OutputDirPath     = outputDirPath
+        self.__XmlParser           = xmlParser
+        self.__InputRootFilePath   = inputRootFilePath
+        self.__InputErrorsFilePath = inputErrorsFilePath
+        if self.__InputErrorsFilePath is None:
+            self.__InputErrorsFilePath =\
+                 self.__InputRootFilePath.replace('_processed.root', '.errors')
+        self.__InputAlarmsFilePath = inputAlarmsFilePath
+        if self.__InputAlarmsFilePath is None:
+            self.__InputAlarmsFilePath =\
+                 self.__InputRootFilePath.replace('.root', '.alarms')
+        self.__OutputDirPath       = outputDirPath
         if self.__OutputDirPath is None:
-            inputFileDirPath     = os.path.dirname(self.__InputRootFilePath)
-            self.__OutputDirPath = os.path.join(inputFileDirPath, 'report')
-        self.__Verbose           = verbose
-        self.__ForceOverwrite    = forceOverwrite
-        self.__HtmlDirPath       = os.path.join(self.__OutputDirPath,\
-                                                self.__HTML_DIR_NAME)
-        self.__LatexDirPath      = os.path.join(self.__OutputDirPath,\
-                                                self.__LATEX_DIR_NAME)
-        self.__DoxyMainFile      = None
-        self.__InputRootFile     = None
-        self.__AuxRootCanvas     = None
+            inputFileDirPath       = os.path.dirname(self.__InputRootFilePath)
+            self.__OutputDirPath   = os.path.join(inputFileDirPath, 'report')
+        self.__Verbose             = verbose
+        self.__ForceOverwrite      = forceOverwrite
+        self.__HtmlDirPath         = os.path.join(self.__OutputDirPath,\
+                                                  self.__HTML_DIR_NAME)
+        self.__LatexDirPath        = os.path.join(self.__OutputDirPath,\
+                                                  self.__LATEX_DIR_NAME)
+        self.__DoxyMainFile        = None
+        self.__InputRootFile       = None
+        self.__AuxRootCanvas       = None
         self.fuckRoot()
 
     ## @brief This function is intended to fool ROOT...
@@ -243,7 +252,6 @@ class pTestReportGenerator:
     def closeDoxyMainFile(self):
         self.__DoxyMainFile.close()
 
-
     ## @brief Write a line to the doxygen main page file.
     ## @param self
     #  The class instance.
@@ -275,7 +283,24 @@ class pTestReportGenerator:
                  '@author{automatically generated}\n'
         self.__write(header)
         self.__skipLine()
-        
+
+    ## @brif Write to the doxygen file the preliminary sections provided by
+    #  the data processor, the root tree processor and the alarm handler.
+    ## @param self
+    #  The class instance.
+    
+    def writePreamble(self): 
+        try:
+            self.__write(file(self.__InputErrorsFilePath, 'r').readlines())
+        except:
+            logging.error('Could not locate errors file %s.' %\
+                          self.__InputErrorsFilePath)
+        try:
+            self.__write(file(self.__InputAlarmsFilePath, 'r').readlines())
+        except:
+            logging.error('Could not locate alarms file %s.' %\
+                          self.__InputAlarmsFilePath)
+                    
     ## @brief Write the trailer in the doxygen main page file.
     ## @param self
     #  The class instance.
@@ -386,6 +411,7 @@ class pTestReportGenerator:
         self.createDoxyConfigFile()
         self.openDoxyMainFile()
         self.writeHeader()
+        self.writePreamble()
         self.addPlots()
         self.writeTrailer()
         self.closeDoxyMainFile()
@@ -435,6 +461,12 @@ if __name__ == '__main__':
     parser.add_option('-f', '--force-overwrite', action='store_true',
                       dest='force_overwrite', default=False,
                       help='overwrite existing files without asking')
+    parser.add_option('-e', '--errors-file', dest='errors_file',\
+                      default=None, type=str,   \
+                      help='path to the event errors file')
+    parser.add_option('-a', '--alarms-file', dest='alarms_file',\
+                      default=None, type=str,   \
+                      help='path to the alarm handler file')
     parser.add_option('-v', '--verbose', action='store_true',
                       dest='verbose', default=False,
                       help='print a lot of ROOT/doxygen/LaTeX related stuff')
@@ -446,6 +478,8 @@ if __name__ == '__main__':
 
     xmlParser = pXmlParser(options.config_file)
     reportGenerator = pTestReportGenerator(xmlParser, args[0],
+                                           options.errors_file,
+                                           options.alarms_file,
                                            options.report_dir,
                                            options.force_overwrite,
                                            options.verbose)

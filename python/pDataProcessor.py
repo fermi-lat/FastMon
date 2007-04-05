@@ -123,17 +123,18 @@ class pDataProcessor:
 
         ## @var StopTime
         ## @brief The data processor stop time.
-        
+
         if outputFilePath is None:
             outputFilePath    = '%s.root' % inputFilePath.split('.')[0]
         self.__ProcessTree    = processTree
         self.__GenerateReport = generateReport
         self.__ReportDirPath  = reportDirPath
         self.__ForceOverwrite = forceOverwrite
-        print self.__ForceOverwrite
         self.__Verbose        = verbose
         self.__XmlParser      = pXmlParser(configFilePath)
         self.__OutputFilePath = outputFilePath
+        self.__ErrorsFilePath =\
+                              self.__OutputFilePath.replace('.root', '.errors')
         self.__TreeMaker      = pRootTreeMaker(self.__XmlParser,\
                                                self.__OutputFilePath)
         self.__ErrorCounter   = pEventErrorCounter()
@@ -231,11 +232,10 @@ class pDataProcessor:
         self.__TreeMaker.closeFile()
         logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
+        self.__ErrorCounter.writeDoxygenFormattedSummary(self.__ErrorsFilePath)
         print self.__ErrorCounter
         if self.__ProcessTree:
             processedFilePath = self.processTree()
-        if self.__GenerateReport:
-            self.generateReport(processedFilePath)
 
     ## @brief Process the ROOT tree.
     #
@@ -247,28 +247,14 @@ class pDataProcessor:
         
     def processTree(self):
         treeProcessor = pRootTreeProcessor(self.__XmlParser,\
-                                           self.__OutputFilePath)
+                                           self.__OutputFilePath,
+                                           None,
+                                           self.__GenerateReport,
+                                           None,
+                                           self.__ReportDirPath,
+                                           self.__ForceOverwrite,
+                                           self.__Verbose)
         treeProcessor.process()
-        return treeProcessor.getProcessedFileAbsPath()
-
-    ## @brief Generate the rerport.
-    ## @param self
-    #  The class instance.
-    ## @param processedFilePath
-    #  The path to the ROOT file created by the tree processor (i.e. the
-    #  one containing the plots).
-
-    def generateReport(self, processedFilePath):
-        if processedFilePath is None:
-            logging.error('Cannot generate the report.\n'         +\
-                          'The processed file %s does not exist.' %\
-                          processedFilePath)
-        reportGenerator = pTestReportGenerator(self.__XmlParser,
-                                               processedFilePath,
-                                               self.__ReportDirPath,
-                                               self.__ForceOverwrite,
-                                               self.__Verbose)
-        reportGenerator.run()
 
     ## @brief Process an event.
     #
