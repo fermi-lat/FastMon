@@ -234,6 +234,7 @@ class pDataProcessor:
         elapsedTime   = self.StopTime - self.StartTime
         averageRate   = self.NumEvents/elapsedTime
         self.__TreeMaker.closeFile()
+        print
         logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
         self.__ErrorCounter.writeDoxygenFormattedSummary(self.__ErrorsFilePath)
@@ -274,7 +275,8 @@ class pDataProcessor:
         self.__TreeMaker.VariablesDictionary[label][0] = self.NumEvents
         self.NumEvents += 1
         if not self.NumEvents % 100:
-            logging.debug('%d events processed' % self.NumEvents)
+            print '\r%s events processed...' % self.NumEvents,
+            sys.stdout.flush()
 
     ## @brief Process a meta event.
     #
