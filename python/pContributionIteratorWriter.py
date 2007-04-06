@@ -9,7 +9,7 @@ import logging
 from pCodeGenerator         import pCodeGenerator
 
 
-CONSTRUCTOR_PARAMETERS = '(self, event, contribution, treeMaker)'
+CONSTRUCTOR_PARAMETERS = '(self, event, contribution, treeMaker, errorCounter)'
 
 ## @brief Base class implementing the iterator writers.
 #

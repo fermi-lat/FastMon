@@ -22,7 +22,7 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     ## @param treeMaker
     #  The pRootTreeMaker object responsible for managing the root tree.
 
-    def __init__(self, event, contribution, treeMaker):
+    def __init__(self, event, contribution, treeMaker, errorCounter):
 
         ## @var TemId
         ## @brief The TEM number.
@@ -31,8 +31,9 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
         ## @brief The pRootTreeMaker object.
         
         LDF.TKRcontributionIterator.__init__(self, event, contribution)
-        self.TemId     = LDF.LATPcellHeader.source(contribution.header())
-        self.TreeMaker = treeMaker
+        self.TemId          = LDF.LATPcellHeader.source(contribution.header())
+        self.TreeMaker      = treeMaker
+        self.ErrorCounter   = errorCounter
 
     ## @brief Iterate over the event contribution.
     ## @param self

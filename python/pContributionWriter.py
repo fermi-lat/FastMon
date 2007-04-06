@@ -15,7 +15,8 @@ class pContributionWriter(pCodeGenerator):
     ## @var __CONSTRUCTOR_PARAMETERS
     ## @brief Base constructor parameters.
     
-    __CONSTRUCTOR_PARAMETERS = '(self, event, contribution, treeMaker)'
+    __CONSTRUCTOR_PARAMETERS = '(self, event, contribution, treeMaker, ' +\
+                               'errorCounter)'
 
     ## @brief Constructor
     ## @param self
