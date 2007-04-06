@@ -47,7 +47,8 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     #  of the derived iterator (the one which is actually run).
 
     def strip(self, tower, layerEnd, hit):
-        pass
+        if hit < 0 or hit > 1535:
+            self.ErrorCounter.fill('UNPHYSICAL_STRIP_ID')
 
     ## @brief Function included by default by the corresponding method
     #  of the derived iterator (the one which is actually run).
