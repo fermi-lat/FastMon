@@ -118,7 +118,8 @@ class pContributionIteratorWriter(pCodeGenerator):
         parameters = self.Parameters[functionName]
         self.backup()
         self.writeMethodDefinition(functionName, parameters)
-        somethingDone = False
+        self.writeLine('%s.%s%s' % (self.BaseClassName, functionName,\
+                                    parameters))
         if len(self.Variables):
             for variable in self.Variables:
                 for function in self.BaseFunctions:
@@ -127,9 +128,6 @@ class pContributionIteratorWriter(pCodeGenerator):
                         self.writeLine('self.%s%s' %\
                                        (function,\
                                         parameters.replace('self, ', '')))
-                        somethingDone = True
-        if not somethingDone:
-            self.writeLine('pass')
 
     ## @brief Implement all the subsystem-specific functions of the iterator,
     #  based on the key of the @ref Parameters variable.

@@ -29,6 +29,12 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
         LDF.CALcontributionIterator.__init__(self, event, contribution)
         self.TemId = LDF.LATPcellHeader.source(contribution.header())
         self.TreeMaker = treeMaker
+
+    ## @brief Function included by default by the corresponding method
+    #  of the derived iterator (the one which is actually run).
+        
+    def log(self, tower, layer, calLog):
+        pass
     
     ## @brief Fill cal_log_count tree branch
     ## Number of logs hit in the LAT
@@ -74,7 +80,8 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
     #  The CAL log object.
 
     def cal_layer_column_log_count__log__(self, tower, layer, calLog):
-        self.TreeMaker.getVariable("cal_hit_map")[tower][layer][calLog.column()] = 1
+        self.TreeMaker.getVariable("cal_hit_map")\
+             [tower][layer][calLog.column()] = 1
 
     ## @brief Fill cal_tower_count tree branch
     ## Number of calorimeters with at least one log hit

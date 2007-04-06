@@ -42,6 +42,18 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
         self.iterateStrips()
         self.iterateTOTs()
 
+    ## @brief Function included by default by the corresponding method
+    #  of the derived iterator (the one which is actually run).
+
+    def strip(self, tower, layerEnd, hit):
+        pass
+
+    ## @brief Function included by default by the corresponding method
+    #  of the derived iterator (the one which is actually run).
+        
+    def TOT(self, tower, layerEnd, tot):
+        pass
+
     ## @brief Function filling the tkr_strip_count variable.
     ## @param self
     #  The class instance.

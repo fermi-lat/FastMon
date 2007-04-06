@@ -30,6 +30,18 @@ class pAEMcontributionIteratorBase(LDF.AEMcontributionIterator):
         LDF.AEMcontributionIterator.__init__(self, event, contribution)
         self.TreeMaker = treeMaker
 
+    ## @brief Function included by default by the corresponding method
+    #  of the derived iterator (the one which is actually run).
+    
+    def header(self, cable, header):
+        pass
+    
+    ## @brief Function included by default by the corresponding method
+    #  of the derived iterator (the one which is actually run).
+    
+    def pha(self, cable, channel, pha):
+        pass
+
     ## @brief Fill acd_tile_count tree branch.
     ## @param self
     #  The class instance.
