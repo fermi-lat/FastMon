@@ -368,7 +368,10 @@ class pTestReportGenerator:
         gifImageName = os.path.basename(gifImagePath)
         self.__AuxRootCanvas.SetLogx(plotRep.XLog)
         self.__AuxRootCanvas.SetLogy(plotRep.YLog)
-        self.__InputRootFile.Get(name).Draw(plotRep.DrawOptions)
+        try:
+            self.__InputRootFile.Get(name).Draw(plotRep.DrawOptions)
+        except AttributeError:
+            sys.exit('Object %s not found in the input file.' % name)
         self.__AuxRootCanvas.SaveAs(epsImagePath)
         self.__AuxRootCanvas.SaveAs(gifImagePath)
         title   = plotRep.Title
@@ -399,19 +402,21 @@ class pTestReportGenerator:
     #  The class instance.
     
     def addPlots(self):
-        guard = ROOT.TRedirectOutputGuard('/dev/null', 'w')
+        if not self.__Verbose:
+            guard = ROOT.TRedirectOutputGuard('/dev/null', 'w')
         ROOT.gROOT.SetBatch(1)
         self.__AuxRootCanvas = ROOT.TCanvas('canvas', 'canvas',\
                                             self.__AUX_CANVAS_WIDTH,\
                                             self.__AUX_CANVAS_HEIGHT)
         self.__AuxRootCanvas.SetFillColor(self.__AUX_CANVAS_COLOR)
         for list in self.__XmlParser.OutputListsDict.values():
-            self.addOutputListSection(list)
-            for plotRep in list.EnabledPlotRepsDict.values():
-                for name in plotRep.getRootObjectsName():
-                    self.addPlot(plotRep, name)
-        self.__AuxRootCanvas.Delete()
-        ROOT.gROOT.SetBatch(0)
+            if list.Enabled:
+                self.addOutputListSection(list)
+                for plotRep in list.EnabledPlotRepsDict.values():
+                    for name in plotRep.getRootObjectsName():
+                        self.addPlot(plotRep, name)
+        if not self.__Verbose:
+            ROOT.gROOT.SetBatch(0)
 
     ## @brief Write the actual doxygen files.
     ## @param self
