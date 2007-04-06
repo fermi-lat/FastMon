@@ -14,6 +14,22 @@ from pXmlList    import pXmlList
 from pGlobals    import *
 
 
+NUMPY_TO_ROOT_TYPE_MAP = {'int8'   : 'B',#an 8 bit signed integer (Char_t)
+                          'uint8'  : 'b',#an 8 bit unsigned integer (UChar_t)
+                          'int16'  : 'S',#a 16 bit signed integer (Short_t)
+                          'uint16' : 's',#a 16 bit unsigned integer (UShort_t)
+                          'int32'  : 'I',#a 32 bit signed integer (Int_t)
+                          'uint32' : 'i',#a 32 bit unsigned integer (UInt_t)
+                          'float32': 'F',#a 32 bit floating point (Float_t)
+                          'float64': 'D',#a 64 bit floating point (Double_t)
+                          'int64'  : 'L',#a 64 bit signed integer (Long64_t)
+                          'uint64' : 'l',#a 64 bit unsigned integer (ULong64_t)
+                          'bool_'  : 'O',#a boolean (Bool_t)}
+                          'int'    : 'I',
+                          'float'  : 'F',
+                          'double' : 'D'
+                          }
+
 ## @brief Class describing a variable to be monitored (i.e to be written
 #  in the output root tree by the monitor).
 
@@ -64,7 +80,7 @@ class pRootTreeVariable(pXmlElement):
                 leafList += '[%d]' % dimension
         except TypeError:
             leafList += '[%d]' % self.Shape
-        leafList += '/%s' % self.Type[0].upper()
+        leafList += '/%s' % NUMPY_TO_ROOT_TYPE_MAP[self.Type]
         return leafList
 
     ## @brief Class representation.
