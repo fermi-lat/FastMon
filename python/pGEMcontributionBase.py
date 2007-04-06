@@ -22,6 +22,8 @@ class pGEMcontributionBase:
     ## @param treeMaker
     #  The pRootTreeMaker object responsible for the creation and filling
     #  of the output ROOT tree.
+    ## @param errorCounter
+    #  The pEventErrorCounter object responsible for managing the errors.
     
     def __init__(self, event, contribution, treeMaker, errorCounter):
 
@@ -31,6 +33,10 @@ class pGEMcontributionBase:
         ## @var TreeMaker
         ## @brief The pRootTreeMaker object responsible for the creation
         #  and filling of the output ROOT tree.
+
+        ## @var ErrorCounter
+        ## @brief The pEventErrorCounter object responsible for
+        #  managing the errors.
         
         self.__Contribution = contribution
         self.TreeMaker      = treeMaker

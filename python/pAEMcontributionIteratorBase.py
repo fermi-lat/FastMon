@@ -20,12 +20,18 @@ class pAEMcontributionIteratorBase(LDF.AEMcontributionIterator):
     #  The contribution object.
     ## @param treeMaker
     #  The pRootTreeMaker object responsible for the creation of the ROOT tree.
-
+    ## @param errorCounter
+    #  The pEventErrorCounter object responsible for managing the errors.
+    
     def __init__(self, event, contribution, treeMaker, errorCounter):
 
         ## @var TreeMaker
         ## @brief The pRootTreeMaker object responsible for the creation
         #  of the ROOT tree.
+
+        ## @var ErrorCounter
+        ## @brief The pEventErrorCounter object responsible for
+        #  managing the errors.
         
         LDF.AEMcontributionIterator.__init__(self, event, contribution)
         self.TreeMaker    = treeMaker
