@@ -11,7 +11,7 @@
     <inputList group="GLOBAL" name="GLOBAL" enabled="True">
 
 	<variable name="processor_event_number" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
@@ -29,32 +29,32 @@
     <inputList group="META" name="META OpenInfo" enabled="True">
 
  	<variable name="meta_context_open_action" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
  	<variable name="meta_context_open_crate" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
  	<variable name="meta_context_open_datagrams" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
  	<variable name="meta_context_open_mode" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
  	<variable name="meta_context_open_modechanges" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
  	<variable name="meta_context_open_reason" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
@@ -63,12 +63,12 @@
     <inputList group="META" name="META CloseInfo" enabled="True">
 
  	<variable name="meta_context_close_action" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
  	<variable name="meta_context_close_reason" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
@@ -77,22 +77,22 @@
     <inputList group="META" name="META RunInfo" enabled="True">
 
  	<variable name="meta_context_run_id" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
  	<variable name="meta_context_run_origin" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_run_platform" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
  	<variable name="meta_context_run_startedat" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
@@ -101,32 +101,32 @@
     <inputList group="META" name="META Scaler" enabled="True">
 
  	<variable name="meta_context_gem_scalers_elapsed" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_gem_scalers_livetime" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_gem_scalers_prescaled" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_gem_scalers_discarded" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_gem_scalers_sequence" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_gem_scalers_deadzone" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
@@ -135,52 +135,52 @@
     <inputList group="META" name="META Current TimeTone" enabled="True">
 
  	<variable name="meta_context_current_incomplete" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_current_timesecs" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_current_flywheeling" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<!--variable name="meta_context_current_flagsvalid" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable-->
 
  	<variable name="meta_context_current_missing_gps" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_current_missing_cpupps" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_current_missing_latpps" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_current_missing_timetone" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_current_gem_timehacks" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_current_gem_timeticks" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
@@ -189,52 +189,52 @@
     <inputList group="META" name="META Previous TimeTone" enabled="True">
 
  	<variable name="meta_context_previous_incomplete" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_previous_timesecs" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_previous_flywheeling" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<!--variable name="meta_context_previous_flagsvalid" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable-->
 
  	<variable name="meta_context_previous_missing_gps" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_previous_missing_cpupps" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_previous_missing_latpps" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_previous_missing_timetone" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_previous_gem_timehacks" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
  	<variable name="meta_context_previous_gem_timeticks" enabled="True">
-	    <type>int</type>
+	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 
