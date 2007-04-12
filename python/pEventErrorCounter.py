@@ -120,10 +120,7 @@ class pEventErrorCounter:
                              self.getTotalNumErrorEvents())
 
     def getFormattedErrorEventSummary(self, eventNumber):
-        output = '    Event number'
-        output = '%s: %d\n' % (pUtils.expandString(output,\
-                                                   self.__FORMAT_LENGTH),\
-                               eventNumber)
+        output = '    Event %d\n' % eventNumber
         for errorCode in self.__EventErrorsDict[eventNumber].keys():
             output += pUtils.expandString('        %s' % errorCode,\
                                           self.__FORMAT_LENGTH)
@@ -142,8 +139,8 @@ class pEventErrorCounter:
 
     def getFormattedDetailedErrorEventsDict(self):
         output = ''
-        detailedErrorEventsDict = self.getDetailedErrorEventsDict()
-        for (errorCode, numEvents) in detailedErrorEventsDict.items():
+        for (errorCode, numEvents) in\
+                self.getDetailedErrorEventsDict().items():
             output += pUtils.expandString('Events with %s' % errorCode,\
                                           self.__FORMAT_LENGTH)
             output += ': %d\n' % numEvents
@@ -179,12 +176,34 @@ class pEventErrorCounter:
     ## @param self
     #  The class instance.
 
-    def getDoxygenFormattedSummary(self):
-        output = '\n@section errors_summary Error statistics summary\n\n'
+    def getDoxygenFormattedSummary(self, detailed=True):
+        output = '\n@section errors_summary Error statistics summary\n'
         if self.getTotalNumErrors() == 0:
             output += 'No errors have been found in this run.\n'
         else:
-            output += 'Doxygen summary to be implemented\n'
+            output += '\n@subsection summary_by_evt Summary by event number' +\
+                      '\n\n'
+            output += '@li There are %d event(s) with errors in total.\n' %\
+                      self.getTotalNumErrorEvents()
+            for (errorCode, numEvents) in\
+                self.getDetailedErrorEventsDict().items():
+                output += '@li There are %d event(s) with <tt>%s</tt>' %\
+                              (numEvents, errorCode)
+                output += 'errors.\n'
+            if detailed:
+                output += '\n@subsubsection details Details\n\n'
+                for eventNumber in self.__EventErrorsDict.keys():
+                    output += '@li Event %d\\n\n' % eventNumber
+                    for errorCode in\
+                        self.__EventErrorsDict[eventNumber].keys():
+                        output += '- <tt>%s</tt>: %d\\n\n' % (errorCode,\
+                                self.__EventErrorsDict[eventNumber][errorCode])
+            output += '\n@subsection summary_by_code Summary by error code\n\n'
+            output += '@li There are %d error(s) in total.\n' %\
+                      self.getTotalNumErrors()
+            for (errorCode, numEvents) in self.__CodeErrorsDict.items():
+                output += '@li There are %d <tt>%s</tt> error(s).\n' %\
+                          (numEvents, errorCode)
         return '%s\n\n' % output
 
     ## @brief Write the doxygen summary to a file, to be included in the
@@ -194,10 +213,11 @@ class pEventErrorCounter:
     ## @param filePath
     #  The output file path.
     
-    def writeDoxygenFormattedSummary(self, filePath):
-        logging.info('Writing the errors file for the report...')
-        startTime = time.time()
-        file(filePath, 'w').writelines(self.getDoxygenFormattedSummary())
+    def writeDoxygenFormattedSummary(self, filePath, detailed=True):
+        logging.info('Writing the error file for the report...')
+        startTime   = time.time()
+        fileContent = self.getDoxygenFormattedSummary(detailed)
+        file(filePath, 'w').writelines(fileContent)
         logging.info('Done in %s s.\n' % (time.time() - startTime))
         
     ## @brief Class representation.
@@ -206,18 +226,6 @@ class pEventErrorCounter:
     
     def __str__(self):
         return self.getFormattedSummary()
-
-##     def getDoxygenFormattedSummary(self):
-##         summary = '\n@section errors_summary Error statistics summary\n\n'
-##         if self.__Counter == {}:
-##             summary += 'No errors have been found in this run.\n'
-##         else:
-##             for errorCode in self.__Counter.keys():
-##                 summary += ('@li There are %d events with '+\
-##                             '@code%s@endcode errors.\n')   %\
-##                             (self.getNumErrors(errorCode), errorCode)
-##         return '%s\n\n' % summary
-
 
 
 
@@ -231,4 +239,5 @@ if __name__ == '__main__':
     counter.fill('GTCC timeout')
     counter.fill('GTFE phasing error')
     print counter
+    counter.writeDoxygenFormattedSummary('test.errors')
 
