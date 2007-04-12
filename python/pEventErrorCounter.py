@@ -7,96 +7,172 @@ import time
 import logging
 
 ## @brief Implementation of an error counter.
-#
-#  The statistics of the errors is implemented as a pyhton dictionary in which
-#  the errors themselves are indexed based on their error code.
-#  This approach is flexible in that it is not necessary to know all the error
-#  codes in advance.
-#  The counter is filled by a suitable event iterator using the
-#  fill() method, which requires the error code as a parameter, and in case no
-#  errors of that type have been detected, yet, the error code is added to the
-#  keys of the dictionary.
-## @todo Implement support for error counting at the event level.
 
 class pEventErrorCounter:
+
+    __FORMAT_LENGTH = 40
 
     ## @brief Constructor.
     ## @param self
     #  The class instance.
     
     def __init__(self):
-
-        ## @var __Counter
-        ## @brief Basic python dictionary underlying the error counter.
-        #
-        #  It is intended to include all the errors, indexed by a code
-        #  identifying the error type.
         
-        self.__Counter = {}
+        ## @var
+        ## @brief
+
+        ## @var
+        ## @brief
+
+        ## @var
+        ## @brief 
+
+        self.__EventNumber     = None
+        self.__CodeErrorsDict  = {}
+        self.__EventErrorsDict = {}
 
     ## @brief Reset the error counter.
-    #
-    #  It essentially reset the pyhton dictionary @ref __Counter.
     ## @param self
     #  The class instance.
 
     def reset(self):
-        self.__Counter = {}
+        self.__EventNumber     = None
+        self.__CodeErrorsDict  = {}
+        self.__EventErrorsDict = {}
+        
+    ## @brief Set the current event number.
+    ## @param self
+    #  The class instance.
+    ## @param eventNumber
+    #  The event number.
 
-    ## @brief Fill the error counter.
-    #
-    #  If the counter already contains errors with the same code, then the
-    #  counter value for that particular code is incremented by 1. It is set
-    #  to 1 otherwise.
+    def setEventNumber(self, eventNumber):
+        self.__EventNumber = eventNumber
+
+    def fill(self, errorCode):
+        self.__fillCodeErrorsDict(errorCode)
+        self.__fillEventErrorsDict(errorCode)        
+
+    def __fillCodeErrorsDict(self, errorCode):
+        if errorCode not in self.__CodeErrorsDict.keys():
+            self.__CodeErrorsDict[errorCode] = 1
+        else:
+            self.__CodeErrorsDict[errorCode] += 1
+            
+    def __fillEventErrorsDict(self, errorCode):
+        if self.__EventNumber not in self.__EventErrorsDict.keys():
+            self.__EventErrorsDict[self.__EventNumber] = {}
+        try:
+            self.__EventErrorsDict[self.__EventNumber][errorCode] += 1
+        except KeyError:
+            self.__EventErrorsDict[self.__EventNumber][errorCode] = 1
+
+    ## @brief Return the number of events with errors of a particular
+    #  type.
     ## @param self
     #  The class instance.
     ## @param errorCode
     #  The The error code.
 
-    def fill(self, errorCode):
-        try:
-            self.__Counter[errorCode] += 1
-        except KeyError:
-            self.__Counter[errorCode] = 1
+    def getNumErrorEvents(self, errorCode):
+        numEvents = 0
+        for dict in self.__EventErrorsDict.values():
+            if errorCode in dict.keys():
+                numEvents += 1
+        return numEvents
 
-    ## @brief Return the number of errors corresponding to a particular
-    #  error code.
+    ## @brief Return the total number of events with errors (of any type).
+    ## @param self
+    #  The class instance.
+
+    def getTotalNumErrorEvents(self):
+        return len(self.__EventErrorsDict)
+
+    def getDetailedErrorEventsDict(self):
+        errorEventsDict = {}
+        for errorCode in self.__CodeErrorsDict.keys():
+            errorEventsDict[errorCode] = 0
+        for eventNumber in self.__EventErrorsDict.keys():
+            for errorCode in self.__EventErrorsDict[eventNumber].keys():
+                errorEventsDict[errorCode] += 1
+        return errorEventsDict
+
+    ## @brief Return the number of errors of a particular type.
     ## @param self
     #  The class instance.
     ## @param errorCode
     #  The The error code.
 
     def getNumErrors(self, errorCode):
-        try:
-            return self.__Counter[errorCode]
-        except KeyError:
-            return 0
+        return self.__CodeErrorsDict[errorCode]
 
-    ## @brief Return the number of errors for a particular error code,
-    #  along with the error code itself, nicely formatted to be printed
-    #  on the screen.
+    ## @brief Return the total number of errors (of any type).
     ## @param self
     #  The class instance.
-    ## @param errorCode
-    #  The The error code.
-    
-    def getFormattedNumErrors(self, errorCode):
-        return '%s: %d\n' % (pUtils.expandString(errorCode, 30),\
-                             self.getNumErrors(errorCode))
 
-    ## @brief Return the error counter summary, nicely formatted to be printed
-    #  on the screen.
-    ## @param self
-    #  The class instance.
-    
-    def getFormattedSummary(self):
-        summary = '** Event errors counter summary **\n'
-        if self.__Counter == {}:
-            summary += 'No errors found in this run.\n'
+    def getTotalNumErrors(self):
+        return sum(self.__CodeErrorsDict.values())
+
+    def getFormattedTotalNumErrorEvents(self):
+        output = 'Total number of events with errors'
+        return '%s: %d\n' % (pUtils.expandString(output,\
+                                                 self.__FORMAT_LENGTH),\
+                             self.getTotalNumErrorEvents())
+
+    def getFormattedErrorEventSummary(self, eventNumber):
+        output = '    Event number'
+        output = '%s: %d\n' % (pUtils.expandString(output,\
+                                                   self.__FORMAT_LENGTH),\
+                               eventNumber)
+        for errorCode in self.__EventErrorsDict[eventNumber].keys():
+            output += pUtils.expandString('        %s' % errorCode,\
+                                          self.__FORMAT_LENGTH)
+            output += ': %d\n' % self.__EventErrorsDict[eventNumber][errorCode]
+        return output
+
+    def getFormattedErrorEventsList(self, detailed=True):
+        output = '%s' % self.getFormattedTotalNumErrorEvents()
+        output += self.getFormattedDetailedErrorEventsDict()
+        if detailed:
+            output += '\nDetails:\n'
+            for eventNumber in self.__EventErrorsDict.keys():
+                output += '%s\n' %\
+                          self.getFormattedErrorEventSummary(eventNumber)
+        return output
+
+    def getFormattedDetailedErrorEventsDict(self):
+        output = ''
+        detailedErrorEventsDict = self.getDetailedErrorEventsDict()
+        for (errorCode, numEvents) in detailedErrorEventsDict.items():
+            output += pUtils.expandString('Events with %s' % errorCode,\
+                                          self.__FORMAT_LENGTH)
+            output += ': %d\n' % numEvents
+        return output
+
+    def getFormattedTotalNumErrors(self):
+        output = 'Total number of errors'
+        return '%s: %d\n' % (pUtils.expandString(output,\
+                                                 self.__FORMAT_LENGTH),\
+                             self.getTotalNumErrors())
+
+    def getFormattedErrorCodesList(self):
+        output = '%s' % self.getFormattedTotalNumErrors()
+        for (errorCode, numEvents) in self.__CodeErrorsDict.items():
+            output += pUtils.expandString('Number of %s errors' % errorCode,\
+                                          self.__FORMAT_LENGTH)
+            output += ': %d\n' % numEvents
+        return output
+
+    def getFormattedSummary(self, detailed=True):
+        output = '** Error counter summary **\n\n'
+        if self.getTotalNumErrors() == 0:
+            output += 'No errors found in this run.\n'
         else:
-            for errorCode in self.__Counter.keys():
-                summary += self.getFormattedNumErrors(errorCode)
-        return summary
+            output += '-- Summary by event number:\n\n'
+            output += self.getFormattedErrorEventsList(detailed)
+            output += '-- Summary by error code:\n\n'
+            output += self.getFormattedErrorCodesList()
+        return output
 
     ## @brief Return the error counter summary, in a doxygen-like fashion,
     #  to be included in the report.
@@ -104,15 +180,12 @@ class pEventErrorCounter:
     #  The class instance.
 
     def getDoxygenFormattedSummary(self):
-        summary = '\n@section errors_summary Error statistics summary\n\n'
-        if self.__Counter == {}:
-            summary += 'No errors have been found in this run.\n'
+        output = '\n@section errors_summary Error statistics summary\n\n'
+        if self.getTotalNumErrors() == 0:
+            output += 'No errors have been found in this run.\n'
         else:
-            for errorCode in self.__Counter.keys():
-                summary += ('@li There are %d events with '+\
-                            '@code%s@endcode errors.\n')   %\
-                            (self.getNumErrors(errorCode), errorCode)
-        return '%s\n\n' % summary
+            output += 'Doxygen summary to be implemented\n'
+        return '%s\n\n' % output
 
     ## @brief Write the doxygen summary to a file, to be included in the
     #  report at a later stage.
@@ -126,7 +199,7 @@ class pEventErrorCounter:
         startTime = time.time()
         file(filePath, 'w').writelines(self.getDoxygenFormattedSummary())
         logging.info('Done in %s s.\n' % (time.time() - startTime))
-
+        
     ## @brief Class representation.
     ## @param self
     #  The class instance.
@@ -134,14 +207,28 @@ class pEventErrorCounter:
     def __str__(self):
         return self.getFormattedSummary()
 
+##     def getDoxygenFormattedSummary(self):
+##         summary = '\n@section errors_summary Error statistics summary\n\n'
+##         if self.__Counter == {}:
+##             summary += 'No errors have been found in this run.\n'
+##         else:
+##             for errorCode in self.__Counter.keys():
+##                 summary += ('@li There are %d events with '+\
+##                             '@code%s@endcode errors.\n')   %\
+##                             (self.getNumErrors(errorCode), errorCode)
+##         return '%s\n\n' % summary
+
+
+
+
 
 if __name__ == '__main__':
     counter = pEventErrorCounter()
-    print counter
-    for i in range(10):
-        counter.fill('GTRC FIFO full')
+    counter.setEventNumber(10)
     for i in range(3):
-        counter.fill('GTCC timeout')
+        counter.fill('GTRC FIFO full')
+    counter.setEventNumber(34)
+    counter.fill('GTCC timeout')
     counter.fill('GTFE phasing error')
     print counter
-    counter.writeDoxygenFormattedSummary('test.errors')
+
