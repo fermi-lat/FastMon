@@ -270,10 +270,10 @@ class pDataProcessor:
     #  The event object.
  
     def processEvent(self, event):
+        self.__ErrorCounter.setEventNumber(self.NumEvents)
 	self.LatDataBufIter.iterate(event, len(event))
         label = 'processor_event_number'
         self.__TreeMaker.VariablesDictionary[label][0] = self.NumEvents
-        self.__ErrorCounter.setEventNumber(self.NumEvents)
         self.NumEvents += 1
         if not self.NumEvents % 100:
             print '\r%s events processed...' % self.NumEvents,
