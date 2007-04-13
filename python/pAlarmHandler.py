@@ -134,12 +134,12 @@ class pAlarmHandler:
             for (plotName, alarmsList) in self.__EnabledAlarmsDict.items():
                 for alarm in alarmsList:
                     if not alarm.isClean():
-                        summary += '\t\t<td>%s</td>\n' % plotName         +\
-                                   alarm.getHtmlFormattedStatus()
+                        summary += '\t<tr>\n\t\t<td>%s</td>\n' % plotName         +\
+                                   alarm.getHtmlFormattedStatus() + '</tr>\n'
                     else:
                         if verbose:
-                            summary += '\t\t<td>%s</td>\n' % plotName     +\
-                                       alarm.getHtmlFormattedStatus()
+                            summary += '\t<tr>\n\t\t<td>%s</td>\n' % plotName     +\
+                                       alarm.getHtmlFormattedStatus() + '</tr>\n'
             summary += '</table>\n'                                       +\
                        '@endhtmlonly\n\n'                                 +\
                        '@latexonly\n'                                     +\
