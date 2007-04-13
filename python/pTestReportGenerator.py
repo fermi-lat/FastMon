@@ -134,19 +134,19 @@ class pTestReportGenerator:
         if self.__InputAlarmsFilePath is None:
             self.__InputAlarmsFilePath =\
                  self.__InputRootFilePath.replace('.root', '.alarms')
-        self.__OutputDirPath       = outputDirPath
+        self.__OutputDirPath     = outputDirPath
         if self.__OutputDirPath is None:
-            inputFileDirPath       = os.path.dirname(self.__InputRootFilePath)
-            self.__OutputDirPath   = os.path.join(inputFileDirPath, 'report')
-        self.__Verbose             = verbose
-        self.__ForceOverwrite      = forceOverwrite
-        self.__HtmlDirPath         = os.path.join(self.__OutputDirPath,\
-                                                  self.__HTML_DIR_NAME)
-        self.__LatexDirPath        = os.path.join(self.__OutputDirPath,\
-                                                  self.__LATEX_DIR_NAME)
-        self.__DoxyMainFile        = None
-        self.__InputRootFile       = None
-        self.__AuxRootCanvas       = None
+            self.__OutputDirPath = self.__InputRootFilePath.replace('.root',\
+                                                                    '_report' )
+        self.__Verbose           = verbose
+        self.__ForceOverwrite    = forceOverwrite
+        self.__HtmlDirPath       = os.path.join(self.__OutputDirPath,\
+                                                self.__HTML_DIR_NAME)
+        self.__LatexDirPath      = os.path.join(self.__OutputDirPath,\
+                                                self.__LATEX_DIR_NAME)
+        self.__DoxyMainFile      = None
+        self.__InputRootFile     = None
+        self.__AuxRootCanvas     = None
         self.fuckRoot()
 
     ## @brief This function is intended to fool ROOT...
