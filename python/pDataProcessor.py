@@ -24,7 +24,7 @@ from pGlobals			      import *
 from pContributionIteratorWriter      import *
 from pContributionWriter              import *
 from pMetaEventProcessor	      import *
-from pEventErrorCounter               import pEventErrorCounter
+from pErrorHandler                    import pErrorHandler
 from pAlarmHandler                    import pAlarmHandler
 from pRootTreeProcessor               import pRootTreeProcessor
 from pTestReportGenerator             import pTestReportGenerator
@@ -141,7 +141,7 @@ class pDataProcessor:
                               self.__OutputFilePath.replace('.root', '.errors')
         self.__TreeMaker      = pRootTreeMaker(self.__XmlParser,\
                                                self.__OutputFilePath)
-        self.__ErrorCounter   = pEventErrorCounter()
+        self.__ErrorCounter   = pErrorHandler()
 	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
         self.__updateContributionIterators()
         self.__updateContributions()
