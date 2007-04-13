@@ -1,3 +1,4 @@
+#! /bin/env python
 
 import time
 import sys
@@ -207,18 +208,12 @@ class pErrorHandler:
         
 
 if __name__ == '__main__':
-    handler = pErrorHandler()
-    handler.setEventNumber(10)
-    for i in range(3):
-        handler.fill('GTCC_FIFO_ERROR', [12, i, 0x32])
-    handler.setEventNumber(34)
-    handler.fill('GTCC_TIMEOUT_ERROR', [3, 1, 'hello'])
-    handler.fill('GTFE_PHASE_ERROR', [2, 8, 5, 1, 2, 3, 4, 5])
-    handler.setEventNumber(101)
-    for i in range(2):
-        handler.fill('GTCC_TIMEOUT_ERROR', [12, i, 0x32])
-    print handler
-    print handler.getDoxygenSummary()
-    #handler.dump('test.errors.pickle')
-    #newHandler = pErrorHandler('test.errors.pickle')
-    #newHandler.browseErrors()
+    from optparse import OptionParser
+    parser = OptionParser(usage='usage: %prog pickle_file')
+    (options, args) = parser.parse_args()
+    if len(args) != 1:
+        parser.print_help()
+        parser.error('incorrect number of arguments')
+        sys.exit()
+    errorHandler = pErrorHandler(args[0])
+    errorHandler.browseErrors()
