@@ -50,6 +50,14 @@ def expandNumber(number, numDecPlaces=3, length=10):
 def formatForLatex(string):
     return string.replace('_', '\_')
 
+## @brief Format a string to appear with monospace (typesetter) font in the
+#  test report
+## @param string
+#  The string to be formatted.
+
+def verbatim(string):
+    return '<tt>%s</tt>' % string
+
 
 if __name__ == '__main__':
     print '"%s"' % expandString('test')
