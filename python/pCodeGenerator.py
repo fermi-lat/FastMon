@@ -5,7 +5,7 @@
 import os
 import logging
 import time
-
+from pGlobals import *
 
 ## @brief Implementation of the code generator.
 
@@ -62,6 +62,8 @@ class pCodeGenerator:
     #  The path to the file to be created.
 
     def openFile(self, filePath):
+        if FASTMON_DIR_VAR_NAME in os.environ:
+            filePath = os.path.join(os.environ[FASTMON_DIR_VAR_NAME], filePath)
         self.__File = file(filePath, 'w')
         self.setIndentationLevel(0)
         self.writeLine('# Written by pCodeGenerator on %s' % time.asctime())

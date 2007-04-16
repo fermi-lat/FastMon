@@ -361,10 +361,14 @@ class pDataProcessor:
      
 
 if __name__ == '__main__':
+    defaultConfigFile='../xml/config.xml'
+    if XML_CONFIG_DIR_VAR_NAME in os.environ:
+        defaultConfigFile = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
+                                         'config.xml')
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',
-                      default='../xml/config.xml', type=str,
+                      default=defaultConfigFile, type=str,
                       help='path to the input xml configuration file')
     parser.add_option('-n', '--num-events', dest='events',
                       default=-1, type=int,

@@ -51,7 +51,11 @@ class pXmlParser:
         self.InputListsDict       = {}
         self.EnabledVariablesDict = {} 
         self.OutputListsDict      = {}
-        self.EnabledPlotRepsDict  = {} 
+        self.EnabledPlotRepsDict  = {}
+        if XML_CONFIG_DIR_VAR_NAME in os.environ:
+            baseConfigFilePath = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
+                                              'baseConfig.xml')
+
         filePathsList = [baseConfigFilePath, configFilePath]
         for filePath in filePathsList:
             logging.info('Parsing input xml file %s...' % filePath)
