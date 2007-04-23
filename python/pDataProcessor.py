@@ -54,8 +54,8 @@ class pDataProcessor:
     ## @param verbose
     #  Print additional informations.
 
-    def __init__(self, configFilePath, inputFilePath, outputFilePath=None,\
-                 processTree=False, generateReport=False, reportDirPath=None,\
+    def __init__(self, configFilePath, inputFilePath, outputDir=None, outputFileName=None,\
+                 processTree=False, generateReport=False,\
                  forceOverwrite=False, verbose=False):
 
         ## @var __ProcessTree
@@ -127,20 +127,34 @@ class pDataProcessor:
 
         ## @var StopTime
         ## @brief The data processor stop time.
+        
+        if outputDir is None:
+            outputDir = os.path.split(inputFilePath)[0]
+            
+        fileName = os.path.split(inputFilePath)[1]
+        outputDir = os.path.join(outputDir,fileName.split('.')[0] )
+        
+        if not os.path.exists(outputDir):
+            os.mkdir(outputDir)
+        
+                
+        if outputFileName is None:
+            outputFileName    = '%s.root' % fileName.split('.')[0]
+                        
+        self.__OutputFilePath = os.path.join(outputDir, outputFileName)
 
-        if outputFilePath is None:
-            outputFilePath    = '%s.root' % inputFilePath.split('.')[0]
+        
         self.__ProcessTree    = processTree
         self.__GenerateReport = generateReport
-        self.__ReportDirPath  = reportDirPath
         self.__ForceOverwrite = forceOverwrite
         self.__Verbose        = verbose
         self.__XmlParser      = pXmlParser(configFilePath)
-        self.__OutputFilePath = outputFilePath
+        
         self.__ErrorsFilePath =\
                               self.__OutputFilePath.replace('.root', '.errors')
         self.__TreeMaker      = pRootTreeMaker(self.__XmlParser,\
                                                self.__OutputFilePath)
+        print os.getcwd()
         self.__ErrorCounter   = pErrorHandler()
 	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
         self.__updateContributionIterators()
@@ -241,7 +255,8 @@ class pDataProcessor:
         self.__ErrorCounter.dump('%s.pickle' % self.__ErrorsFilePath)
         print self.__ErrorCounter
         if self.__ProcessTree:
-            processedFilePath = self.processTree()
+            self.processTree()
+            
 
     ## @brief Process the ROOT tree.
     #
@@ -257,7 +272,7 @@ class pDataProcessor:
                                            None,
                                            self.__GenerateReport,
                                            None,
-                                           self.__ReportDirPath,
+                                           None,
                                            self.__ForceOverwrite,
                                            self.__Verbose)
         treeProcessor.process()
@@ -374,17 +389,17 @@ if __name__ == '__main__':
                       default=-1, type=int,
                       help='number of events to be processed')
     parser.add_option('-o', '--output-file', dest='output_file',
-                      default='IsocDataFile.root', type=str,
-                      help='path to the output ROOT file')
+                      default=None, type=str,
+                      help='name of the output ROOT file')
+    parser.add_option('-d', '--output-dir', dest='output_dir',
+                      default=None, type=str,
+                      help='path to the output directory')
     parser.add_option('-p', '--process-tree', action='store_true',
                       dest='process_tree', default=False,
                       help='process the ROOT tree and create histograms')
     parser.add_option('-r', '--create-report', action='store_true',
                       dest='create_report', default=False,
                       help='generate the report from the processed ROOT file')
-    parser.add_option('-d', '--report-dir', dest='report_dir',
-                      default=None, type=str,
-                      help='path to the output report directory')
     parser.add_option('-f', '--force-overwrite', action='store_true',
                       dest='force_overwrite', default=False,
                       help='overwrite existing files without asking')
@@ -400,8 +415,8 @@ if __name__ == '__main__':
         parser.print_help()
         parser.error('please run with the -p option if you want the report.')
     
-    dataProcessor  = pDataProcessor(options.config_file, args[0],
+    dataProcessor  = pDataProcessor(options.config_file, args[0],options.output_dir,
                                     options.output_file, options.process_tree,
-                                    options.create_report, options.report_dir,
+                                    options.create_report,
                                     options.force_overwrite, options.verbose)
     dataProcessor.start(options.events)
