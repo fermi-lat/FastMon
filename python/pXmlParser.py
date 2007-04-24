@@ -55,6 +55,9 @@ class pXmlParser:
         if XML_CONFIG_DIR_VAR_NAME in os.environ:
             baseConfigFilePath = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
                                               'baseConfig.xml')
+        else:
+            sys.exit("Environmental variable %s not found. Exiting..."\
+	    %  XML_CONFIG_DIR_VAR_NAME)
 
         filePathsList = [baseConfigFilePath, configFilePath]
         for filePath in filePathsList:

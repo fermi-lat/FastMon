@@ -54,7 +54,7 @@ class pDataProcessor:
     ## @param verbose
     #  Print additional informations.
 
-    def __init__(self, configFilePath, inputFilePath, outputDir=None, outputFileName=None,\
+    def __init__(self, inputFilePath, configFilePath=None, outputDir=None, outputFileName=None,\
                  processTree=False, generateReport=False,\
                  forceOverwrite=False, verbose=False):
 
@@ -127,7 +127,16 @@ class pDataProcessor:
 
         ## @var StopTime
         ## @brief The data processor stop time.
-        
+
+
+        if configFilePath is None:
+            if XML_CONFIG_DIR_VAR_NAME in os.environ:
+                configFilePath = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
+                                         'config.xml')
+            else:
+                sys.exit("Environmental variable %s not found. Exiting..."\
+		%  XML_CONFIG_DIR_VAR_NAME)
+
         if outputDir is None:
             outputDir = os.path.split(inputFilePath)[0]
             
@@ -137,7 +146,6 @@ class pDataProcessor:
         if not os.path.exists(outputDir):
             os.mkdir(outputDir)
         
-                
         if outputFileName is None:
             outputFileName    = '%s.root' % fileName.split('.')[0]
                         
@@ -154,7 +162,7 @@ class pDataProcessor:
                               self.__OutputFilePath.replace('.root', '.errors')
         self.__TreeMaker      = pRootTreeMaker(self.__XmlParser,\
                                                self.__OutputFilePath)
-        print os.getcwd()
+
         self.__ErrorCounter   = pErrorHandler()
 	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
         self.__updateContributionIterators()
@@ -376,14 +384,10 @@ class pDataProcessor:
      
 
 if __name__ == '__main__':
-    defaultConfigFile='../xml/config.xml'
-    if XML_CONFIG_DIR_VAR_NAME in os.environ:
-        defaultConfigFile = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
-                                         'config.xml')
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',
-                      default=defaultConfigFile, type=str,
+                      default=None, type=str,
                       help='path to the input xml configuration file')
     parser.add_option('-n', '--num-events', dest='events',
                       default=-1, type=int,
@@ -415,7 +419,7 @@ if __name__ == '__main__':
         parser.print_help()
         parser.error('please run with the -p option if you want the report.')
     
-    dataProcessor  = pDataProcessor(options.config_file, args[0],options.output_dir,
+    dataProcessor  = pDataProcessor( args[0],options.config_file, options.output_dir,
                                     options.output_file, options.process_tree,
                                     options.create_report,
                                     options.force_overwrite, options.verbose)
