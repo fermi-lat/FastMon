@@ -189,7 +189,7 @@ class pErrorHandler:
                 if error.EventNumber != eventNumber:
                     eventNumber = error.EventNumber
                     numEvents += 1
-                    output    += '\n+ Event %d\n' % eventNumber
+                    output    += '\n@li Event %d\n' % eventNumber
                 output     += error.getDoxygenRepresentation()
                 errorIndex += 1
             output += error.getDoxygenRepresentation()

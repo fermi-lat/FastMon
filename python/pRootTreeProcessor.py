@@ -205,7 +205,7 @@ if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',\
-                      default='../xml/config.xml', type=str,   \
+                      default=None, type=str,   \
                       help='path to the input xml configuration file')
     parser.add_option('-o', '--output-file', dest='output_file',
                       default=None, type=str,

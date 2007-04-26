@@ -473,7 +473,7 @@ if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',\
-                      default='../xml/config.xml', type=str,   \
+                      default=None, type=str,   \
                       help='path to the input xml configuration file')
     parser.add_option('-d', '--report-dir', dest='report_dir', type=str,
                       default=None, help='path to the output report directory')

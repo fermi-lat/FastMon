@@ -26,8 +26,8 @@ class pXmlParser:
     #  Path to the base input xml configuration file (the one containing the
     #  input variables which should *not* be disabled).
 
-    def __init__(self, configFilePath,\
-                 baseConfigFilePath='../xml/baseConfig.xml'):
+    def __init__(self, configFilePath=None):
+
 
         ## @var InputListsDict
         ## @brief Dictionary containing the input lists.
@@ -55,9 +55,14 @@ class pXmlParser:
         if XML_CONFIG_DIR_VAR_NAME in os.environ:
             baseConfigFilePath = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
                                               'baseConfig.xml')
+            if configFilePath is None:
+                configFilePath = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
+                                              'config.xml')
         else:
             sys.exit("Environmental variable %s not found. Exiting..."\
 	    %  XML_CONFIG_DIR_VAR_NAME)
+
+
 
         filePathsList = [baseConfigFilePath, configFilePath]
         for filePath in filePathsList:

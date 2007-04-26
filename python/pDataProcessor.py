@@ -128,15 +128,6 @@ class pDataProcessor:
         ## @var StopTime
         ## @brief The data processor stop time.
 
-
-        if configFilePath is None:
-            if XML_CONFIG_DIR_VAR_NAME in os.environ:
-                configFilePath = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
-                                         'config.xml')
-            else:
-                sys.exit("Environmental variable %s not found. Exiting..."\
-		%  XML_CONFIG_DIR_VAR_NAME)
-
         if outputDir is None:
             outputDir = os.path.split(inputFilePath)[0]
             
