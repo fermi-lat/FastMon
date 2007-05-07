@@ -7,7 +7,6 @@ import numpy
 import logging
 
 from ROOT               import TFile, TTree, TH1F
-from pRootTreeProcessor import pRootTreeProcessor
 from pXmlParser         import pXmlParser
 from pGlobals           import *
 

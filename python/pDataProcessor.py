@@ -9,7 +9,6 @@ import time
 import logging
 import LDF
 import ROOT
-import logging
 import struct
 import pConfig
 
