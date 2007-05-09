@@ -14,6 +14,7 @@ import pConfig
 
 from copy 			      import copy
 from LICOS_Scripts.analysis.LsfMerger import LsfMerger
+from eventFile			      import LSEReader
 from pRootTreeMaker                   import pRootTreeMaker
 from pLATdatagramIterator             import pLATdatagramIterator
 from pLATcontributionIterator         import pLATcontributionIterator
@@ -166,6 +167,7 @@ class pDataProcessor:
         self.LatDataBufIter   = LDF.LATdataBufferIterator(self.LatDatagrIter)
         self.NumEvents        = None
         self.LsfMerger        = None
+        self.EvtReader        = None
         self.LdfFile          = None
         self.StartTime        = None
         self.StopTime         = None
@@ -208,6 +210,8 @@ class pDataProcessor:
 	    fileType = filePath.split('.')[-1]
 	    if fileType == 'lsf':
                 self.LsfMerger   = LsfMerger(filePath)
+	    elif fileType == 'evt':
+                self.EvtReader   = LSEReader(filePath)
 	    elif fileType == 'ldf':
 	        self.LdfFile = file(filePath, 'rb')
 	    else:
@@ -228,6 +232,8 @@ class pDataProcessor:
         self.StartTime = time.time()
         if self.LsfMerger is not None:
 	    self.startLSFProcessing(maxEvents)
+        if self.EvtReader is not None:
+	    self.startEvtProcessing(maxEvents)
 	elif self.LdfFile is not None:
 	    self.startLDFProcessing(maxEvents)
 	else:
@@ -333,6 +339,51 @@ class pDataProcessor:
         while (self.NumEvents != maxEvents):
             try:
                 (meta, buff) = self.LsfMerger.getUncompressedEvent()
+            except TypeError:
+                logging.info('End of file reached.')
+                break
+            self.processLSF(meta, buff)
+        self.finalize()
+
+    ## @brief Get the Next Event of an evt (LSEReader) stream.
+    ## Check data integrity before returning meta-event and event buffer
+    ## @param self
+    #  The class instance.
+    
+    def evtGetNextEvent(self):
+        evt = self.EvtReader.nextEvent()
+        if evt.isNull():
+          return None
+        buff = evt.ebf().copyData()
+	print evt.infotype()
+        if evt.infotype() == LSE_Info.LPA:
+          meta = evt.pinfo()
+        elif evt.infotype() == LSE_Info.CAL:
+          meta = evt.cinfo()
+        else:
+          meta = None
+        return (meta, buff)
+
+
+    ## @brief Start the event loop for evt files.
+    ## @param self
+    #  The class instance.
+    ## @param maxEvents
+    #  The maximum number of events.
+    
+    def startEvtProcessing(self, maxEvents):
+	print "\n----------------------"
+        print "Run Id\t\t",     self.EvtReader.runid()
+        print "Events\t\t",     self.EvtReader.evtcnt()
+        print "Begin GEM\t",    self.EvtReader.begGEM()
+        print "End GEM\t\t",    self.EvtReader.endGEM()
+        print "Begin Second\t", self.EvtReader.begSec()
+        print "End Second\t",   self.EvtReader.endSec()
+        print "----------------------\n"
+
+        while (self.NumEvents != maxEvents):
+            try:
+                (meta, buff) = self.evtGetNextEvent()
             except TypeError:
                 logging.info('End of file reached.')
                 break
