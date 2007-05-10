@@ -14,7 +14,7 @@ import pConfig
 
 from copy 			      import copy
 from LICOS_Scripts.analysis.LsfMerger import LsfMerger
-from eventFile			      import LSEReader
+from eventFile			      import LSEReader, LSE_Info
 from pRootTreeMaker                   import pRootTreeMaker
 from pLATdatagramIterator             import pLATdatagramIterator
 from pLATcontributionIterator         import pLATcontributionIterator
@@ -355,7 +355,6 @@ class pDataProcessor:
         if evt.isNull():
           return None
         buff = evt.ebf().copyData()
-	print evt.infotype()
         if evt.infotype() == LSE_Info.LPA:
           meta = evt.pinfo()
         elif evt.infotype() == LSE_Info.CAL:
@@ -373,6 +372,7 @@ class pDataProcessor:
     
     def startEvtProcessing(self, maxEvents):
 	print "\n----------------------"
+	print "Reading evt file header"
         print "Run Id\t\t",     self.EvtReader.runid()
         print "Events\t\t",     self.EvtReader.evtcnt()
         print "Begin GEM\t",    self.EvtReader.begGEM()
