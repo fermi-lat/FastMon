@@ -24,6 +24,7 @@ from pGlobals			      import *
 from pContributionIteratorWriter      import *
 from pContributionWriter              import *
 from pMetaEventProcessor	      import *
+from pEvtMetaContextProcessor	      import *
 from pErrorHandler                    import pErrorHandler
 from pAlarmHandler                    import pAlarmHandler
 from pRootTreeProcessor               import pRootTreeProcessor
@@ -97,6 +98,9 @@ class pDataProcessor:
         ## @var __MetaEventProcessor
         ## @brief The meta event processor (pMetaEventProcessor instance)
 
+        ## @var __EvtMetaContextProcessor
+        ## @brief The evt meta context processor (EvtMetaContextProcessor instance)
+
         ## @var LatCompIter
         ## @brief The LAT component iterator.
 
@@ -118,6 +122,9 @@ class pDataProcessor:
 
         ## @var LsfMerger
         ## @brief The lsf merger object (relevant for lsf data format only).
+
+        ## @var EvtReader
+        ## @brief The EvtReader object created by calling LSEReader(filename)
 
         ## @var LdfFile
         ## @brief The ldf file object (relevant for ldf data only). 
@@ -156,6 +163,7 @@ class pDataProcessor:
 
         self.__ErrorCounter   = pErrorHandler()
 	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
+	self.__EvtMetaContextProcessor = pEvtMetaContextProcessor(self.__TreeMaker)
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
@@ -345,32 +353,15 @@ class pDataProcessor:
             self.processLSF(meta, buff)
         self.finalize()
 
-    ## @brief Get the Next Event of an evt (LSEReader) stream.
-    ## Check data integrity before returning meta-event and event buffer
-    ## @param self
-    #  The class instance.
-    
-    def evtGetNextEvent(self):
-        evt = self.EvtReader.nextEvent()
-        if evt.isNull():
-          return None
-        buff = evt.ebf().copyData()
-        if evt.infotype() == LSE_Info.LPA:
-          meta = evt.pinfo()
-        elif evt.infotype() == LSE_Info.CAL:
-          meta = evt.cinfo()
-        else:
-          meta = None
-        return (meta, buff)
 
 
-    ## @brief Start the event loop for evt files.
+    ## @brief Print header information of an evt file
+    #
+    #  This is relevant for evt files only.
     ## @param self
     #  The class instance.
-    ## @param maxEvents
-    #  The maximum number of events.
-    
-    def startEvtProcessing(self, maxEvents):
+
+    def evtPrintHeader(self):
 	print "\n----------------------"
 	print "Reading evt file header"
         print "Run Id\t\t",     self.EvtReader.runid()
@@ -381,13 +372,74 @@ class pDataProcessor:
         print "End Second\t",   self.EvtReader.endSec()
         print "----------------------\n"
 
+    ## @brief Process the context of an evt meta event.
+    #
+    #  This is relevant for evt files only.
+    ## @param self
+    #  The class instance.
+    ## @param context
+    #  The context info of the event from evt.ctx()
+
+    def processEvtContext(self, meta, context):
+        self.__EvtMetaContextProcessor.setEvtReader(self.EvtReader)
+	self.__EvtMetaContextProcessor.process(meta, context)
+
+    ## @brief Special event processing for evt files.
+    ## @param self
+    #  The class instance.
+    ## @param meta
+    #  The meta-event object, not sure it's usefull, keep it for now
+    ## @param mcontext
+    #  The meta context info object 
+    ## @param buff
+    #  The buff object of type EBFeventIterator
+    
+    def processEvt(self, evtReader, meta, context, buff):
+	self.__TreeMaker.resetVariables()
+	
+	#process context info
+        self.processEvtContext(meta, context)
+
+	self.__ErrorCounter.setEventNumber(self.NumEvents)
+	
+	#call ebf iterator : should work !
+	#self.EbfEventIter.iterate(buff, len(buff))
+	
+	#Fill Tree
+	label = 'processor_event_number'
+	self.__TreeMaker.VariablesDictionary[label][0] = self.NumEvents
+	self.NumEvents += 1
+	if not self.NumEvents % 100:
+		print '\r%s events processed...' % self.NumEvents,
+            	sys.stdout.flush()
+	self.__TreeMaker.fillTree()
+
+    ## @brief Start the event loop for evt files.
+    ## @param self
+    #  The class instance.
+    ## @param maxEvents
+    #  The maximum number of events.
+    
+    def startEvtProcessing(self, maxEvents):
+        self.evtPrintHeader()
         while (self.NumEvents != maxEvents):
             try:
-                (meta, buff) = self.evtGetNextEvent()
+        	 evt = self.EvtReader.nextEvent()
+        	 if evt.isNull():
+        	   return None
+        	 if evt.infotype() == LSE_Info.LPA:
+        	   meta = evt.pinfo()
+        	 elif evt.infotype() == LSE_Info.CAL:
+        	   meta = evt.cinfo()
+        	 else:
+        	   meta = None
+		 context = evt.ctx()
+		 buff = evt.ebf().copyData()
             except TypeError:
                 logging.info('End of file reached.')
                 break
-            self.processLSF(meta, buff)
+	    self.processEvt(self.EvtReader, meta, context, buff)
+
         self.finalize()
 
     ## @brief Global event processing sequence for ldf files.
