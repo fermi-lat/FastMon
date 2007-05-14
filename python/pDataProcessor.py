@@ -381,7 +381,6 @@ class pDataProcessor:
     #  The context info of the event from evt.ctx()
 
     def processEvtContext(self, meta, context):
-        self.__EvtMetaContextProcessor.setEvtReader(self.EvtReader)
 	self.__EvtMetaContextProcessor.process(meta, context)
 
     ## @brief Special event processing for evt files.
@@ -394,7 +393,7 @@ class pDataProcessor:
     ## @param buff
     #  The buff object of type EBFeventIterator
     
-    def processEvt(self, evtReader, meta, context, buff):
+    def processEvt(self, meta, context, buff):
 	self.__TreeMaker.resetVariables()
 	
 	#process context info
@@ -402,8 +401,8 @@ class pDataProcessor:
 
 	self.__ErrorCounter.setEventNumber(self.NumEvents)
 	
-	#call ebf iterator : should work !
-	#self.EbfEventIter.iterate(buff, len(buff))
+	#call ebf event iterator : False means do not reswap !
+	self.EbfEventIter.iterate(buff, len(buff), False)
 	
 	#Fill Tree
 	label = 'processor_event_number'
@@ -419,9 +418,11 @@ class pDataProcessor:
     #  The class instance.
     ## @param maxEvents
     #  The maximum number of events.
+    ## @todo take all the evt.infotype cases into account
     
     def startEvtProcessing(self, maxEvents):
         self.evtPrintHeader()
+        self.__EvtMetaContextProcessor.setEvtReader(self.EvtReader)
         while (self.NumEvents != maxEvents):
             try:
         	 evt = self.EvtReader.nextEvent()
@@ -438,7 +439,7 @@ class pDataProcessor:
             except TypeError:
                 logging.info('End of file reached.')
                 break
-	    self.processEvt(self.EvtReader, meta, context, buff)
+	    self.processEvt(meta, context, buff)
 
         self.finalize()
 
