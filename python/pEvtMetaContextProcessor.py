@@ -25,6 +25,7 @@ class pEvtMetaContextProcessor:
 
         ## @var EvtReader
         ## @brief The EvtReader object created by calling LSEReader(filename)
+	#  to have access to RunId
 
         ## @var TimeHackRollOverNum
         ## @brief The number of time hack rollovers.

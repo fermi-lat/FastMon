@@ -377,8 +377,11 @@ class pDataProcessor:
     #  This is relevant for evt files only.
     ## @param self
     #  The class instance.
+    ## @param meta
+    #  The meta info of the event
     ## @param context
-    #  The context info of the event from evt.ctx()
+    #  The context info of the event from evt.ctx(), as it's not
+    #  directly accessible from meta.context() in this case
 
     def processEvtContext(self, meta, context):
 	self.__EvtMetaContextProcessor.process(meta, context)
@@ -387,23 +390,19 @@ class pDataProcessor:
     ## @param self
     #  The class instance.
     ## @param meta
-    #  The meta-event object, not sure it's usefull, keep it for now
-    ## @param mcontext
+    #  The meta-event object for time stamp processing
+    ## @param context
     #  The meta context info object 
     ## @param buff
-    #  The buff object of type EBFeventIterator
+    #  The buff object of type LDF.EBFeventIterator
     
     def processEvt(self, meta, context, buff):
-	self.__TreeMaker.resetVariables()
-	
-	#process context info
-        self.processEvtContext(meta, context)
-
+	self.__TreeMaker.resetVariables()	
 	self.__ErrorCounter.setEventNumber(self.NumEvents)
-	
+	#process context info
+        self.processEvtContext(meta, context)	
 	#call ebf event iterator : False means do not reswap !
-	self.EbfEventIter.iterate(buff, len(buff), False)
-	
+	self.EbfEventIter.iterate(buff, len(buff), False)	
 	#Fill Tree
 	label = 'processor_event_number'
 	self.__TreeMaker.VariablesDictionary[label][0] = self.NumEvents
@@ -418,27 +417,34 @@ class pDataProcessor:
     #  The class instance.
     ## @param maxEvents
     #  The maximum number of events.
-    ## @todo take all the evt.infotype cases into account
+    ## @todo check different evt.infotype cases or do something smarter
     
     def startEvtProcessing(self, maxEvents):
         self.evtPrintHeader()
         self.__EvtMetaContextProcessor.setEvtReader(self.EvtReader)
         while (self.NumEvents != maxEvents):
-            try:
-        	 evt = self.EvtReader.nextEvent()
-        	 if evt.isNull():
-        	   return None
-        	 if evt.infotype() == LSE_Info.LPA:
-        	   meta = evt.pinfo()
-        	 elif evt.infotype() == LSE_Info.CAL:
-        	   meta = evt.cinfo()
-        	 else:
-        	   meta = None
-		 context = evt.ctx()
-		 buff = evt.ebf().copyData()
-            except TypeError:
-                logging.info('End of file reached.')
-                break
+            evt = self.EvtReader.nextEvent()
+            if evt.isNull():
+              return None
+            if evt.infotype() == LSE_Info.LPA:
+              meta = evt.pinfo()
+            elif evt.infotype() == LSE_Info.ACD:
+              meta = evt.ainfo()
+            elif evt.infotype() == LSE_Info.CAL:
+              meta = evt.cinfo()
+            elif evt.infotype() == LSE_Info.TKR:
+              meta = evt.tinfo()
+            elif evt.infotype() == LSE_Info.LCI_ACD:
+            	meta = evt.ainfo()
+            elif evt.infotype() == LSE_Info.LCI_CAL:
+            	meta = evt.cinfo()
+            elif evt.infotype() == LSE_Info.LCI_TKR:
+            	meta = evt.tinfo()	      
+            else:
+              meta = None
+	    # Get context directly from evt as cannot get it from meta
+	    context = evt.ctx()
+	    buff = evt.ebf().copyData()
 	    self.processEvt(meta, context, buff)
 
         self.finalize()

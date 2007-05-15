@@ -7,7 +7,6 @@
  + each stripchart name needs to be unique
 
  + PLOTS
-   + Trigger Word calculated by triggerAlg ? (cal_le vector ???)
    + Trigger Rate : EventNumber, OSWtimeContribution::evtSequence ???
    + Trigger Rate : just a binned representation of time_stamp, but need good
    timestamp, not restricted to 128s !!!
