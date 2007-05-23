@@ -374,7 +374,7 @@ class pTH2FXmlRep(pTH1FXmlRep):
         ## @var YMax
         ## @brief The maximum value on the y axis.
         
-        pTH1XmlRep.__init__(self, element)
+        pTH1FXmlRep.__init__(self, element)
         self.NumYBins = self.evalTagValue('ybins')
         self.YMin     = self.evalTagValue('ymin')
         self.YMax     = self.evalTagValue('ymax')
