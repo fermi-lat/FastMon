@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+
+<monitoring>
+
+    <!--
+    Input lists:
+    Definition of the variables for filling the ROOT tree.
+    -->
+
+    <inputList group="TKR" name="TKR1" enabled="True">
+	
+	<variable name="tkr_strip_count" enabled="False">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS)</shape>
+	</variable>
+
+	<variable name="tkr_layer_strip_count" enabled="False">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>
+	
+	<variable name="tkr_layer_tot" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
+	</variable>
+	
+    </inputList>
+    
+ 
+    <outputList group="TKR" name="TKR1" enabled="False">
+
+        <TH1F name="tkr_strip_count" enabled="True" level="tower">
+	    <title>Tracker hit multiplicity</title>
+	    <xbins>100</xbins>
+	    <xmin>0</xmin>
+	    <xmax>100</xmax>
+	    <xlabel>Number of hits</xlabel>
+	    <ylog>True</ylog>
+            <expression>tkr_strip_count</expression>
+            <cut><![CDATA[ tkr_strip_count > 0 ]]></cut>
+        </TH1F>
+
+        <TH1F name="tkr_tot" enabled="True" level="tower">
+	    <title>Tracker TOT</title>
+	    <xbins>256</xbins>
+	    <xmin>0</xmin>
+	    <xmax>256</xmax>
+            <expression>tkr_layer_tot</expression>
+        </TH1F>
+
+        <CUSTOM name="tkr_tot" enabled="True">
+	    <title>Tracker TOT</title>
+        </CUSTOM>
+
+    </outputList>
+
+
+ 
+</monitoring>
