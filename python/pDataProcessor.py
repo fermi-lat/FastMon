@@ -240,13 +240,13 @@ class pDataProcessor:
         self.StartTime = time.time()
         if self.LsfMerger is not None:
 	    self.startLSFProcessing(maxEvents)
-        if self.EvtReader is not None:
+        elif self.EvtReader is not None:
 	    self.startEvtProcessing(maxEvents)
 	elif self.LdfFile is not None:
 	    self.startLDFProcessing(maxEvents)
 	else:
 	    sys.exit('If you see this message, something went really bad...')
-            logging.info('Starting data processing...')
+        logging.info('Starting data processing...')
 
     ## @brief Finalize the data processing.
     #
