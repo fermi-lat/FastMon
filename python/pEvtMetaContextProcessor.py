@@ -80,8 +80,8 @@ class pEvtMetaContextProcessor:
     def process(self, meta, context):
         self.TreeMaker.getVariable('event_timestamp')[0]                     =\
                        self.calculateTimeStamp(meta, context)      
-        self.TreeMaker.getVariable('meta_context_run_id')[0]                 =\
-                       self.EvtReader.runid()  
+        self.TreeMaker.getVariable('meta_context_run_id')[0] = -1\
+#                       self.EvtReader.runid()  
 		            
 	self.TreeMaker.getVariable('meta_context_open_action')[0]            =\
                        context.open.action

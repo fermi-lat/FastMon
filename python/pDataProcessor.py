@@ -420,7 +420,7 @@ class pDataProcessor:
     ## @todo check different evt.infotype cases or do something smarter
     
     def startEvtProcessing(self, maxEvents):
-        self.evtPrintHeader()
+        #self.evtPrintHeader()
         self.__EvtMetaContextProcessor.setEvtReader(self.EvtReader)
         while (self.NumEvents != maxEvents):
             evt = self.EvtReader.nextEvent()

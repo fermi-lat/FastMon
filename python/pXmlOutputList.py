@@ -10,7 +10,7 @@ import ROOT
 
 from pXmlElement   import pXmlElement
 from pXmlList      import pXmlList
-from pAlarmHandler import *
+#from pAlarmHandler import *
 from pGlobals      import *
 
 import pCUSTOMplots
