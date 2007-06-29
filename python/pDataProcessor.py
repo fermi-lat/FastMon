@@ -246,7 +246,7 @@ class pDataProcessor:
 	    self.startLDFProcessing(maxEvents)
 	else:
 	    sys.exit('If you see this message, something went really bad...')
-        logging.info('Starting data processing...')
+        logging.info('End of data processing...')
 
     ## @brief Finalize the data processing.
     #
