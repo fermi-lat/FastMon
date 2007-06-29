@@ -94,9 +94,9 @@ class pPlotXmlRep(pXmlElement):
         #  in the output tree along with the variables.
         
         pXmlElement.__init__(self, element)
-        self.Level       = self.getAttribute('level')
-        if self.Level == '':
-            self.Level = LAT_LEVEL
+        self.Level       = self.getAttribute('level', LAT_LEVEL)
+##         if self.Level == '':
+##             self.Level = LAT_LEVEL
         self.Title        = self.getTagValue('title')
         self.Expression   = self.getTagValue('expression')
         self.Cut          = self.getTagValue('cut'   , '')
