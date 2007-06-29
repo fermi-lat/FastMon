@@ -299,14 +299,6 @@
 	    <ylog>True</ylog>
             <expression>tkr_tower_strip_count</expression>
             <cut><![CDATA[ tkr_tower_strip_count > 0 ]]></cut>
-	    <alarm type="xaverage" enabled="True">
-	    	<min>10.0</min>
-		<max>30.0</max>
-	    </alarm>
-	    <alarm type="xrms" enabled="True">
-	    	<min>10.0</min>
-		<max>30.0</max>
-	    </alarm>
         </TH1F>
         <CUSTOM type="tkr_2d_map" name="tkr_hitmap" enabled="True">
 	    <title>Average number of strip hits per GTRC</title>
