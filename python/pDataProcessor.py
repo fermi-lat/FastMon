@@ -27,7 +27,7 @@ from pMetaEventProcessor	      import *
 from pEvtMetaContextProcessor	      import *
 from pErrorHandler                    import pErrorHandler
 from pRootTreeProcessor               import pRootTreeProcessor
-from pTestReportGenerator             import pTestReportGenerator
+from pFastMonReportGenerator          import pFastMonReportGenerator
 
 
 ## @brief The data processor implementation.

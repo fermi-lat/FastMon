@@ -13,7 +13,7 @@ import pConfig
 
 from pXmlParser           import pXmlParser
 from pGlobals             import *
-from pTestReportGenerator import pTestReportGenerator
+from pFastMonReportGenerator import pFastMonReportGenerator
 
 
 ## @brief Implementation of the ROOT tree processor.
@@ -142,12 +142,11 @@ class pRootTreeProcessor:
     #  The class instance.
 
     def generateReport(self):
-        reportGenerator = pTestReportGenerator(self.__XmlParser,
+        reportGenerator = pFastMonReportGenerator(self.__XmlParser,
                                                self.__OutputFilePath,
                                                self.__InputErrorsFilePath,
                                                None,
                                                self.__ReportDirPath,
-                                               self.__ForceOverwrite,
                                                self.__Verbose)
         reportGenerator.run()
 
