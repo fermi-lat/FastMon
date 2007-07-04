@@ -10,11 +10,9 @@ import ROOT
 
 from pXmlElement   import pXmlElement
 from pXmlList      import pXmlList
-#from pAlarmHandler import *
 from pGlobals      import *
 
 import pCUSTOMplots
-from pCUSTOMplots    import *
 
 
 SUPPORTED_PLOT_TYPES = ['TH1F', 'TH2F', 'StripChart', 'RateStripChart',\
@@ -94,9 +92,7 @@ class pPlotXmlRep(pXmlElement):
         #  in the output tree along with the variables.
         
         pXmlElement.__init__(self, element)
-        self.Level       = self.getAttribute('level', LAT_LEVEL)
-##         if self.Level == '':
-##             self.Level = LAT_LEVEL
+        self.Level        = self.getAttribute('level', LAT_LEVEL)
         self.Title        = self.getTagValue('title')
         self.Expression   = self.getTagValue('expression')
         self.Cut          = self.getTagValue('cut'   , '')
@@ -203,27 +199,6 @@ class pPlotXmlRep(pXmlElement):
     def getExpandedCut(self, tower=None, layer=None, end=None):
         return self.Cut.replace(self.getExpandedExpression(),\
                                 self.getExpandedExpression(tower, layer, end))
-
-    ## @brief Add the alarms defined for the plot rep to the specified
-    #  alarm handler.
-    ## @param self
-    #  The class instance.
-    ## @param handler
-    #  The alarm handler.
-
-    def addAlarms(self, handler):
-        for element in self.getElementsByTagName('alarm'):
-            if self.Level == LAT_LEVEL:
-                handler.addAlarm(pAlarm(element), self.getExpandedName())
-            elif self.Level == TOWER_LEVEL:
-                for tower in range(NUM_TOWERS):
-                    handler.addAlarm(pAlarm(element),\
-                                     self.getExpandedName(tower))
-            elif self.Level == TKR_LAYER_LEVEL:
-                for tower in range(NUM_TOWERS):
-                    for layer in range(NUM_TKR_LAYERS_PER_TOWER):
-                        handler.addAlarm(pAlarm(element),\
-                                         self.getExpandedName(tower, layer))
                         
     ## @brief Create the actual ROOT objects.
     ## @param self
@@ -268,19 +243,6 @@ class pPlotXmlRep(pXmlElement):
                 for layer in range(NUM_TKR_LAYERS_PER_TOWER):
                     namesList.append(self.getExpandedName(tower, layer))
         return namesList
-
-    ## @brief Activate all the alarms defined for the plot rep to the specified
-    #  alarm handler.
-    #
-    #  This function perform the actual check on the plots.
-    ## @param self
-    #  The class instance.
-    ## @param handler
-    #  The alarm handler.
-
-    def activateAlarms(self, handler):
-        for plot in self.RootObjects.values():
-            handler.activateAlarms(plot)
 
     ## @brief Class representation.
     ## @param self

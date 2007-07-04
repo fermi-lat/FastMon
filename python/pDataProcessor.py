@@ -26,7 +26,6 @@ from pContributionWriter              import *
 from pMetaEventProcessor	      import *
 from pEvtMetaContextProcessor	      import *
 from pErrorHandler                    import pErrorHandler
-from pAlarmHandler                    import pAlarmHandler
 from pRootTreeProcessor               import pRootTreeProcessor
 from pTestReportGenerator             import pTestReportGenerator
 

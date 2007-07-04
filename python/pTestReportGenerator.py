@@ -309,11 +309,6 @@ class pTestReportGenerator:
         except:
             logging.error('Could not locate errors file %s.' %\
                           self.__InputErrorsFilePath)
-        try:
-            self.__write(file(self.__InputAlarmsFilePath, 'r').readlines())
-        except:
-            logging.error('Could not locate alarms file %s.' %\
-                          self.__InputAlarmsFilePath)
                     
     ## @brief Write the trailer in the doxygen main page file.
     ## @param self

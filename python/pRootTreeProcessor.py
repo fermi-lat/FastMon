@@ -13,7 +13,6 @@ import pConfig
 
 from pXmlParser           import pXmlParser
 from pGlobals             import *
-from pAlarmHandler        import pAlarmHandler
 from pTestReportGenerator import pTestReportGenerator
 
 
@@ -79,14 +78,6 @@ class pRootTreeProcessor:
 
         ## @var __RootTree
         ## @brief The ROOT TTree object to be read from the input file.
-
-        ## @var __AlarmHandler
-        ## @brief The pAlarmHandler object implementing the automated controls
-        #  on the ROOT plots.
-
-        ## @var __AlarmsFilePath
-        ## @brief The path for the ouput file containing the alarm handler
-        #  summary.
         
         self.__XmlParser           = xmlParser
         self.__InputRootFilePath   = inputRootFilePath
@@ -105,10 +96,6 @@ class pRootTreeProcessor:
         self.__Verbose             = verbose
         self.__OutputRootFile      = None
         self.__RootTree            = self.__getRootTree()
-        self.__AlarmHandler        = pAlarmHandler()
-        self.__AlarmsFilePath      =\
-                              self.__OutputFilePath.replace('.root', '.alarms')
-        self.__setupAlarmHandler()
 
     ## @brief Dive into the input ROOT file and try and get the ROOT tree.
     ## @param self
@@ -137,29 +124,6 @@ class pRootTreeProcessor:
         self.__OutputRootFile.Write()
         self.__OutputRootFile.Close()
 
-    ## @brief Setup the alarm handler, based on the input configuration file.
-    ## @param self
-    #  The class instance.
-
-    def __setupAlarmHandler(self):
-        logging.info('Setting up the alarm handler...')
-        startTime = time.time()
-        for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
-            plotRep.addAlarms(self.__AlarmHandler)
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
-
-    ## @brief Setup the alarm handler.
-    ## @param self
-    #  The class instance.
-
-    def __activateAlarmHandler(self):
-        logging.info('Activating the alarm handler...')
-        startTime = time.time()
-        for plotRep in self.__XmlParser.EnabledPlotRepsDict.values():
-            plotRep.activateAlarms(self.__AlarmHandler)
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
-
-    ## @brief Process the ROOT tree.
     ## @param self
     #  The class instance.
 
@@ -169,9 +133,6 @@ class pRootTreeProcessor:
         self.openOutputFile()
         self.__createObjects()
         logging.info('Done in %s s.\n' % (time.time() - startTime))
-        self.__activateAlarmHandler()
-        self.__AlarmHandler.writeDoxygenFormattedSummary(self.__AlarmsFilePath)
-        print self.__AlarmHandler
         self.closeOutputFile()
         if self.__GenerateReport:
             self.generateReport()
@@ -184,7 +145,7 @@ class pRootTreeProcessor:
         reportGenerator = pTestReportGenerator(self.__XmlParser,
                                                self.__OutputFilePath,
                                                self.__InputErrorsFilePath,
-                                               self.__AlarmsFilePath,
+                                               None,
                                                self.__ReportDirPath,
                                                self.__ForceOverwrite,
                                                self.__Verbose)
