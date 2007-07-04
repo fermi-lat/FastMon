@@ -54,7 +54,8 @@ class pDataProcessor:
     ## @param verbose
     #  Print additional informations.
 
-    def __init__(self, inputFilePath, configFilePath=None, outputDir=None, outputFileName=None,\
+    def __init__(self, inputFilePath, configFilePath=None, outputDir=None,
+                 outputFileName=None,\
                  processTree=False, generateReport=False,\
                  forceOverwrite=False, verbose=False):
 
@@ -98,7 +99,8 @@ class pDataProcessor:
         ## @brief The meta event processor (pMetaEventProcessor instance)
 
         ## @var __EvtMetaContextProcessor
-        ## @brief The evt meta context processor (EvtMetaContextProcessor instance)
+        ## @brief The evt meta context processor (EvtMetaContextProcessor
+        ## instance)
 
         ## @var LatCompIter
         ## @brief The LAT component iterator.
@@ -136,30 +138,22 @@ class pDataProcessor:
 
         if outputDir is None:
             outputDir = os.path.split(inputFilePath)[0]
-            
         fileName = os.path.split(inputFilePath)[1]
-        outputDir = os.path.join(outputDir,fileName.split('.')[0] )
-        
+        outputDir = os.path.join(outputDir, fileName.split('.')[0])
         if not os.path.exists(outputDir):
             os.mkdir(outputDir)
-        
         if outputFileName is None:
             outputFileName    = '%s.root' % fileName.split('.')[0]
-                        
         self.__OutputFilePath = os.path.join(outputDir, outputFileName)
-
-        
         self.__ProcessTree    = processTree
         self.__GenerateReport = generateReport
         self.__ForceOverwrite = forceOverwrite
         self.__Verbose        = verbose
         self.__XmlParser      = pXmlParser(configFilePath)
-        
         self.__ErrorsFilePath =\
                               self.__OutputFilePath.replace('.root', '.errors')
         self.__TreeMaker      = pRootTreeMaker(self.__XmlParser,\
                                                self.__OutputFilePath)
-
         self.__ErrorCounter   = pErrorHandler()
 	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
 	self.__EvtMetaContextProcessor = pEvtMetaContextProcessor(self.__TreeMaker)
