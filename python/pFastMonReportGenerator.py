@@ -20,25 +20,13 @@ class pFastMonReportGenerator(pBaseReportGenerator):
 
     MAIN_PAGE_TITLE = 'Fast monitor report'
 
-    #__DOXY_CONFIG_FILE_NAME = 'config.doxygen'
-    #__DOXY_MAIN_FILE_NAME   = 'mainpage.doxygen'
-    #__HTML_DIR_NAME         = 'html'
-    #__LATEX_DIR_NAME        = 'latex'
-    __ROOT_PALETTE          = 1
-    __AUX_CANVAS_WIDTH      = 500
-    __AUX_CANVAS_HEIGHT     = 400
-    __AUX_CANVAS_COLOR      = 10
-    __LATEX_IMAGES_WIDTH    = 11.0
-
     def __init__(self, xmlParser, inputRootFilePath, inputErrorsFilePath=None,\
                  inputAlarmsFilePath=None, outputDirPath=None, verbose=False):
-
         if outputDirPath is None:
             outputDirPath = inputRootFilePath.replace('.root', '_report')
-        pBaseReportGenerator.__init__(self, outputDirPath ,\
+        pBaseReportGenerator.__init__(self, outputDirPath,\
                                       self.MAIN_PAGE_TITLE,\
                                       forceOverwrite = True)
-
         self.__XmlParser           = xmlParser
         self.__InputRootFilePath   = inputRootFilePath
         self.__InputErrorsFilePath = inputErrorsFilePath
@@ -49,9 +37,8 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         if self.__InputAlarmsFilePath is None:
             self.__InputAlarmsFilePath =\
                  self.__InputRootFilePath.replace('.root', '.alarms')
-        self.__Verbose           = verbose
-        self.__InputRootFile     = None
-        self.__AuxRootCanvas     = None
+        self.__Verbose         = verbose
+        self.InputRootFile     = None
         self.fuckRoot()
 
     def openReport(self):
@@ -69,7 +56,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
 
     def fuckRoot(self):
         currentDirPath = os.path.abspath(os.curdir)
-        ROOT.gStyle.SetPalette(self.__ROOT_PALETTE)
+        ROOT.gStyle.SetPalette(self.ROOT_PALETTE)
         os.chdir(currentDirPath)
 
     ## @brief Produce the report in html, ps and pdf formats.
@@ -92,76 +79,22 @@ class pFastMonReportGenerator(pBaseReportGenerator):
             sys.exit('Could not open input ROOT file %s. Aborting...' %\
                      self.__InputRootFilePath)
 
-    ## @brief Add a plot to the doxygen main page file.
-    ## @todo There's room for improvements, here (in particular one
-    #  could write a method in pXmlPlotRep to return a list of plot reps
-    #  for all the levels - with their names, titles, etc - and avoid
-    #  the name parameter in this function).
-    ## @param self
-    #  The class instance.
-    ## @param plotRep
-    #  The pXmlPlotRep object representing the plot.
-    ## @param name
-    #  The plot name (needs to be passed because it may be different for all
-    #  the towers/layers).
-    
-    def addPlot(self, plotRep, name):
-        epsImagePath = os.path.join(self.LatexDirPath, ('%s.eps' % name))
-        gifImagePath = os.path.join(self.HtmlDirPath , ('%s.gif' % name))
-        epsImageName = os.path.basename(epsImagePath)
-        gifImageName = os.path.basename(gifImagePath)
-        self.__AuxRootCanvas.SetLogx(plotRep.XLog)
-        self.__AuxRootCanvas.SetLogy(plotRep.YLog)
-        try:
-            self.__InputRootFile.Get(name).Draw(plotRep.DrawOptions)
-        except AttributeError:
-            sys.exit('Object %s not found in the input file.' % name)
-        self.__AuxRootCanvas.SaveAs(epsImagePath)
-        self.__AuxRootCanvas.SaveAs(gifImagePath)
-        title   = plotRep.Title
-        caption = plotRep.Caption
-        block   = ('@htmlonly\n'                                       +\
-                   '<div align="center">\n'                            +\
-                   '<p><strong>%s.</strong> %s</p>\n'                  +\
-                   '<img src="%s" alt="%s">\n'                         +\
-                   '</div>\n'                                          +\
-                   '@endhtmlonly\n'                                    +\
-                   '@latexonly\n'                                      +\
-                   '\\begin{figure}[H]\n'                              +\
-                   '\\begin{center}\n'                                 +\
-                   '\\includegraphics[width=%scm]{%s}\n'               +\
-                   '\\caption{{\\bf %s.} %s}\n'                        +\
-                   '\\end{center}\n'                                   +\
-                   '\\end{figure}\n'                                   +\
-                   '@endlatexonly\n'                                   +\
-                   '@latexonly\n'                                      +\
-                   '\\nopagebreak\n'                                   +\
-                   '@endlatexonly\n\n')                                %\
-                   (title, caption, gifImageName, gifImageName,         \
-                    self.__LATEX_IMAGES_WIDTH, epsImageName, title, caption)
-        self.write(block)
-
     ## @brief Add all the plots to the test report.
     ## @param self
     #  The class instance.
     
     def addPlots(self):
+        self.createAuxRootCanvas()
         if not self.__Verbose:
             guard = ROOT.TRedirectOutputGuard('/dev/null', 'w')
-        ROOT.gROOT.SetBatch(1)
-        self.__AuxRootCanvas = ROOT.TCanvas('canvas', 'canvas',\
-                                            self.__AUX_CANVAS_WIDTH,\
-                                            self.__AUX_CANVAS_HEIGHT)
-        self.__AuxRootCanvas.SetFillColor(self.__AUX_CANVAS_COLOR)
         for list in self.__XmlParser.OutputListsDict.values():
             if list.Enabled:
                 self.addOutputListSection(list)
                 for plotRep in list.EnabledPlotRepsDict.values():
                     for name in plotRep.getRootObjectsName():
                         self.addPlot(plotRep, name)
-        if not self.__Verbose:
-            ROOT.gROOT.SetBatch(0)
-
+        self.deleteAuxRootCanvas()
+        
     ## @brief Add a section corresponding to a particular output list
     #  to the doxygen main page file.
     ## @param self
@@ -181,11 +114,11 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     def writeReport(self):
         logging.info('Writing doxygen report files...')
         startTime = time.time()
-        self.__InputRootFile = self.__openInputRootFile()
+        self.InputRootFile = self.__openInputRootFile()
         self.openReport()
         self.addPlots()
         self.closeReport()
-        self.__InputRootFile.Close()
+        self.InputRootFile.Close()
         logging.info('Done in %s s.\n' % (time.time() - startTime))
 
 
