@@ -6,8 +6,7 @@ import cPickle
 import logging
 import pUtils
 
-from pConfig import *
-from pError  import pError
+from pError import pError
 
 
 MAX_DETAILED_LIST_LENGTH  = 10
@@ -208,6 +207,7 @@ class pErrorHandler:
         
 
 if __name__ == '__main__':
+    logging.basicConfig(level = logging.DEBUG)
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog pickle_file')
     (options, args) = parser.parse_args()

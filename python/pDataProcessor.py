@@ -9,7 +9,6 @@ import time
 import logging
 import LDF
 import struct
-import pConfig
 
 from copy 			      import copy
 from LICOS_Scripts.analysis.LsfMerger import LsfMerger
@@ -477,6 +476,7 @@ class pDataProcessor:
      
 
 if __name__ == '__main__':
+    logging.basicConfig(level = logging.DEBUG)
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',

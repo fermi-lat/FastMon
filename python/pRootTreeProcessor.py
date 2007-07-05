@@ -8,7 +8,6 @@ import os
 import time
 import logging
 import sys
-import pConfig
 
 from pXmlParser              import pXmlParser
 from pGlobals                import *
@@ -162,6 +161,7 @@ class pRootTreeProcessor:
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level = logging.DEBUG)
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',\

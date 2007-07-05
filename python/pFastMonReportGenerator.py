@@ -7,13 +7,13 @@
 import os
 import sys
 import logging
-import pConfig
 import commands
 import time
 
 from pXmlParser import pXmlParser
 from pBaseReportGenerator import pBaseReportGenerator
 from pSafeROOT import *
+
 
 class pFastMonReportGenerator(pBaseReportGenerator):
 
@@ -110,6 +110,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         
 
 if __name__ == '__main__':
+    logging.basicConfig(level = logging.DEBUG)
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',\
