@@ -8,7 +8,6 @@ import sys
 import time
 import logging
 import LDF
-import ROOT
 import struct
 import pConfig
 
@@ -28,6 +27,7 @@ from pEvtMetaContextProcessor	      import *
 from pErrorHandler                    import pErrorHandler
 from pRootTreeProcessor               import pRootTreeProcessor
 from pFastMonReportGenerator          import pFastMonReportGenerator
+from pSafeROOT                        import *
 
 
 ## @brief The data processor implementation.
@@ -141,7 +141,7 @@ class pDataProcessor:
         fileName = os.path.split(inputFilePath)[1]
         outputDir = os.path.join(outputDir, fileName.split('.')[0])
         if not os.path.exists(outputDir):
-            os.mkdir(outputDir)
+            os.makedirs(outputDir)
         if outputFileName is None:
             outputFileName    = '%s.root' % fileName.split('.')[0]
         self.__OutputFilePath = os.path.join(outputDir, outputFileName)

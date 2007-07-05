@@ -6,14 +6,14 @@
 
 import os
 import time
-import ROOT
 import logging
 import sys
 import pConfig
 
-from pXmlParser           import pXmlParser
-from pGlobals             import *
+from pXmlParser              import pXmlParser
+from pGlobals                import *
 from pFastMonReportGenerator import pFastMonReportGenerator
+from pSafeROOT               import *
 
 
 ## @brief Implementation of the ROOT tree processor.

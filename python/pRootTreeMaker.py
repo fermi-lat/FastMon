@@ -6,9 +6,9 @@ import random
 import numpy
 import logging
 
-from ROOT               import TFile, TTree, TH1F
-from pXmlParser         import pXmlParser
-from pGlobals           import *
+from pXmlParser  import pXmlParser
+from pGlobals    import *
+from pSafeROOT   import *
 
 
 ## @brief Implementation of the ROOT tree maker.
@@ -39,8 +39,8 @@ class pRootTreeMaker:
         ## @brief The dictionary containing the tree variables
         #  (which are numpy.array objects).
  
-        self.__RootFile  = TFile(outputFilePath, 'recreate')
-        self.__RootTree  = TTree(ROOT_TREE_NAME, ROOT_TREE_NAME)
+        self.__RootFile  = ROOT.TFile(outputFilePath, 'recreate')
+        self.__RootTree  = ROOT.TTree(ROOT_TREE_NAME, ROOT_TREE_NAME)
         self.__XmlParser = xmlParser
         self.VariablesDictionary = {}
         self.__createBranches()

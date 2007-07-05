@@ -3,12 +3,11 @@
 #  whenever a CUSTOM plot is declared in the xml configuration file.
 
 import logging
-import ROOT
 import time
 import numpy
 
-from pGlobals    import *
-
+from pGlobals  import *
+from pSafeROOT import *
 
 ## @brief Method mapping the content of a gem 16 bit register to the
 #  corresponding tower and returning a TH1F object.

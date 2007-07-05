@@ -6,11 +6,11 @@
 #  representations.
 
 import logging
-import ROOT
 
-from pXmlElement   import pXmlElement
-from pXmlList      import pXmlList
-from pGlobals      import *
+from pXmlElement import pXmlElement
+from pXmlList    import pXmlList
+from pGlobals    import *
+from pSafeROOT   import *
 
 import pCUSTOMplots
 
