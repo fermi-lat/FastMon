@@ -257,7 +257,7 @@ class pDataProcessor:
         averageRate   = self.NumEvents/elapsedTime
         self.__TreeMaker.closeFile()
         print
-        logger.info('Done. %d events processed in %s s (%f Hz).\n' %\
+        logger.info('Done. %d events processed in %.2f s (%.2f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
         self.__ErrorCounter.writeDoxygenSummary(self.__ErrorsFilePath)
         self.__ErrorCounter.dump('%s.pickle' % self.__ErrorsFilePath)

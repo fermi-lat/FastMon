@@ -104,7 +104,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         self.addPlots()
         self.closeReport()
         self.InputRootFile.Close()
-        logger.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %.2f s.\n' % (time.time() - startTime))
 
 
 

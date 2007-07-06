@@ -64,7 +64,7 @@ class pContributionWriter(pCodeGenerator):
         self.writeMethodDefinition('fillEventContribution')
         self.implementComponent()
         self.backup()
-        logger.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %.4f s.\n' % (time.time() - startTime))
 
     ## @brief Implement the component according to the xml configuration
     #  file.

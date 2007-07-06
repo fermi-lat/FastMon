@@ -76,7 +76,7 @@ class pXmlParser:
                          filePath)
             self.populateInputLists()
             self.populateOutputLists()
-            logger.info('Done in %s s.\n' % (time.time() - startTime))
+            logger.info('Done in %.2f s.\n' % (time.time() - startTime))
 
     ## @brief Populate the input lists from the xml config file.
     ## @param self

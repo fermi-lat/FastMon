@@ -133,7 +133,7 @@ class pRootTreeProcessor:
         startTime = time.time()
         self.openOutputFile()
         self.__createObjects()
-        logger.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %.2f s.\n' % (time.time() - startTime))
         self.closeOutputFile()
         if self.__GenerateReport:
             self.generateReport()

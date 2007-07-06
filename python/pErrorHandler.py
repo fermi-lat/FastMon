@@ -26,13 +26,13 @@ class pErrorHandler:
         logger.info('Unpickling the error handler from %s...' % inputFilePath)
         startTime = time.time()
         self.__ErrorsList = cPickle.load(file(inputFilePath, 'r'))
-        logger.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %.4f s.\n' % (time.time() - startTime))
         
     def dump(self, outputFilePath):
         logger.info('Pickling the error handler into %s...' % outputFilePath)
         startTime = time.time()
         cPickle.dump(self.__ErrorsList, file(outputFilePath, 'w'))
-        logger.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %.4f s.\n' % (time.time() - startTime))
 
     def setEventNumber(self, eventNumber):
         self.__EventNumber = eventNumber
@@ -201,7 +201,7 @@ class pErrorHandler:
         startTime   = time.time()
         fileContent = self.getDoxygenSummary()
         file(filePath, 'w').writelines(fileContent)
-        logger.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %.4f s.\n' % (time.time() - startTime))
 
     def __str__(self):
         return self.getPlainSummary()

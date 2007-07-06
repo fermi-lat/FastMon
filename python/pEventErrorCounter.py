@@ -220,7 +220,7 @@ class pEventErrorCounter:
         startTime   = time.time()
         fileContent = self.getDoxygenFormattedSummary(detailed)
         file(filePath, 'w').writelines(fileContent)
-        logger.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %.2f s.\n' % (time.time() - startTime))
         
     ## @brief Class representation.
     ## @param self

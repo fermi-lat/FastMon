@@ -26,7 +26,7 @@ def gem_vector_map(rootTree, plotRep):
         for tower in range(NUM_TOWERS):
             if eval('entry.%s & (0x1 << tower)' % plotRep.Expression):
                 histogram.Fill(tower)
-    logger.debug('Custom plot %s created in %s s.' %\
+    logger.debug('Custom plot %s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -77,7 +77,7 @@ def tkr_2d_map(rootTree, plotRep):
                 else:
                     mean  = means[index]/float(entries[index])
                 histogram.Fill((layer + end/2.0 + 0.25), tower, mean)
-    logger.debug('Custom plot %s created in %s s.' %\
+    logger.debug('Custom plot %s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -111,7 +111,7 @@ def tkr_2d_map_project(rootTree, plotRep):
                 mean = h1.GetMean()
                 histogram.Fill((layer + end/2.0 + 0.25), tower, mean)
                 h1.Delete()
-    logger.debug('Custom plot %s created in %s s.' %\
+    logger.debug('Custom plot %s created in %2.f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -148,6 +148,6 @@ def cal_2d_map(rootTree, plotRep):
             else:
                 mean  = means[index]/float(entries[index])
             histogram.Fill((layer + 0.25), tower, mean)
-    logger.debug('Custom plot %s created in %s s.' %\
+    logger.debug('Custom plot %s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
