@@ -1,7 +1,9 @@
 ## @package pLATcontributionIterator
 ## @brief Package managing the interation over a LAT contribution.
 
-import logging
+import pSafeLogger
+logger = pSafeLogger.getLogger('pLATcontributionIterator')
+
 import LDF
 
 
@@ -33,8 +35,8 @@ class pLATcontributionIterator(LDF.LDBI_LATcontributionIterator):
     def handleError(self, contribution, code, p1, p2):
         fn = 'pLATcontributionIterator.handleError()'
         if code == LDF.LATcontributionIterator.ERR_UDFcontribution:
-            logging.error('%s: unrecognized contribution.' % fn)
+            logger.error('%s: unrecognized contribution.' % fn)
             return -1
         else:
-            logging.error('%s: unknown error code.' % fn)
+            logger.error('%s: unknown error code.' % fn)
             return 0

@@ -2,9 +2,11 @@
 ## @brief Includes all the tools to keep track of the events with error in
 #  the data run.
 
+import pSafeLogger
+logger = pSafeLogger.getLogger('pEventErrorCounter')
+
 import pUtils
 import time
-import logging
 
 ## @brief Implementation of an error counter.
 
@@ -214,11 +216,11 @@ class pEventErrorCounter:
     #  The output file path.
     
     def writeDoxygenFormattedSummary(self, filePath, detailed=True):
-        logging.info('Writing the error file for the report...')
+        logger.info('Writing the error file for the report...')
         startTime   = time.time()
         fileContent = self.getDoxygenFormattedSummary(detailed)
         file(filePath, 'w').writelines(fileContent)
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %s s.\n' % (time.time() - startTime))
         
     ## @brief Class representation.
     ## @param self

@@ -2,12 +2,14 @@
 ## @brief package containing the definition of the methods to be called
 #  whenever a CUSTOM plot is declared in the xml configuration file.
 
-import logging
+import pSafeLogger
+logger = pSafeLogger.getLogger('pCUSTOMplots')
+
 import time
 import numpy
 
 from pGlobals  import *
-from pSafeROOT import *
+from pSafeROOT import ROOT
 
 ## @brief Method mapping the content of a gem 16 bit register to the
 #  corresponding tower and returning a TH1F object.
@@ -24,7 +26,7 @@ def gem_vector_map(rootTree, plotRep):
         for tower in range(NUM_TOWERS):
             if eval('entry.%s & (0x1 << tower)' % plotRep.Expression):
                 histogram.Fill(tower)
-    logging.debug('Custom plot %s created in %s s.' %\
+    logger.debug('Custom plot %s created in %s s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -75,7 +77,7 @@ def tkr_2d_map(rootTree, plotRep):
                 else:
                     mean  = means[index]/float(entries[index])
                 histogram.Fill((layer + end/2.0 + 0.25), tower, mean)
-    logging.debug('Custom plot %s created in %s s.' %\
+    logger.debug('Custom plot %s created in %s s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -109,7 +111,7 @@ def tkr_2d_map_project(rootTree, plotRep):
                 mean = h1.GetMean()
                 histogram.Fill((layer + end/2.0 + 0.25), tower, mean)
                 h1.Delete()
-    logging.debug('Custom plot %s created in %s s.' %\
+    logger.debug('Custom plot %s created in %s s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -146,6 +148,6 @@ def cal_2d_map(rootTree, plotRep):
             else:
                 mean  = means[index]/float(entries[index])
             histogram.Fill((layer + 0.25), tower, mean)
-    logging.debug('Custom plot %s created in %s s.' %\
+    logger.debug('Custom plot %s created in %s s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram

@@ -3,10 +3,12 @@
 ## @package pDataProcessor
 ## @brief Basic module for data processing.
 
+import pSafeLogger
+logger = pSafeLogger.getLogger('pDataProcessor')
+
 import os
 import sys
 import time
-import logging
 import LDF
 import struct
 
@@ -19,14 +21,16 @@ from pLATcontributionIterator         import pLATcontributionIterator
 from pEBFeventIterator                import pEBFeventIterator
 from pXmlParser                       import pXmlParser
 from pGlobals			      import *
-from pContributionIteratorWriter      import *
-from pContributionWriter              import *
-from pMetaEventProcessor	      import *
-from pEvtMetaContextProcessor	      import *
+from pContributionIteratorWriter      import pTKRcontributionIteratorWriter
+from pContributionIteratorWriter      import pCALcontributionIteratorWriter
+from pContributionIteratorWriter      import pAEMcontributionIteratorWriter
+from pContributionWriter              import pGEMcontributionWriter
+from pMetaEventProcessor	      import pMetaEventProcessor
+from pEvtMetaContextProcessor	      import pEvtMetaContextProcessor
 from pErrorHandler                    import pErrorHandler
 from pRootTreeProcessor               import pRootTreeProcessor
 from pFastMonReportGenerator          import pFastMonReportGenerator
-from pSafeROOT                        import *
+from pSafeROOT                        import ROOT
 
 
 ## @brief The data processor implementation.
@@ -205,7 +209,7 @@ class pDataProcessor:
     #  Path to the raw data file.
     
     def openFile(self, filePath):
-        logging.info('Opening the input data file...')
+        logger.info('Opening the input data file...')
         if os.path.exists(filePath):
 	    fileType = filePath.split('.')[-1]
 	    if fileType == 'lsf':
@@ -216,7 +220,7 @@ class pDataProcessor:
 	        self.LdfFile = file(filePath, 'rb')
 	    else:
 	    	sys.exit('Unknown file type (%s).' % fileType)
-            logging.info('Done.\n')
+            logger.info('Done.\n')
         else:
             sys.exit('Input data file not found. Exiting...')
 
@@ -238,7 +242,7 @@ class pDataProcessor:
 	    self.startLDFProcessing(maxEvents)
 	else:
 	    sys.exit('If you see this message, something went really bad...')
-        logging.info('End of data processing...')
+        logger.info('End of data processing...')
 
     ## @brief Finalize the data processing.
     #
@@ -253,7 +257,7 @@ class pDataProcessor:
         averageRate   = self.NumEvents/elapsedTime
         self.__TreeMaker.closeFile()
         print
-        logging.info('Done. %d events processed in %s s (%f Hz).\n' %\
+        logger.info('Done. %d events processed in %s s (%f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
         self.__ErrorCounter.writeDoxygenSummary(self.__ErrorsFilePath)
         self.__ErrorCounter.dump('%s.pickle' % self.__ErrorsFilePath)
@@ -340,7 +344,7 @@ class pDataProcessor:
             try:
                 (meta, buff) = self.LsfMerger.getUncompressedEvent()
             except TypeError:
-                logging.info('End of file reached.')
+                logger.info('End of file reached.')
                 break
             self.processLSF(meta, buff)
         self.finalize()
@@ -466,7 +470,7 @@ class pDataProcessor:
         while (self.NumEvents != maxEvents):
     	    event = self.LdfFile.read(8)
     	    if len(event) < 8:
-    	      logging.info("End of File reached.")
+    	      logger.info("End of File reached.")
               break
     	    else:
     	      (identity, length) = struct.unpack('!LL', event)
@@ -476,7 +480,6 @@ class pDataProcessor:
      
 
 if __name__ == '__main__':
-    logging.basicConfig(level = logging.DEBUG)
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',
@@ -511,9 +514,9 @@ if __name__ == '__main__':
     if options.create_report and not options.process_tree:
         parser.print_help()
         parser.error('please run with the -p option if you want the report.')
-    
-    dataProcessor  = pDataProcessor( args[0],options.config_file, options.output_dir,
-                                    options.output_file, options.process_tree,
-                                    options.create_report,
-                                    options.force_overwrite, options.verbose)
+    dataProcessor  = pDataProcessor( args[0],options.config_file,
+                                     options.output_dir,
+                                     options.output_file, options.process_tree,
+                                     options.create_report,
+                                     options.force_overwrite, options.verbose)
     dataProcessor.start(options.events)

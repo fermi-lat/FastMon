@@ -2,7 +2,6 @@
 ## @package pERRcontributionIteratorBase
 ## @brief Error contribution iterator.
 
-import logging
 import LDF
 
 

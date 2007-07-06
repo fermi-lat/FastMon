@@ -1,7 +1,6 @@
 ## @package pGEMcontributionBase
 ## @brief Package for basic parsing of the GEM contribution.
 
-import logging
 import LDF
 
 from copy     import copy

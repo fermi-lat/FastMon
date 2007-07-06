@@ -2,13 +2,15 @@
 ## @brief Package responsible for the creation of the output ROOT tree,
 #  based on the xml configuration file.
 
+import pSafeLogger
+logger = pSafeLogger.getLogger('pRootTreeMaker')
+
 import random
 import numpy
-import logging
 
 from pXmlParser  import pXmlParser
 from pGlobals    import *
-from pSafeROOT   import *
+from pSafeROOT   import ROOT
 
 
 ## @brief Implementation of the ROOT tree maker.
@@ -44,7 +46,7 @@ class pRootTreeMaker:
         self.__XmlParser = xmlParser
         self.VariablesDictionary = {}
         self.__createBranches()
-        logging.info('Created File %s with Tree %s\n' %\
+        logger.info('Created File %s with Tree %s\n' %\
                      (outputFilePath, self.__RootTree.GetName()) )
 
     ## @brief Return the ROOT tree.

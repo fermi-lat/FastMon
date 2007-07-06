@@ -1,9 +1,11 @@
 #! /bin/env python
 
+import pSafeLogger
+logger = pSafeLogger.getLogger('pErrorHandler')
+
 import time
 import sys
 import cPickle
-import logging
 import pUtils
 
 from pError import pError
@@ -21,16 +23,16 @@ class pErrorHandler:
             self.load(pickleFilePath)
             
     def load(self, inputFilePath):
-        logging.info('Unpickling the error handler from %s...' % inputFilePath)
+        logger.info('Unpickling the error handler from %s...' % inputFilePath)
         startTime = time.time()
         self.__ErrorsList = cPickle.load(file(inputFilePath, 'r'))
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %s s.\n' % (time.time() - startTime))
         
     def dump(self, outputFilePath):
-        logging.info('Pickling the error handler into %s...' % outputFilePath)
+        logger.info('Pickling the error handler into %s...' % outputFilePath)
         startTime = time.time()
         cPickle.dump(self.__ErrorsList, file(outputFilePath, 'w'))
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %s s.\n' % (time.time() - startTime))
 
     def setEventNumber(self, eventNumber):
         self.__EventNumber = eventNumber
@@ -43,7 +45,7 @@ class pErrorHandler:
         try:
             return self.__ErrorsList[index]
         except IndexError:
-            logging.error('Error index (%d) out of range (0-%d)' %\
+            logger.error('Error index (%d) out of range (0-%d)' %\
                           (index, self.getTotalNumErrors()))
 
     def getErrorCodesList(self):
@@ -84,10 +86,10 @@ class pErrorHandler:
         print '********   Event %d   ********' % eventNumber
 
     def browseErrors(self):
-        logging.info('Starting error browser...')
+        logger.info('Starting error browser...')
         numErrors = self.getTotalNumErrors()
         if numErrors  == 0:
-            logging.info('There are no errors.')
+            logger.info('There are no errors.')
             sys.exit()
         print
         errorIndex  = 0
@@ -104,7 +106,7 @@ class pErrorHandler:
             print error.getPlainRepresentation(False),
             errorIndex += 1
         print
-        logging.info('There are no more errors.\n')
+        logger.info('There are no more errors.\n')
 
     def getPlainSummary(self):
         errorCodesList = self.getErrorCodesList()
@@ -195,11 +197,11 @@ class pErrorHandler:
         return '%s\n\n' % output
 
     def writeDoxygenSummary(self, filePath):
-        logging.info('Writing the error file for the report...')
+        logger.info('Writing the error file for the report...')
         startTime   = time.time()
         fileContent = self.getDoxygenSummary()
         file(filePath, 'w').writelines(fileContent)
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %s s.\n' % (time.time() - startTime))
 
     def __str__(self):
         return self.getPlainSummary()
@@ -207,7 +209,6 @@ class pErrorHandler:
         
 
 if __name__ == '__main__':
-    logging.basicConfig(level = logging.DEBUG)
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog pickle_file')
     (options, args) = parser.parse_args()

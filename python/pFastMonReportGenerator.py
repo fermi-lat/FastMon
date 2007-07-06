@@ -3,16 +3,17 @@
 ## @package pTestReportGenerator
 ## @brief Package for generating test reports.
 
+import pSafeLogger
+logger = pSafeLogger.getLogger('pFastMonReportGenerator')
 
 import os
 import sys
-import logging
 import commands
 import time
 
-from pXmlParser import pXmlParser
+from pXmlParser           import pXmlParser
 from pBaseReportGenerator import pBaseReportGenerator
-from pSafeROOT import *
+from pSafeROOT            import ROOT
 
 
 class pFastMonReportGenerator(pBaseReportGenerator):
@@ -96,21 +97,20 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     #  The class instance.
     
     def writeReport(self):
-        logging.info('Writing doxygen report files...')
+        logger.info('Writing doxygen report files...')
         startTime = time.time()
         self.InputRootFile = self.__openInputRootFile()
         self.openReport()
         self.addPlots()
         self.closeReport()
         self.InputRootFile.Close()
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %s s.\n' % (time.time() - startTime))
 
 
 
         
 
 if __name__ == '__main__':
-    logging.basicConfig(level = logging.DEBUG)
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',\

@@ -6,7 +6,6 @@
 #  class.
 
 import numpy
-import logging
 import sys
 
 from pXmlElement import pXmlElement

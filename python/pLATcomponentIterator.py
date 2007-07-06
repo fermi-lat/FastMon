@@ -1,7 +1,6 @@
 ## @package pLATcomponentIterator
 ## @brief Package responsible for the whole event iteration stuff.
 
-import logging
 import LDF
 
 from pTKRcontributionIterator     import pTKRcontributionIterator

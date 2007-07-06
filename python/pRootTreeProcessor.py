@@ -4,15 +4,17 @@
 ## @brief Module responsible for processing the output ROOT tree and creating
 #  all the requested plots.
 
+import pSafeLogger
+logger = pSafeLogger.getLogger('pRootTreeProcessor')
+
 import os
 import time
-import logging
 import sys
 
 from pXmlParser              import pXmlParser
 from pGlobals                import *
 from pFastMonReportGenerator import pFastMonReportGenerator
-from pSafeROOT               import *
+from pSafeROOT               import ROOT
 
 
 ## @brief Implementation of the ROOT tree processor.
@@ -127,11 +129,11 @@ class pRootTreeProcessor:
     #  The class instance.
 
     def process(self):
-        logging.info('Processing the root tree and writing histograms...')
+        logger.info('Processing the root tree and writing histograms...')
         startTime = time.time()
         self.openOutputFile()
         self.__createObjects()
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %s s.\n' % (time.time() - startTime))
         self.closeOutputFile()
         if self.__GenerateReport:
             self.generateReport()
@@ -161,7 +163,6 @@ class pRootTreeProcessor:
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level = logging.DEBUG)
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
     parser.add_option('-c', '--config-file', dest='config_file',\

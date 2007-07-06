@@ -5,12 +5,10 @@
 #  It contains the definition of the output list and all the plot
 #  representations.
 
-import logging
-
 from pXmlElement import pXmlElement
 from pXmlList    import pXmlList
 from pGlobals    import *
-from pSafeROOT   import *
+from pSafeROOT   import ROOT
 
 import pCUSTOMplots
 
@@ -426,9 +424,7 @@ class pStripChartXmlRep(pPlotXmlRep):
 	  self.YMin = rootTree.GetMinimum(expression)
         if self.YMax is None:
 	  self.YMax = rootTree.GetMaximum(expression)
-	  
-        #logging.debug('StripChart %s: tmin=%d tmax=%d ymin=%d ymax=%d' %\
-	#		(expression, tmin, tmax, self.YMin, self.YMax) )
+        
         nTimeBin = int((tmax-tmin)/self.DTime)
 	htemp = ROOT.TH2F('htemp', 'htemp', nTimeBin, tmin, tmax, 100,\
                           self.YMin,self.YMax)

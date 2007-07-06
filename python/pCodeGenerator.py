@@ -3,7 +3,6 @@
 #  code (used in iterator writers and contribution writers).
 
 import os
-import logging
 import time
 from pGlobals import *
 import sys

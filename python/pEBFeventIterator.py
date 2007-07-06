@@ -1,7 +1,9 @@
 ## @package pEBFeventIterator
 ## @brief Package managing the interation over EBF events.
 
-import logging
+import pSafeLogger
+logger = pSafeLogger.getLogger('pEBFeventIterator')
+
 import LDF
 
 
@@ -38,10 +40,10 @@ class pEBFeventIterator(LDF.LDBI_EBFeventIterator):
     def handleError(self, event, code, p1, p2):
         fn = 'pEBFeventIterator.handleError()'
         if code == LDF.EBFeventIterator.ERR_NonEBFevent:
-            logging.error('%s: non-EBF event contribution.' % fn)
+            logger.error('%s: non-EBF event contribution.' % fn)
             return 1
         else:
-            logging.error('%s: unknown error code.' % fn)
+            logger.error('%s: unknown error code.' % fn)
             return 0
 
     ## @brief Process the event.
@@ -53,7 +55,7 @@ class pEBFeventIterator(LDF.LDBI_EBFeventIterator):
     def process(self, evt):
         if evt.status() != 0:
             fn = 'pEBFeventIterator.process()'
-            logging.error('%s: bad status in event header.')
+            logger.error('%s: bad status in event header.')
             return evt.status()
         else:
             self.__LatComponentIterator.iterate(evt)

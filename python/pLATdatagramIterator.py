@@ -1,7 +1,9 @@
 ## @package pLATdatagramIterator
 ## @brief Package managing the interation over LAT datagrams.
 
-import logging
+import pSafeLogger
+logger = pSafeLogger.getLogger('pLATdatagramIterator')
+
 import LDF
 
 
@@ -38,10 +40,10 @@ class pLATdatagramIterator(LDF.LDBI_LATdatagramIterator):
     def handleError(self, contribution, code, p1, p2):
         fn = 'pLATdatagramIterator.handleError()'
         if code == LDF.LATdatagramIterator.ERR_IDmismatch:
-            logging.error('%s: identity mismatch.'  % fn)
+            logger.error('%s: identity mismatch.'  % fn)
             return -1
         else:
-            logging.error('%s: unknown error code.' % fn)
+            logger.error('%s: unknown error code.' % fn)
             return 0
 
     ## @brief Process the datagram.
@@ -55,5 +57,5 @@ class pLATdatagramIterator(LDF.LDBI_LATdatagramIterator):
         status = self.__LatContributionIterator.status()
         if status:
             fn = 'pLATdatagramIterator.process()'
-            logging.error('%s: iteration returned %d' % (fn, status))
+            logger.error('%s: iteration returned %d' % (fn, status))
         return 0

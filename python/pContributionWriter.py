@@ -2,10 +2,12 @@
 ## @brief Package responsible for dinamically writing the required event
 #  contributions.
 
-import time
-import logging
+import pSafeLogger
+logger = pSafeLogger.getLogger('pContributionWriter')
 
-from pCodeGenerator         import pCodeGenerator
+import time
+
+from pCodeGenerator import pCodeGenerator
 
 
 ## @brief Base class for the contribution writer.
@@ -51,7 +53,7 @@ class pContributionWriter(pCodeGenerator):
     #  The class instance.    
 
     def writeComponent(self):
-        logging.info('Writing %s...' % self.FileName)
+        logger.info('Writing %s...' % self.FileName)
         startTime = time.time()
         self.writeImportStatement(self.BaseClassName, '*')
         self.writeClassDefinition(self.ClassName, self.BaseClassName)
@@ -62,7 +64,7 @@ class pContributionWriter(pCodeGenerator):
         self.writeMethodDefinition('fillEventContribution')
         self.implementComponent()
         self.backup()
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Implement the component according to the xml configuration
     #  file.

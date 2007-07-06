@@ -2,9 +2,11 @@
 ## @package pXmlParser
 ## @brief Basic xml configuration file parser.
 
+import pSafeLogger
+logger = pSafeLogger.getLogger('pXmlParser')
+
 import sys
 import os
-import logging
 import time
 
 from xml.dom  import minidom
@@ -66,7 +68,7 @@ class pXmlParser:
 
         filePathsList = [baseConfigFilePath, configFilePath]
         for filePath in filePathsList:
-            logging.info('Parsing input xml file %s...' % filePath)
+            logger.info('Parsing input xml file %s...' % filePath)
             if os.path.exists(filePath):
                 self.XmlDoc = minidom.parse(file(filePath))
             else:
@@ -74,14 +76,14 @@ class pXmlParser:
                          filePath)
             self.populateInputLists()
             self.populateOutputLists()
-            logging.info('Done in %s s.\n' % (time.time() - startTime))
+            logger.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Populate the input lists from the xml config file.
     ## @param self
     #  The class instance.
 
     def populateInputLists(self):
-        logging.debug('Populating input lists...')
+        logger.debug('Populating input lists...')
         for element in self.XmlDoc.getElementsByTagName('inputList'):
             list = pXmlInputList(element)
             self.InputListsDict[list.getName()] = list
@@ -94,7 +96,7 @@ class pXmlParser:
     #  The class instance.
 
     def populateOutputLists(self):
-        logging.debug('Populating output lists...')
+        logger.debug('Populating output lists...')
         for element in self.XmlDoc.getElementsByTagName('outputList'):
             list = pXmlOutputList(element)
             self.OutputListsDict[list.getName()] = list

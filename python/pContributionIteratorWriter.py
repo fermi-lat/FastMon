@@ -3,8 +3,10 @@
 ## @brief Package for automated implementation of event iterators, based
 #  on a xml input file.
 
+import pSafeLogger
+logger = pSafeLogger.getLogger('pContributionIteratorWriter')
+
 import time
-import logging
 
 from pCodeGenerator         import pCodeGenerator
 
@@ -76,7 +78,7 @@ class pContributionIteratorWriter(pCodeGenerator):
     #  The class instance.
 
     def writeIterator(self):
-        logging.info('Writing %s...' % self.FileName)
+        logger.info('Writing %s...' % self.FileName)
         startTime = time.time()
         self.writeImportStatement(self.BaseClassName, '*')
         self.writeClassDefinition(self.ClassName, self.BaseClassName)
@@ -87,7 +89,7 @@ class pContributionIteratorWriter(pCodeGenerator):
         self.implementIterator()
         self.implementFunctions()
         self.backup()
-        logging.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %s s.\n' % (time.time() - startTime))
 
     ## @brief Write to file the implementation of the fillEventContribution()
     #  method of the iterator (which is the main function, called whenever
