@@ -83,8 +83,8 @@ class pFastMonReportGenerator(pBaseReportGenerator):
             rootObject = self.InputRootFile.Get(name)
         except AttributeError:
             sys.exit('Object %s not found in the input file.' % name)
-        self.addRootObject(rootObject, plotRep.DrawOptions, plotRep.Title,\
-                           plotRep.Caption, plotRep.XLog, plotRep.YLog)
+        self.addRootObject(rootObject, plotRep.Title, plotRep.Caption,\
+                           plotRep.DrawOptions, plotRep.XLog, plotRep.YLog)
 
     ## @brief Add all the plots to the test report.
     ## @param self
