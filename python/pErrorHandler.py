@@ -152,7 +152,7 @@ class pErrorHandler:
                     output    += '\n+ Event %d\n' % eventNumber
                 output     += error.getPlainRepresentation(False)
                 errorIndex += 1
-            output += error.getPlainRepresentation(False)
+            #output += error.getPlainRepresentation(False)
         return output
 
     def getDoxygenSummary(self):
@@ -193,7 +193,7 @@ class pErrorHandler:
                     output    += '\n@li Event %d\n' % eventNumber
                 output     += error.getDoxygenRepresentation()
                 errorIndex += 1
-            output += error.getDoxygenRepresentation()
+            #output += error.getDoxygenRepresentation()
         return '%s\n\n' % output
 
     def writeDoxygenSummary(self, filePath):
