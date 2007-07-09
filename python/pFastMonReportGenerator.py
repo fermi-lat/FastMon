@@ -92,8 +92,6 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     
     def addPlots(self):
         self.createAuxRootCanvas()
-        if not self.__Verbose:
-            guard = ROOT.TRedirectOutputGuard('/dev/null', 'w')
         for list in self.__XmlParser.OutputListsDict.values():
             if list.Enabled:
                 self.addOutputListSection(list)
