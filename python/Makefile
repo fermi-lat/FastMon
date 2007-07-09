@@ -9,9 +9,10 @@ cleandoc:
 	rm -rf doc
 
 clean:
-	rm -f *~ .*~ *.pyc *.pyo	
-	rm -f pGEMcontribution.py pTKRcontributionIterator.py
-	rm -f pCALcontributionIterator.py pAEMcontributionIterator.py
+	rm -rf *~ .*~ *.pyc *.pyo	
+	rm -rf pGEMcontribution.py pTKRcontributionIterator.py
+	rm -rf pCALcontributionIterator.py pAEMcontributionIterator.py
+	rm -rf *_test.* 
 
 cleanall:
 	make clean
