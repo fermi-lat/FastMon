@@ -25,9 +25,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
                  inputAlarmsFilePath=None, outputDirPath=None, verbose=False):
         if outputDirPath is None:
             outputDirPath = inputRootFilePath.replace('.root', '_report')
-        pBaseReportGenerator.__init__(self, outputDirPath, \
-                                      self.MAIN_PAGE_TITLE,\
-                                      self.REPORT_AUTHOR,  \
+        pBaseReportGenerator.__init__(self, outputDirPath,\
                                       forceOverwrite = True)
         self.__XmlParser           = xmlParser
         self.__InputRootFilePath   = inputRootFilePath
