@@ -95,7 +95,7 @@ class pDataProcessor:
         ## @var __TreeMaker
         ## @brief The tree maker object (pRootTreeMaker instance).
 
-        ## @var __ErrorCounter
+        ## @var ErrorHandler
         ## @brief The error counter object (pEventErrorCounter instance).
 
         ## @var __MetaEventProcessor
@@ -157,14 +157,15 @@ class pDataProcessor:
                               self.__OutputFilePath.replace('.root', '.errors')
         self.__TreeMaker      = pRootTreeMaker(self.__XmlParser,\
                                                self.__OutputFilePath)
-        self.__ErrorCounter   = pErrorHandler()
+        self.ErrorHandler   = pErrorHandler()
 	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
-	self.__EvtMetaContextProcessor = pEvtMetaContextProcessor(self.__TreeMaker)
+	self.__EvtMetaContextProcessor =\
+                                  pEvtMetaContextProcessor(self.__TreeMaker)
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
         self.LatCompIter      = pLATcomponentIterator(self.__TreeMaker,\
-                                                      self.__ErrorCounter)
+                                                      self.ErrorHandler)
         self.EbfEventIter     = pEBFeventIterator(self.LatCompIter)
         self.LatContrIter     = pLATcontributionIterator(self.EbfEventIter)
         self.LatDatagrIter    = pLATdatagramIterator(self.LatContrIter)
@@ -259,9 +260,9 @@ class pDataProcessor:
         print
         logger.info('Done. %d events processed in %.2f s (%.2f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
-        self.__ErrorCounter.writeDoxygenSummary(self.__ErrorsFilePath)
-        self.__ErrorCounter.dump('%s.pickle' % self.__ErrorsFilePath)
-        print self.__ErrorCounter
+        self.ErrorHandler.writeDoxygenSummary(self.__ErrorsFilePath)
+        self.ErrorHandler.dump('%s.pickle' % self.__ErrorsFilePath)
+        print self.ErrorHandler
         if self.__ProcessTree:
             self.processTree()
             
@@ -294,7 +295,7 @@ class pDataProcessor:
     #  The event object.
  
     def processEvent(self, event):
-        self.__ErrorCounter.setEventNumber(self.NumEvents)
+        self.ErrorHandler.setEventNumber(self.NumEvents)
 	self.LatDataBufIter.iterate(event, len(event))
         label = 'processor_event_number'
         self.__TreeMaker.VariablesDictionary[label][0] = self.NumEvents
@@ -394,7 +395,7 @@ class pDataProcessor:
     
     def processEvt(self, meta, context, buff):
 	self.__TreeMaker.resetVariables()	
-	self.__ErrorCounter.setEventNumber(self.NumEvents)
+	self.ErrorHandler.setEventNumber(self.NumEvents)
         self.processEvtContext(meta, context)	
 	self.EbfEventIter.iterate(buff, len(buff), False)	
 	label = 'processor_event_number'
