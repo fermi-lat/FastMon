@@ -29,18 +29,13 @@ class pError:
     ## @brief Basic constructor.
     ## @param self
     #  The class instance.
-    ## @param eventNumber
-    #  The event number for the particular error.
     ## @param errorCode
     #  The error code (usually a string like "GTCC_FIFO_ERROR").
     ## @param details
     #  The error details (like wich tower, layer, etc... caused the error).
     #  All the additional error information can be added here.
     
-    def __init__(self, eventNumber, errorCode, details=[]):
-
-        ## @var EventNumber
-        ## @brief The event number for the particular error.
+    def __init__(self, errorCode, details=[]):
 
         ## @var ErrorCode
         ## @brief The error code (usually a string like "GTCC_FIFO_ERROR").
@@ -49,7 +44,6 @@ class pError:
         ## @brief The error details (like wich tower, layer, etc...
         #  caused the error).
         
-        self.EventNumber = eventNumber
         self.ErrorCode   = errorCode
         self.Details     = details
 
@@ -58,7 +52,7 @@ class pError:
     ## @param self
     #  The class instance.
 
-    def getDetails(self):
+    def getDetailsAsText(self):
         details = ''
         for i in range(len(self.Details)):
             try:
@@ -68,13 +62,15 @@ class pError:
             details += '%s=%s, ' % (label, self.Details[i])
         return details[:-2]
 
+    def getAsText(self):
+        return '%s (%s)' % (self.ErrorCode, self.getDetailsAsText())
+
+    def __str__(self):
+        return self.getAsText()
 
 
 if __name__ == '__main__':
-    errors = [pError(12, 'UNPHYSICAL_STRIP_ID', [12, 34, 1753]),
-              pError(116, 'TEST_CODE', [3, 2])
-              ]
+    errors = [pError('UNPHYSICAL_STRIP_ID', [12, 34, 1753]),
+              pError('TEST_CODE', [3, 2])]
     for error in errors:
-        print error.EventNumber
-        print error.ErrorCode
-        print error.getDetails()
+        print error

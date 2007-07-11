@@ -260,9 +260,7 @@ class pDataProcessor:
         print
         logger.info('Done. %d events processed in %.2f s (%.2f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
-        self.ErrorHandler.writeDoxygenSummary(self.__ErrorsFilePath)
         self.ErrorHandler.dump('%s.pickle' % self.__ErrorsFilePath)
-        print self.ErrorHandler
         if self.__ProcessTree:
             self.processTree()
             

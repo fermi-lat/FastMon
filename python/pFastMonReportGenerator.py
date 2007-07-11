@@ -40,9 +40,6 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         self.__Verbose         = verbose
         self.InputRootFile     = None
 
-    def openReport(self):
-        pBaseReportGenerator.openReport(self)
-
     ## @brief Produce the report in html, ps and pdf formats.
     ## @param self
     #  The class instance.
@@ -120,6 +117,10 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         self.InputRootFile = self.__openInputRootFile()
         self.openReport()
         self.addPlots()
+        self.addPage('error_summary', 'Error handler summary')
+        #self.addDictionary('', , 'error_summary')
+        self.addPage('error_details', 'Error handler details')
+        #self.addDictionary('', , 'error_details')
         self.closeReport()
         self.InputRootFile.Close()
         logger.info('Done in %.2f s.\n' % (time.time() - startTime))

@@ -8,15 +8,21 @@ class pErrorEvent:
 
     def addError(self, error):
         self.ErrorsList.append(error)
-    
+
+    def getAsText(self):
+        txt = 'Event %s contains error(s):\n' % self.EventNumber
+        for error in self.ErrorsList:
+            txt += '- %s\n' % error.getAsText()
+        return txt
+
+    def __str__(self):
+        return self.getAsText()
 
 
 if __name__ == '__main__':
     from pError import pError
     badEvent = pErrorEvent(313)
-    badEvent.addError(pError(313, 'UNPHYSICAL_STRIP_ID', [12, 34, 1753]))
-    badEvent.addError(pError(313, 'UNPHYSICAL_STRIP_ID', [12, 34, 1754]))
-    print 'Bad event: %d' % badEvent.EventNumber
-    for error in badEvent.ErrorsList:
-        print '%s (%s)' % (error.ErrorCode, error.getDetails())
+    badEvent.addError(pError('UNPHYSICAL_STRIP_ID', [12, 34, 1753]))
+    badEvent.addError(pError('UNPHYSICAL_STRIP_ID', [12, 34, 1754]))
+    print badEvent
        

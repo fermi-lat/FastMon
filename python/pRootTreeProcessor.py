@@ -144,11 +144,11 @@ class pRootTreeProcessor:
 
     def generateReport(self):
         reportGenerator = pFastMonReportGenerator(self.__XmlParser,
-                                               self.__OutputFilePath,
-                                               self.__InputErrorsFilePath,
-                                               None,
-                                               self.__ReportDirPath,
-                                               self.__Verbose)
+                                                  self.__OutputFilePath,
+                                                  self.__InputErrorsFilePath,
+                                                  None,
+                                                  self.__ReportDirPath,
+                                                  self.__Verbose)
         reportGenerator.run()
 
     ## @brief Create the ROOT objects defined in the enabled output lists
