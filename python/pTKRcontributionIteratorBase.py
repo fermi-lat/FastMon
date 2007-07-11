@@ -20,10 +20,10 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     #  The contribution.
     ## @param treeMaker
     #  The pRootTreeMaker object responsible for managing the root tree.
-    ## @param errorCounter
-    #  The pEventErrorCounter object responsible for managing the errors.
+    ## @param errorHandler
+    #  The pErrorHandler object responsible for managing the errors.
 
-    def __init__(self, event, contribution, treeMaker, errorCounter):
+    def __init__(self, event, contribution, treeMaker, errorHandler):
 
         ## @var TemId
         ## @brief The TEM number.
@@ -31,14 +31,14 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
         ## @var TreeMaker
         ## @brief The pRootTreeMaker object.
 
-        ## @var ErrorCounter
-        ## @brief The pEventErrorCounter object responsible for
+        ## @var ErrorHandler
+        ## @brief The pErrorHandler object responsible for
         #  managing the errors.
         
         LDF.TKRcontributionIterator.__init__(self, event, contribution)
-        self.TemId          = LDF.LATPcellHeader.source(contribution.header())
-        self.TreeMaker      = treeMaker
-        self.ErrorCounter   = errorCounter
+        self.TemId        = LDF.LATPcellHeader.source(contribution.header())
+        self.TreeMaker    = treeMaker
+        self.ErrorHandler = errorHandler
 
     ## @brief Iterate over the event contribution.
     ## @param self
@@ -53,7 +53,7 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
 
     def strip(self, tower, layerEnd, hit):
         if hit < 0 or hit > 1535:
-            self.ErrorCounter.fill('UNPHYSICAL_STRIP_ID',\
+            self.ErrorHandler.fill('UNPHYSICAL_STRIP_ID',\
                                    [tower, layerEnd, hit])
 
     ## @brief Function included by default by the corresponding method

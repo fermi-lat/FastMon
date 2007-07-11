@@ -16,10 +16,10 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
     #  The contribution object.
     ## @param treeMaker
     #  The pRootTreeMaker object responsible for the creation of the ROOT tree.
-    ## @param errorCounter
-    #  The pEventErrorCounter object responsible for managing the errors.
+    ## @param errorHandler
+    #  The pErrorHandler object responsible for managing the errors.
     
-    def __init__(self, event, contribution, treeMaker, errorCounter):
+    def __init__(self, event, contribution, treeMaker, errorHandler):
 
         ## @var TemId
         ## @brief The TEM id for the contribution.
@@ -28,14 +28,14 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
         ## @brief The pRootTreeMaker object responsible for the creation
         #  of the ROOT tree.
 
-        ## @var ErrorCounter
-        ## @brief The pEventErrorCounter object responsible for
+        ## @var ErrorHandler
+        ## @brief The pErrorHandler object responsible for
         #  managing the errors.
         
         LDF.CALcontributionIterator.__init__(self, event, contribution)
         self.TemId        = LDF.LATPcellHeader.source(contribution.header())
         self.TreeMaker    = treeMaker
-        self.ErrorCounter = errorCounter
+        self.ErrorHandler = errorHandler
 
     ## @brief Function included by default by the corresponding method
     #  of the derived iterator (the one which is actually run).

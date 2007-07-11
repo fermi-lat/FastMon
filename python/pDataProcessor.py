@@ -96,7 +96,7 @@ class pDataProcessor:
         ## @brief The tree maker object (pRootTreeMaker instance).
 
         ## @var ErrorHandler
-        ## @brief The error counter object (pEventErrorCounter instance).
+        ## @brief The error handler object (pErrorHandler instance).
 
         ## @var __MetaEventProcessor
         ## @brief The meta event processor (pMetaEventProcessor instance)
