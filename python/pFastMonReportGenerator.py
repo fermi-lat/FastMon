@@ -103,6 +103,10 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         pageLabel = 'error_summary'
         pageTitle = 'Error handler summary'
         self.addPage(pageLabel, pageTitle)
+        self.newline(pageLabel)
+        self.write('Here is the number of errors found in the run ' +\
+                   '(indexed by error code)', pageLabel)
+        self.newline(pageLabel)
         dictionary = self.DataProcessor.ErrorHandler.ErrorCountsDict
         if len(dictionary):
             self.addDictionary('Summary by error code', dictionary, pageLabel)
@@ -113,6 +117,10 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         pageLabel = 'error_details'
         pageTitle = 'Error handler details'
         self.addPage(pageLabel, pageTitle)
+        self.newline(pageLabel)
+        self.write('Here is the detailed list of events with error(s)',\
+                   pageLabel)
+        self.newline(pageLabel)
         dictionary = self.DataProcessor.ErrorHandler.ErrorEventsDict
         if (len(dictionary)):
             for (eventNumber, errorEvent) in dictionary.items():
