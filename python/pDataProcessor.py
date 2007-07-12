@@ -70,10 +70,10 @@ class pDataProcessor:
         ## @var ErrorHandler
         ## @brief The error handler object (pErrorHandler instance).
 
-        ## @var __MetaEventProcessor
+        ## @var MetaEventProcessor
         ## @brief The meta event processor (pMetaEventProcessor instance)
 
-        ## @var __EvtMetaContextProcessor
+        ## @var EvtMetaContextProcessor
         ## @brief The evt meta context processor (EvtMetaContextProcessor
         ## instance)
 
@@ -111,9 +111,10 @@ class pDataProcessor:
         ## @var StopTime
         ## @brief The data processor stop time.
 
+        self.InputFilePath = inputFilePath
         if outputDir is None:
-            outputDir = os.path.split(inputFilePath)[0]
-        fileName = os.path.split(inputFilePath)[1]
+            outputDir = os.path.split(self.InputFilePath)[0]
+        fileName = os.path.split(self.InputFilePath)[1]
         self.OutputDirPath  = os.path.join(outputDir, fileName.split('.')[0])
         if not os.path.exists(self.OutputDirPath):
             os.makedirs(self.OutputDirPath)
@@ -125,9 +126,8 @@ class pDataProcessor:
         self.ErrorHandler    = pErrorHandler()
         self.TreeProcessor   = pFastMonTreeProcessor(self)
         self.ReportGenerator = pFastMonReportGenerator(self)
-	self.__MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
-	self.__EvtMetaContextProcessor =\
-                                  pEvtMetaContextProcessor(self.TreeMaker)
+	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
+	self.EvtMetaContextProcessor = pEvtMetaContextProcessor(self.TreeMaker)
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
@@ -143,7 +143,6 @@ class pDataProcessor:
         self.LdfFile        = None
         self.StartTime      = None
         self.StopTime       = None
-        self.openFile(inputFilePath)
 
     ## @brief Update the event contribution iterators, based on the xml
     #  configuration file.
@@ -167,116 +166,26 @@ class pDataProcessor:
         writer = pGEMcontributionWriter(self.XmlParser)
         writer.writeComponent()
 
-    ## @brief Open the input raw data file.
-    #
-    #  Both ldf and lsf data files are supported at this level.
-    #  The data type is identified based on the file extension.
-    ## @param self
-    #  The class instance.
-    ## @param filePath
-    #  Path to the raw data file.
-    
-    def openFile(self, filePath):
-        logger.info('Opening the input data file...')
-        if os.path.exists(filePath):
-	    fileType = filePath.split('.')[-1]
-	    if fileType == 'lsf':
-                self.LsfMerger   = LsfMerger(filePath)
-	    elif fileType == 'evt':
-                self.EvtReader   = LSEReader(filePath)
-	    elif fileType == 'ldf':
-	        self.LdfFile = file(filePath, 'rb')
-	    else:
-	    	sys.exit('Unknown file type (%s).' % fileType)
-            logger.info('Done.\n')
-        else:
-            sys.exit('Input data file not found. Exiting...')
-
-    ## @brief Start the data processing.
-    ## @param self
-    #  The class instance.
-    ## @param maxEvents
-    #  The maximum number of events to be processed (default is -1, meaning
-    #  the whole file).
-
-    def start(self, maxEvents=-1):
+    def startProcessing(self, maxNumEvents = -1):
+        logger.info('Opening data file %s...' % self.InputFilePath)
+        if not os.path.exists(self.InputFilePath):
+            sys.exit('Input data file not found. Abort.')
+        fileType = self.InputFilePath.split('.')[-1]
+        logger.info('Start processing...')
         self.NumEvents = 0
         self.StartTime = time.time()
-        if self.LsfMerger is not None:
-	    self.startLSFProcessing(maxEvents)
-        elif self.EvtReader is not None:
-	    self.startEvtProcessing(maxEvents)
-	elif self.LdfFile is not None:
-	    self.startLDFProcessing(maxEvents)
-	else:
-	    sys.exit('If you see this message, something went really bad...')
-        logger.info('End of data processing...')
-
-    ## @brief Finalize the data processing.
-    #
-    #  This involves creating the histogram from the ROOT tree and
-    #  printing out the statistics of the events with errors.
-    ## @param self
-    #  The class instance.
-    
-    def finalize(self):
-        self.StopTime = time.time()
-        elapsedTime   = self.StopTime - self.StartTime
-        averageRate   = self.NumEvents/elapsedTime
-        self.TreeMaker.close()
-        print
-        logger.info('Done. %d events processed in %.2f s (%.2f Hz).\n' %\
-                     (self.NumEvents, elapsedTime, averageRate))
-        self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
-                                                           '.errors.pickle'))
-        
-    ## @brief Process an event.
-    #
-    #  This is actually called both for lsf and ldf files.
-    ## @param self
-    #  The class instance.
-    ## @param event
-    #  The event object.
- 
-    def processEvent(self, event):
-        self.ErrorHandler.setEventNumber(self.NumEvents)
-	self.LatDataBufIter.iterate(event, len(event))
-        label = 'processor_event_number'
-        self.TreeMaker.VariablesDictionary[label][0] = self.NumEvents
-        self.NumEvents += 1
-        if not self.NumEvents % 100:
-            print '\r%s events processed...' % self.NumEvents,
-            sys.stdout.flush()
-
-    ## @brief Process a meta event.
-    #
-    #  This is relevant for lsf files only.
-    ## @param self
-    #  The class instance.
-    ## @param meta
-    #  The meta-event object.
-
-    def processMetaEvent(self, meta):
-	self.__MetaEventProcessor.process(meta)
-
-    ## @brief Global event processing sequence for lsf files.
-    #
-    #  @li reset the tree variables
-    #  @li process the meta part of the event 
-    #  @li process the event part of the event 
-    #  @li fill the tree
-    ## @param self
-    #  The class instance.
-    ## @param meta
-    #  The meta-event object.
-    ## @param event
-    #  The event object.
-    
-    def processLSF(self, meta, event):
-	self.TreeMaker.resetVariables()
-        self.processMetaEvent(meta)
-        self.processEvent(event)
-	self.TreeMaker.fillTree()
+        if fileType   == 'lsf':
+            self.LsfMerger = LsfMerger(self.InputFilePath)
+            self.startLSFProcessing(maxNumEvents)
+        elif fileType == 'evt':
+            self.EvtReader = LSEReader(self.InputFilePath)
+            self.startEvtProcessing(maxNumEvents)
+        elif fileType == 'ldf':
+            self.LdfFile   = file(self.InputFilePath, 'rb')
+            self.startLDFProcessing(maxNumEvents)
+        else:
+            sys.exit('Unknown file type (%s).' % fileType)
+        logger.info('Data processing complete.')
 
     ## @brief Start the event loop for lsf files.
     ## @param self
@@ -287,66 +196,13 @@ class pDataProcessor:
     def startLSFProcessing(self, maxEvents):
         while (self.NumEvents != maxEvents):
             try:
-                (meta, buff) = self.LsfMerger.getUncompressedEvent()
+                (meta, event) = self.LsfMerger.getUncompressedEvent()
             except TypeError:
                 logger.info('End of file reached.')
                 break
-            self.processLSF(meta, buff)
+            self.MetaEventProcessor.process(meta)
+            self.processEvent(event)
         self.finalize()
-
-    ## @brief Print header information of an evt file
-    #
-    #  This is relevant for evt files only.
-    ## @param self
-    #  The class instance.
-
-    def evtPrintHeader(self):
-	print "\n----------------------"
-	print "Reading evt file header"
-        print "Run Id\t\t",     self.EvtReader.runid()
-        print "Events\t\t",     self.EvtReader.evtcnt()
-        print "Begin GEM\t",    self.EvtReader.begGEM()
-        print "End GEM\t\t",    self.EvtReader.endGEM()
-        print "Begin Second\t", self.EvtReader.begSec()
-        print "End Second\t",   self.EvtReader.endSec()
-        print "----------------------\n"
-
-    ## @brief Process the context of an evt meta event.
-    #
-    #  This is relevant for evt files only.
-    ## @param self
-    #  The class instance.
-    ## @param meta
-    #  The meta info of the event
-    ## @param context
-    #  The context info of the event from evt.ctx(), as it's not
-    #  directly accessible from meta.context() in this case
-
-    def processEvtContext(self, meta, context):
-	self.__EvtMetaContextProcessor.process(meta, context)
-
-    ## @brief Special event processing for evt files.
-    ## @param self
-    #  The class instance.
-    ## @param meta
-    #  The meta-event object for time stamp processing
-    ## @param context
-    #  The meta context info object 
-    ## @param buff
-    #  The buff object of type LDF.EBFeventIterator
-    
-    def processEvt(self, meta, context, buff):
-	self.TreeMaker.resetVariables()	
-	self.ErrorHandler.setEventNumber(self.NumEvents)
-        self.processEvtContext(meta, context)	
-	self.EbfEventIter.iterate(buff, len(buff), False)	
-	label = 'processor_event_number'
-	self.TreeMaker.VariablesDictionary[label][0] = self.NumEvents
-	self.NumEvents += 1
-	if not self.NumEvents % 100:
-		print '\r%s events processed...' % self.NumEvents,
-            	sys.stdout.flush()
-	self.TreeMaker.fillTree()
 
     ## @brief Start the event loop for evt files.
     ## @param self
@@ -356,7 +212,7 @@ class pDataProcessor:
     ## @todo check different evt.infotype cases or do something smarter
     
     def startEvtProcessing(self, maxEvents):
-        self.__EvtMetaContextProcessor.setEvtReader(self.EvtReader)
+        self.EvtMetaContextProcessor.setEvtReader(self.EvtReader)
         while (self.NumEvents != maxEvents):
             evt = self.EvtReader.nextEvent()
             if evt.isNull():
@@ -383,21 +239,6 @@ class pDataProcessor:
 	    self.processEvt(meta, context, buff)
         self.finalize()
 
-    ## @brief Global event processing sequence for ldf files.
-    #
-    #  @li reset the tree variables
-    #  @li process the event part of the event 
-    #  @li fill the tree
-    ## @param self
-    #  The class instance.
-    ## @param event
-    #  The event object.
-
-    def processLDF(self, event):
-	self.TreeMaker.resetVariables()
-        self.processEvent(event)
-	self.TreeMaker.fillTree()
-
     ## @brief Start the event loop for ldf files.
     ## @param self
     #  The class instance.
@@ -413,10 +254,71 @@ class pDataProcessor:
     	    else:
     	      (identity, length) = struct.unpack('!LL', event)
     	      event += self.LdfFile.read(length - 8)
-	      self.processLDF(event)
+              self.processEvent(event)
         self.finalize()
-     
 
+    ## @brief Process an event.
+    #
+    #  This is actually called both for lsf and ldf files.
+    ## @param self
+    #  The class instance.
+    ## @param event
+    #  The event object.
+ 
+    def processEvent(self, event):
+        self.__preEvent()
+	self.LatDataBufIter.iterate(event, len(event))
+        self.__postEvent()
+
+    ## @brief Special event processing for evt files.
+    ## @param self
+    #  The class instance.
+    ## @param meta
+    #  The meta-event object for time stamp processing
+    ## @param context
+    #  The meta context info object 
+    ## @param buff
+    #  The buff object of type LDF.EBFeventIterator
+    
+    def processEvt(self, meta, context, buff):
+        self.__preEvent()
+        self.EvtMetaContextProcessor.process(meta, context)
+	self.EbfEventIter.iterate(buff, len(buff), False)	
+        self.__postEvent()
+
+    def __preEvent(self):
+        self.TreeMaker.resetVariables()
+        self.ErrorHandler.setEventNumber(self.NumEvents)
+
+    def __postEvent(self):
+	self.TreeMaker.VariablesDictionary['processor_event_number'][0] =\
+                                                            self.NumEvents
+        self.TreeMaker.fillTree()
+	self.NumEvents += 1
+	if not self.NumEvents % 100:
+            print '\r%s events processed...' % self.NumEvents,
+            sys.stdout.flush()    
+      
+    ## @brief Finalize the data processing.
+    #
+    #  This involves creating the histogram from the ROOT tree and
+    #  printing out the statistics of the events with errors.
+    ## @param self
+    #  The class instance.
+    
+    def finalize(self):
+        self.StopTime = time.time()
+        elapsedTime   = self.StopTime - self.StartTime
+        averageRate   = self.NumEvents/elapsedTime
+        self.TreeMaker.close()
+        logger.info('Done. %d events processed in %.2f s (%.2f Hz).\n' %\
+                    (self.NumEvents, elapsedTime, averageRate))
+        self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
+                                                           '.errors.pickle'))
+
+
+
+    
 if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser(usage='usage: %prog [options] data_file')
@@ -461,7 +363,7 @@ if __name__ == '__main__':
     dataProcessor  = pDataProcessor( args[0],options.config_file,
                                      options.output_dir,
                                      options.output_file)
-    dataProcessor.start(options.events)
+    dataProcessor.startProcessing(options.events)
     if options.process_tree:
         dataProcessor.TreeProcessor.run()
     if options.create_report:
