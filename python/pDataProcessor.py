@@ -118,11 +118,13 @@ class pDataProcessor:
         if not os.path.exists(self.OutputDirPath):
             os.makedirs(self.OutputDirPath)
         if outputFileName is None:
-            outputFileName  = '%s.root' % fileName.split('.')[0]
-        self.OutputFilePath = os.path.join(self.OutputDirPath, outputFileName)
-        self.XmlParser      = pXmlParser(configFilePath)
-        self.TreeMaker      = pFastMonTreeMaker(self)
-        self.ErrorHandler   = pErrorHandler()
+            outputFileName   = '%s.root' % fileName.split('.')[0]
+        self.OutputFilePath  = os.path.join(self.OutputDirPath, outputFileName)
+        self.XmlParser       = pXmlParser(configFilePath)
+        self.TreeMaker       = pFastMonTreeMaker(self)
+        self.ErrorHandler    = pErrorHandler()
+        self.TreeProcessor   = pFastMonTreeProcessor(self)
+        self.ReportGenerator = pFastMonReportGenerator(self)
 	self.__MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
 	self.__EvtMetaContextProcessor =\
                                   pEvtMetaContextProcessor(self.TreeMaker)
@@ -221,7 +223,7 @@ class pDataProcessor:
         self.StopTime = time.time()
         elapsedTime   = self.StopTime - self.StartTime
         averageRate   = self.NumEvents/elapsedTime
-        self.TreeMaker.closeFile()
+        self.TreeMaker.close()
         print
         logger.info('Done. %d events processed in %.2f s (%.2f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
@@ -455,7 +457,7 @@ if __name__ == '__main__':
                                      options.output_file)
     dataProcessor.start(options.events)
     if options.process_tree:
-        pFastMonTreeProcessor(dataProcessor).process()
+        dataProcessor.TreeProcessor.run()
     if options.create_report:
-        pFastMonReportGenerator(dataProcessor).run()
+        dataProcessor.ReportGenerator.run()
 

@@ -14,6 +14,7 @@ import time
 from pXmlParser           import pXmlParser
 from pBaseReportGenerator import pBaseReportGenerator
 from pSafeROOT            import ROOT
+from pRootFileManager     import pRootFileManager
 
 
 class pFastMonReportGenerator(pBaseReportGenerator):
@@ -25,12 +26,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         self.DataProcessor = dataProcessor
         reportDirPath = os.path.join(dataProcessor.OutputDirPath, 'report')
         pBaseReportGenerator.__init__(self, reportDirPath)
-        self.__InputRootFilePath   = self.DataProcessor.OutputFilePath.replace('.root', '.processed.root')
-        #self.__InputAlarmsFilePath = inputAlarmsFilePath
-        #if self.__InputAlarmsFilePath is None:
-        #    self.__InputAlarmsFilePath =\
-        #         self.__InputRootFilePath.replace('.root', '.alarms')
-        self.InputRootFile     = None
+        self.RootFileManager = pRootFileManager()
 
     ## @brief Produce the report in html, ps and pdf formats.
     ## @param self
@@ -39,18 +35,6 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     def run(self):
         self.writeReport()
         self.compileReport()
-
-    ## @brief Open the ROOT input TFile object containing the plots.
-    ## @param self
-    #  The class instance.
-
-    def __openInputRootFile(self):
-        rootFile = ROOT.TFile(self.__InputRootFilePath)
-        if rootFile.GetFd() != -1:
-            return rootFile
-        else:
-            sys.exit('Could not open input ROOT file %s. Aborting...' %\
-                     self.__InputRootFilePath)
 
     ## @brief Add a plot to the doxygen main page file.
     ## @todo There's room for improvements, here (in particular one
@@ -66,12 +50,10 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     #  the towers/layers).
     
     def addPlot(self, plotRep, name):
-        try:
-            rootObject = self.InputRootFile.Get(name)
-        except AttributeError:
-            sys.exit('Object %s not found in the input file.' % name)
-        self.addRootObject(rootObject, plotRep.Title, plotRep.Caption,\
-                           plotRep.DrawOptions, plotRep.XLog, plotRep.YLog)
+        rootObject = self.RootFileManager.get(name)
+        if rootObject is not None:
+            self.addRootObject(rootObject, plotRep.Title, plotRep.Caption,\
+                               plotRep.DrawOptions, plotRep.XLog, plotRep.YLog)
 
     ## @brief Add all the plots to the test report.
     ## @param self
@@ -106,15 +88,21 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     def writeReport(self):
         logger.info('Writing doxygen report files...')
         startTime = time.time()
-        self.InputRootFile = self.__openInputRootFile()
+        rootFilePath = self.DataProcessor.TreeProcessor.OutputFilePath
+        self.RootFileManager.openFile(rootFilePath)
         self.openReport()
         self.addPlots()
         self.addPage('error_summary', 'Error handler summary')
-        #self.addDictionary('', , 'error_summary')
+        dictionary = self.DataProcessor.ErrorHandler.ErrorCountsDict
+        self.addDictionary('Summary by error code',\
+                           dictionary, 'error_summary')
         self.addPage('error_details', 'Error handler details')
-        #self.addDictionary('', , 'error_details')
+        dictionary = self.DataProcessor.ErrorHandler.ErrorEventsDict
+        for (eventNumber, errorEvent) in dictionary.items():
+            self.addDictionary('Event %d' % eventNumber,\
+                               errorEvent.getErrorsDict(), 'error_details')
         self.closeReport()
-        self.InputRootFile.Close()
+        self.RootFileManager.closeFile()
         logger.info('Done in %.2f s.\n' % (time.time() - startTime))
 
 

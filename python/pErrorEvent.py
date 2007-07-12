@@ -15,6 +15,12 @@ class pErrorEvent:
             txt += '- %s\n' % error.getAsText()
         return txt
 
+    def getErrorsDict(self):
+        dict = {}
+        for error in self.ErrorsList:
+            dict[error.ErrorCode] = error.getDetailsAsText()
+        return dict
+
     def __str__(self):
         return self.getAsText()
 
