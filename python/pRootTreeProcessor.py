@@ -1,3 +1,4 @@
+
 #! /bin/env python
 
 ## @package pRootTreeProcessor
@@ -12,9 +13,10 @@ import time
 import sys
 
 from pXmlParser              import pXmlParser
-from pGlobals                import *
+#from pGlobals                import *
 from pFastMonReportGenerator import pFastMonReportGenerator
 from pSafeROOT               import ROOT
+from pFastMonTreeMaker       import FAST_MON_TREE_NAME
 
 
 ## @brief Implementation of the ROOT tree processor.
@@ -103,10 +105,10 @@ class pRootTreeProcessor:
     #  The class instance.
     
     def __getRootTree(self):
-        rootTree = self.__InputRootFile.Get(ROOT_TREE_NAME)
+        rootTree = self.__InputRootFile.Get(FAST_MON_TREE_NAME)
         if rootTree is None:
             sys.exit('Could not find the %s ROOT tree in the input file %s.' %\
-                     (ROOT_TREE_NAME, self.__InputRootFile.GetName()))
+                     (FAST_MON_TREE_NAME, self.__InputRootFile.GetName()))
         else:
             return rootTree
 

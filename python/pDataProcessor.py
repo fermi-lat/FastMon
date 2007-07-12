@@ -15,7 +15,7 @@ import struct
 from copy 			      import copy
 from LICOS_Scripts.analysis.LsfMerger import LsfMerger
 from eventFile			      import LSEReader, LSE_Info
-from pRootTreeMaker                   import pRootTreeMaker
+from pFastMonTreeMaker                import pFastMonTreeMaker
 from pLATdatagramIterator             import pLATdatagramIterator
 from pLATcontributionIterator         import pLATcontributionIterator
 from pEBFeventIterator                import pEBFeventIterator
@@ -79,20 +79,16 @@ class pDataProcessor:
         ## @var __Verbose
         ## @brief Print additional informations.
 
-        ## @var __XmlParser
+        ## @var XmlParser
         ## @brief The xml parser object (pXmlParser instance).
 
-        ## @var __OutputFilePath
+        ## @var OutputFilePath
         ## @brief The path to the output ROOT file containing the ROOT tree.
         #
         #  Not that this is the input file for the tree processor, if the
         #  data processor is called with the corresponding option.
 
-        ## @var __ErrorsFilePath
-        ## @brief The path to the output file where the errors summary is
-        #  saved.
-
-        ## @var __TreeMaker
+        ## @var TreeMaker
         ## @brief The tree maker object (pRootTreeMaker instance).
 
         ## @var ErrorHandler
@@ -147,35 +143,32 @@ class pDataProcessor:
             os.makedirs(outputDir)
         if outputFileName is None:
             outputFileName    = '%s.root' % fileName.split('.')[0]
-        self.__OutputFilePath = os.path.join(outputDir, outputFileName)
+        self.OutputFilePath = os.path.join(outputDir, outputFileName)
         self.__ProcessTree    = processTree
         self.__GenerateReport = generateReport
         self.__ForceOverwrite = forceOverwrite
         self.__Verbose        = verbose
-        self.__XmlParser      = pXmlParser(configFilePath)
-        self.__ErrorsFilePath =\
-                              self.__OutputFilePath.replace('.root', '.errors')
-        self.__TreeMaker      = pRootTreeMaker(self.__XmlParser,\
-                                               self.__OutputFilePath)
-        self.ErrorHandler   = pErrorHandler()
-	self.__MetaEventProcessor = pMetaEventProcessor(self.__TreeMaker)
+        self.XmlParser        = pXmlParser(configFilePath)
+        self.TreeMaker        = pFastMonTreeMaker(self)
+        self.ErrorHandler     = pErrorHandler()
+	self.__MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
 	self.__EvtMetaContextProcessor =\
-                                  pEvtMetaContextProcessor(self.__TreeMaker)
+                                  pEvtMetaContextProcessor(self.TreeMaker)
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
-        self.LatCompIter      = pLATcomponentIterator(self.__TreeMaker,\
-                                                      self.ErrorHandler)
-        self.EbfEventIter     = pEBFeventIterator(self.LatCompIter)
-        self.LatContrIter     = pLATcontributionIterator(self.EbfEventIter)
-        self.LatDatagrIter    = pLATdatagramIterator(self.LatContrIter)
-        self.LatDataBufIter   = LDF.LATdataBufferIterator(self.LatDatagrIter)
-        self.NumEvents        = None
-        self.LsfMerger        = None
-        self.EvtReader        = None
-        self.LdfFile          = None
-        self.StartTime        = None
-        self.StopTime         = None
+        self.LatCompIter    = pLATcomponentIterator(self.TreeMaker,\
+                                                    self.ErrorHandler)
+        self.EbfEventIter   = pEBFeventIterator(self.LatCompIter)
+        self.LatContrIter   = pLATcontributionIterator(self.EbfEventIter)
+        self.LatDatagrIter  = pLATdatagramIterator(self.LatContrIter)
+        self.LatDataBufIter = LDF.LATdataBufferIterator(self.LatDatagrIter)
+        self.NumEvents      = None
+        self.LsfMerger      = None
+        self.EvtReader      = None
+        self.LdfFile        = None
+        self.StartTime      = None
+        self.StopTime       = None
         self.openFile(inputFilePath)
 
     ## @brief Update the event contribution iterators, based on the xml
@@ -184,11 +177,11 @@ class pDataProcessor:
     #  The class instance.
 
     def __updateContributionIterators(self):
-        writer = pTKRcontributionIteratorWriter(self.__XmlParser)
+        writer = pTKRcontributionIteratorWriter(self.XmlParser)
         writer.writeIterator()
-        writer = pCALcontributionIteratorWriter(self.__XmlParser)
+        writer = pCALcontributionIteratorWriter(self.XmlParser)
         writer.writeIterator()
-        writer = pAEMcontributionIteratorWriter(self.__XmlParser)
+        writer = pAEMcontributionIteratorWriter(self.XmlParser)
         writer.writeIterator()
 
     ## @brief Update the event contributions, based on the xml
@@ -197,7 +190,7 @@ class pDataProcessor:
     #  The class instance.
 
     def __updateContributions(self):
-        writer = pGEMcontributionWriter(self.__XmlParser)
+        writer = pGEMcontributionWriter(self.XmlParser)
         writer.writeComponent()
 
     ## @brief Open the input raw data file.
@@ -256,11 +249,12 @@ class pDataProcessor:
         self.StopTime = time.time()
         elapsedTime   = self.StopTime - self.StartTime
         averageRate   = self.NumEvents/elapsedTime
-        self.__TreeMaker.closeFile()
+        self.TreeMaker.closeFile()
         print
         logger.info('Done. %d events processed in %.2f s (%.2f Hz).\n' %\
                      (self.NumEvents, elapsedTime, averageRate))
-        self.ErrorHandler.dump('%s.pickle' % self.__ErrorsFilePath)
+        self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
+                                                           '.errors.pickle'))
         if self.__ProcessTree:
             self.processTree()
             
@@ -274,8 +268,8 @@ class pDataProcessor:
     #  The class instance.
         
     def processTree(self):
-        treeProcessor = pRootTreeProcessor(self.__XmlParser,\
-                                           self.__OutputFilePath,
+        treeProcessor = pRootTreeProcessor(self.XmlParser,\
+                                           self.OutputFilePath,
                                            None,
                                            self.__GenerateReport,
                                            None,
@@ -296,7 +290,7 @@ class pDataProcessor:
         self.ErrorHandler.setEventNumber(self.NumEvents)
 	self.LatDataBufIter.iterate(event, len(event))
         label = 'processor_event_number'
-        self.__TreeMaker.VariablesDictionary[label][0] = self.NumEvents
+        self.TreeMaker.VariablesDictionary[label][0] = self.NumEvents
         self.NumEvents += 1
         if not self.NumEvents % 100:
             print '\r%s events processed...' % self.NumEvents,
@@ -327,10 +321,10 @@ class pDataProcessor:
     #  The event object.
     
     def processLSF(self, meta, event):
-	self.__TreeMaker.resetVariables()
+	self.TreeMaker.resetVariables()
         self.processMetaEvent(meta)
         self.processEvent(event)
-	self.__TreeMaker.fillTree()
+	self.TreeMaker.fillTree()
 
     ## @brief Start the event loop for lsf files.
     ## @param self
@@ -392,17 +386,17 @@ class pDataProcessor:
     #  The buff object of type LDF.EBFeventIterator
     
     def processEvt(self, meta, context, buff):
-	self.__TreeMaker.resetVariables()	
+	self.TreeMaker.resetVariables()	
 	self.ErrorHandler.setEventNumber(self.NumEvents)
         self.processEvtContext(meta, context)	
 	self.EbfEventIter.iterate(buff, len(buff), False)	
 	label = 'processor_event_number'
-	self.__TreeMaker.VariablesDictionary[label][0] = self.NumEvents
+	self.TreeMaker.VariablesDictionary[label][0] = self.NumEvents
 	self.NumEvents += 1
 	if not self.NumEvents % 100:
 		print '\r%s events processed...' % self.NumEvents,
             	sys.stdout.flush()
-	self.__TreeMaker.fillTree()
+	self.TreeMaker.fillTree()
 
     ## @brief Start the event loop for evt files.
     ## @param self
@@ -450,9 +444,9 @@ class pDataProcessor:
     #  The event object.
 
     def processLDF(self, event):
-	self.__TreeMaker.resetVariables()
+	self.TreeMaker.resetVariables()
         self.processEvent(event)
-	self.__TreeMaker.fillTree()
+	self.TreeMaker.fillTree()
 
     ## @brief Start the event loop for ldf files.
     ## @param self
