@@ -33,8 +33,32 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     #  The class instance.
 
     def run(self):
-        self.writeReport()
+        logger.info('Writing doxygen report files...')
+        startTime = time.time()
+        rootFilePath = self.DataProcessor.TreeProcessor.OutputFilePath
+        self.RootFileManager.openFile(rootFilePath)
+        self.openReport()
+        self.fillMainPage()
+        self.addErrorSummary()
+        self.addErrorDetails()
+        self.addPlots()
+        self.closeReport()
+        self.RootFileManager.closeFile()
+        logger.info('Done in %.2f s.\n' % (time.time() - startTime))
         self.compileReport()
+
+    def fillMainPage(self):
+        self.addSection('main_summary', 'Summary')
+        self.write('%d event(s) processed in %.2f seconds.' %\
+                   (self.DataProcessor.NumEvents,\
+                    self.DataProcessor.StopTime -\
+                    self.DataProcessor.StartTime))
+        self.newline()
+        self.write('There are %d error(s) in %d error event(s).' %\
+                   (self.DataProcessor.ErrorHandler.getNumErrors(),
+                    self.DataProcessor.ErrorHandler.getNumErrorEvents()))
+        self.newline()
+        self.write('@n Look at the related pages for details.')
 
     ## @brief Add a plot to the doxygen main page file.
     ## @todo There's room for improvements, here (in particular one
@@ -49,11 +73,12 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     #  The plot name (needs to be passed because it may be different for all
     #  the towers/layers).
     
-    def addPlot(self, plotRep, name):
+    def addPlot(self, plotRep, name, pageLabel):
         rootObject = self.RootFileManager.get(name)
         if rootObject is not None:
             self.addRootObject(rootObject, plotRep.Title, plotRep.Caption,\
-                               plotRep.DrawOptions, plotRep.XLog, plotRep.YLog)
+                               plotRep.DrawOptions, plotRep.XLog,\
+                               plotRep.YLog, pageLabel)
 
     ## @brief Add all the plots to the test report.
     ## @param self
@@ -63,48 +88,38 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         self.createAuxRootCanvas()
         for list in self.DataProcessor.XmlParser.OutputListsDict.values():
             if list.Enabled:
-                self.addOutputListSection(list)
-                for plotRep in list.EnabledPlotRepsDict.values():
-                    for name in plotRep.getRootObjectsName():
-                        self.addPlot(plotRep, name)
+                self.addPlotsList(list)
         self.deleteAuxRootCanvas()
-        
-    ## @brief Add a section corresponding to a particular output list
-    #  to the doxygen main page file.
-    ## @param self
-    #  The class instance.
-    ## @param list
-    #  The pXmlOutputList object.
 
-    def addOutputListSection(self, list):
-        name  = list.Name
-        label = name.replace(' ', '_')
-        self.addSection(label, name)
+    def addPlotsList(self, list):
+        pageLabel = 'list_%s' % list.Name.replace(' ', '_')
+        pageTitle = '%s plots list' % list.Name
+        self.addPage(pageLabel, pageTitle)
+        for plotRep in list.EnabledPlotRepsDict.values():
+            for name in plotRep.getRootObjectsName():
+                self.addPlot(plotRep, name, pageLabel)
 
-    ## @brief Write the actual doxygen files.
-    ## @param self
-    #  The class instance.
-    
-    def writeReport(self):
-        logger.info('Writing doxygen report files...')
-        startTime = time.time()
-        rootFilePath = self.DataProcessor.TreeProcessor.OutputFilePath
-        self.RootFileManager.openFile(rootFilePath)
-        self.openReport()
-        self.addPlots()
-        self.addPage('error_summary', 'Error handler summary')
+    def addErrorSummary(self):
+        pageLabel = 'error_summary'
+        pageTitle = 'Error handler summary'
+        self.addPage(pageLabel, pageTitle)
         dictionary = self.DataProcessor.ErrorHandler.ErrorCountsDict
-        self.addDictionary('Summary by error code',\
-                           dictionary, 'error_summary')
-        self.addPage('error_details', 'Error handler details')
-        dictionary = self.DataProcessor.ErrorHandler.ErrorEventsDict
-        for (eventNumber, errorEvent) in dictionary.items():
-            self.addDictionary('Event %d' % eventNumber,\
-                               errorEvent.getErrorsDict(), 'error_details')
-        self.closeReport()
-        self.RootFileManager.closeFile()
-        logger.info('Done in %.2f s.\n' % (time.time() - startTime))
+        if len(dictionary):
+            self.addDictionary('Summary by error code', dictionary, pageLabel)
+        else:
+            self.write('No error(s) found in this run.', pageLabel)
 
+    def addErrorDetails(self):
+        pageLabel = 'error_details'
+        pageTitle = 'Error handler details'
+        self.addPage(pageLabel, pageTitle)
+        dictionary = self.DataProcessor.ErrorHandler.ErrorEventsDict
+        if (len(dictionary)):
+            for (eventNumber, errorEvent) in dictionary.items():
+                self.addDictionary('Event %d' % eventNumber,\
+                                   errorEvent.getErrorsDict(), 'error_details')
+        else:
+            self.write('No error(s) found in this run.', pageLabel)
 
 
         
@@ -144,4 +159,3 @@ if __name__ == '__main__':
                                            options.force_overwrite,
                                            options.verbose)
     reportGenerator.run()
-
