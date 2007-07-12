@@ -28,7 +28,7 @@ from pContributionWriter              import pGEMcontributionWriter
 from pMetaEventProcessor	      import pMetaEventProcessor
 from pEvtMetaContextProcessor	      import pEvtMetaContextProcessor
 from pErrorHandler                    import pErrorHandler
-from pRootTreeProcessor               import pRootTreeProcessor
+from pFastMonTreeProcessor            import pFastMonTreeProcessor
 from pFastMonReportGenerator          import pFastMonReportGenerator
 from pSafeROOT                        import ROOT
 
@@ -46,8 +46,6 @@ class pDataProcessor:
     #  Path to the input raw data file.
     ## @param outputFilePath
     #  Path to the output ROOT file.
-    ## @param processTree
-    #  Flag to launch the pRootTree processor after the tree has been created.
     ## @param generateReport
     #  Flag to generate a report at the end of the analysis.
     ## @param reportDirPath
@@ -58,35 +56,13 @@ class pDataProcessor:
     #  Print additional informations.
 
     def __init__(self, inputFilePath, configFilePath=None, outputDir=None,
-                 outputFileName=None,\
-                 processTree=False, generateReport=False,\
-                 forceOverwrite=False, verbose=False):
-
-        ## @var __ProcessTree
-        ## @brief Flag to launch the pRootTree processor after the tree
-        #  has been created.
-
-        ## @var __GenerateReport
-        ## @brief Flag to run the report generation at the end of the
-        #  analysis.
-
-        ## @var __ReportDirPath
-        ## @brief The path to the output report directory.
-
-        ## @var __ForceOverwrite
-        ## @brief Flag to overwrite existing files without asking the user.
-
-        ## @var __Verbose
-        ## @brief Print additional informations.
+                 outputFileName=None):
 
         ## @var XmlParser
         ## @brief The xml parser object (pXmlParser instance).
 
         ## @var OutputFilePath
         ## @brief The path to the output ROOT file containing the ROOT tree.
-        #
-        #  Not that this is the input file for the tree processor, if the
-        #  data processor is called with the corresponding option.
 
         ## @var TreeMaker
         ## @brief The tree maker object (pRootTreeMaker instance).
@@ -138,19 +114,15 @@ class pDataProcessor:
         if outputDir is None:
             outputDir = os.path.split(inputFilePath)[0]
         fileName = os.path.split(inputFilePath)[1]
-        outputDir = os.path.join(outputDir, fileName.split('.')[0])
-        if not os.path.exists(outputDir):
-            os.makedirs(outputDir)
+        self.OutputDirPath  = os.path.join(outputDir, fileName.split('.')[0])
+        if not os.path.exists(self.OutputDirPath):
+            os.makedirs(self.OutputDirPath)
         if outputFileName is None:
-            outputFileName    = '%s.root' % fileName.split('.')[0]
-        self.OutputFilePath = os.path.join(outputDir, outputFileName)
-        self.__ProcessTree    = processTree
-        self.__GenerateReport = generateReport
-        self.__ForceOverwrite = forceOverwrite
-        self.__Verbose        = verbose
-        self.XmlParser        = pXmlParser(configFilePath)
-        self.TreeMaker        = pFastMonTreeMaker(self)
-        self.ErrorHandler     = pErrorHandler()
+            outputFileName  = '%s.root' % fileName.split('.')[0]
+        self.OutputFilePath = os.path.join(self.OutputDirPath, outputFileName)
+        self.XmlParser      = pXmlParser(configFilePath)
+        self.TreeMaker      = pFastMonTreeMaker(self)
+        self.ErrorHandler   = pErrorHandler()
 	self.__MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
 	self.__EvtMetaContextProcessor =\
                                   pEvtMetaContextProcessor(self.TreeMaker)
@@ -255,29 +227,7 @@ class pDataProcessor:
                      (self.NumEvents, elapsedTime, averageRate))
         self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
                                                            '.errors.pickle'))
-        if self.__ProcessTree:
-            self.processTree()
-            
-
-    ## @brief Process the ROOT tree.
-    #
-    #  This function creates a pRootTreeProcessor object which re-opens
-    #  the data processor output files and produces a second ROOT file
-    #  containing the histogram defined in the xml configuration file.
-    ## @param self
-    #  The class instance.
         
-    def processTree(self):
-        treeProcessor = pRootTreeProcessor(self.XmlParser,\
-                                           self.OutputFilePath,
-                                           None,
-                                           self.__GenerateReport,
-                                           None,
-                                           None,
-                                           self.__ForceOverwrite,
-                                           self.__Verbose)
-        treeProcessor.process()
-
     ## @brief Process an event.
     #
     #  This is actually called both for lsf and ldf files.
@@ -341,8 +291,6 @@ class pDataProcessor:
                 break
             self.processLSF(meta, buff)
         self.finalize()
-
-
 
     ## @brief Print header information of an evt file
     #
@@ -504,7 +452,10 @@ if __name__ == '__main__':
         parser.error('please run with the -p option if you want the report.')
     dataProcessor  = pDataProcessor( args[0],options.config_file,
                                      options.output_dir,
-                                     options.output_file, options.process_tree,
-                                     options.create_report,
-                                     options.force_overwrite, options.verbose)
+                                     options.output_file)
     dataProcessor.start(options.events)
+    if options.process_tree:
+        pFastMonTreeProcessor(dataProcessor).process()
+    if options.create_report:
+        pFastMonReportGenerator(dataProcessor).run()
+
