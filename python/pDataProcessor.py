@@ -444,6 +444,9 @@ if __name__ == '__main__':
     parser.add_option('-v', '--verbose', action='store_true',
                       dest='verbose', default=False,
                       help='print a lot of ROOT/doxygen/LaTeX related stuff')
+    parser.add_option('-l', '--disable-LaTeX', action='store_true',
+                      dest='disable_LaTeX', default=False,
+                      help='do not compile the LaTeX version of the report')
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.print_help()
@@ -459,5 +462,6 @@ if __name__ == '__main__':
     if options.process_tree:
         dataProcessor.TreeProcessor.run()
     if options.create_report:
-        dataProcessor.ReportGenerator.run()
+        dataProcessor.ReportGenerator.run(options.verbose,\
+                                          not options.disable_LaTeX)
 

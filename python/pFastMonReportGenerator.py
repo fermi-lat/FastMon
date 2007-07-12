@@ -32,7 +32,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     ## @param self
     #  The class instance.
 
-    def run(self):
+    def run(self, verbose = False, compileLaTeX = True):
         logger.info('Writing doxygen report files...')
         startTime = time.time()
         rootFilePath = self.DataProcessor.TreeProcessor.OutputFilePath
@@ -41,11 +41,13 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         self.fillMainPage()
         self.addErrorSummary()
         self.addErrorDetails()
+        self.createAuxRootCanvas(True, verbose)
         self.addPlots()
+        self.deleteAuxRootCanvas()
         self.closeReport()
         self.RootFileManager.closeFile()
         logger.info('Done in %.2f s.\n' % (time.time() - startTime))
-        self.compileReport()
+        self.compileReport(verbose, compileLaTeX)
 
     def fillMainPage(self):
         self.addSection('main_summary', 'Summary')
@@ -85,11 +87,9 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     #  The class instance.
     
     def addPlots(self):
-        self.createAuxRootCanvas()
         for list in self.DataProcessor.XmlParser.OutputListsDict.values():
             if list.Enabled:
                 self.addPlotsList(list)
-        self.deleteAuxRootCanvas()
 
     def addPlotsList(self, list):
         pageLabel = 'list_%s' % list.Name.replace(' ', '_')
