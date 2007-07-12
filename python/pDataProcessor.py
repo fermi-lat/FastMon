@@ -438,15 +438,18 @@ if __name__ == '__main__':
     parser.add_option('-r', '--create-report', action='store_true',
                       dest='create_report', default=False,
                       help='generate the report from the processed ROOT file')
-    parser.add_option('-f', '--force-overwrite', action='store_true',
-                      dest='force_overwrite', default=False,
-                      help='overwrite existing files without asking')
+    #parser.add_option('-f', '--force-overwrite', action='store_true',
+    #                  dest='force_overwrite', default=False,
+    #                  help='overwrite existing files without asking')
     parser.add_option('-v', '--verbose', action='store_true',
                       dest='verbose', default=False,
                       help='print a lot of ROOT/doxygen/LaTeX related stuff')
-    parser.add_option('-l', '--disable-LaTeX', action='store_true',
+    parser.add_option('-L', '--disable-LaTeX', action='store_true',
                       dest='disable_LaTeX', default=False,
                       help='do not compile the LaTeX version of the report')
+    #parser.add_option('-l', '--logging-level', dest='logging_level',
+    #                  default='DEBUG', type=str,
+    #                  help='the global level of the logger')
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.print_help()
