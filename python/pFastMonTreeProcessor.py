@@ -10,3 +10,11 @@ class pFastMonTreeProcessor(pBaseTreeProcessor):
                                     dataProcessor.TreeMaker.OutputFilePath ,\
                                     FAST_MON_TREE_NAME, None)
     
+    ## @brief Create the ROOT objects defined in the enabled output lists
+    #  of the xml configuration file.
+    ## @param self
+    #  The class instance.
+
+    def createObjects(self):
+        for rep in self.XmlParser.EnabledPlotRepsDict.values():
+            rep.createRootObjects(self.RootTree)
