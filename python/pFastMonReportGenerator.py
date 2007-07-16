@@ -62,26 +62,6 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         self.newline()
         self.write('@n Look at the related pages for details.')
 
-    ## @brief Add a plot to the doxygen main page file.
-    ## @todo There's room for improvements, here (in particular one
-    #  could write a method in pXmlPlotRep to return a list of plot reps
-    #  for all the levels - with their names, titles, etc - and avoid
-    #  the name parameter in this function).
-    ## @param self
-    #  The class instance.
-    ## @param plotRep
-    #  The pXmlPlotRep object representing the plot.
-    ## @param name
-    #  The plot name (needs to be passed because it may be different for all
-    #  the towers/layers).
-    
-    def addPlot(self, plotRep, name, pageLabel):
-        rootObject = self.RootFileManager.get(name)
-        if rootObject is not None:
-            self.addRootObject(rootObject, plotRep.Title, plotRep.Caption,\
-                               plotRep.DrawOptions, plotRep.XLog,\
-                               plotRep.YLog, pageLabel)
-
     ## @brief Add all the plots to the test report.
     ## @param self
     #  The class instance.
@@ -90,14 +70,6 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         for list in self.DataProcessor.XmlParser.OutputListsDict.values():
             if list.Enabled:
                 self.addPlotsList(list)
-
-    def addPlotsList(self, list):
-        pageLabel = 'list_%s' % list.Name.replace(' ', '_')
-        pageTitle = '%s plots list' % list.Name
-        self.addPage(pageLabel, pageTitle)
-        for plotRep in list.EnabledPlotRepsDict.values():
-            for name in plotRep.getRootObjectsName():
-                self.addPlot(plotRep, name, pageLabel)
 
     def addErrorSummary(self):
         pageLabel = 'error_summary'
