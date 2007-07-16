@@ -320,50 +320,16 @@ class pDataProcessor:
 
     
 if __name__ == '__main__':
-    from optparse import OptionParser
-    parser = OptionParser(usage='usage: %prog [options] data_file')
-    parser.add_option('-c', '--config-file', dest='config_file',
-                      default=None, type=str,
-                      help='path to the input xml configuration file')
-    parser.add_option('-n', '--num-events', dest='events',
-                      default=-1, type=int,
-                      help='number of events to be processed')
-    parser.add_option('-o', '--output-file', dest='output_file',
-                      default=None, type=str,
-                      help='name of the output ROOT file')
-    parser.add_option('-d', '--output-dir', dest='output_dir',
-                      default=None, type=str,
-                      help='path to the output directory')
-    parser.add_option('-p', '--process-tree', action='store_true',
-                      dest='process_tree', default=False,
-                      help='process the ROOT tree and create histograms')
-    parser.add_option('-r', '--create-report', action='store_true',
-                      dest='create_report', default=False,
-                      help='generate the report from the processed ROOT file')
-    parser.add_option('-f', '--force-overwrite', action='store_true',
-                      dest='force_overwrite', default=False,
-                      help='has no effect, preserved for compatibility')
-    parser.add_option('-v', '--verbose', action='store_true',
-                      dest='verbose', default=False,
-                      help='print a lot of ROOT/doxygen/LaTeX related stuff')
-    parser.add_option('-L', '--disable-LaTeX', action='store_true',
-                      dest='disable_LaTeX', default=False,
-                      help='do not compile the LaTeX version of the report')
-    (options, args) = parser.parse_args()
-    if len(args) != 1:
-        parser.print_help()
-        parser.error('incorrect number of arguments')
-        sys.exit()
-    if options.create_report and not options.process_tree:
-        parser.print_help()
-        parser.error('please run with the -p option if you want the report.')
-    dataProcessor  = pDataProcessor(args[0],options.config_file,\
-                                    options.output_dir,
-                                    options.output_file)
-    dataProcessor.startProcessing(options.events)
-    if options.process_tree:
+    from pOptionParser import pOptionParser
+    optparser = pOptionParser('cnodrvLpfV')
+    if optparser.Options.r and not optparser.Options.p:
+        optparser.error('cannot use the -r option without -p')
+    dataProcessor = pDataProcessor(optparser.Argument, optparser.Options.c,\
+                                   optparser.Options.d, optparser.Options.o)
+    dataProcessor.startProcessing(optparser.Options.n)
+    if optparser.Options.p:
         dataProcessor.TreeProcessor.run()
-    if options.create_report:
-        dataProcessor.ReportGenerator.run(options.verbose,\
-                                          not options.disable_LaTeX)
+    if optparser.Options.r:
+        dataProcessor.ReportGenerator.run(optparser.Options.v,\
+                                          not optparser.Options.L)
 
