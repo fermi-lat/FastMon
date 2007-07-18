@@ -103,6 +103,9 @@ class pPlotXmlRep(pXmlElement):
         self.Caption      = self.getTagValue('caption', '')
         self.RootObjects  = {}
 
+    def draw(self, rootObject):
+        rootObject.Draw(self.DrawOptions)
+
     ## @brief Return the suffix to be attached to the plot name or
     #  title for a particular object (e.g. tower or tkr layer), in case
     #  the Level requires it.
