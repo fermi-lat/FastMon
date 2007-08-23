@@ -38,6 +38,9 @@ class pEvtMetaContextProcessor:
 	self.TimeHackRollOverNum       = 0
 	self.TimeHackHasJustRolledOver = False
 
+    def getVariable(self, varName):
+        return self.TreeMaker.getVariable('%s%s' % (FAST_MON_PREFIX, varName))
+
     ## @brief Set the EvtReader variable to have access to high level quantities
     ## @param self
     #  The class instance.
@@ -78,80 +81,80 @@ class pEvtMetaContextProcessor:
     #  The evt meta context information
 
     def process(self, meta, context):
-        self.TreeMaker.getVariable('event_timestamp')[0]                     =\
+        self.getVariable('event_timestamp')[0]                     =\
                        self.calculateTimeStamp(meta, context)      
-        self.TreeMaker.getVariable('meta_context_run_id')[0] = -1\
+        self.getVariable('meta_context_run_id')[0] = -1\
 #                       self.EvtReader.runid()  
 		            
-	self.TreeMaker.getVariable('meta_context_open_action')[0]            =\
+	self.getVariable('meta_context_open_action')[0]            =\
                        context.open.action
-	self.TreeMaker.getVariable('meta_context_open_crate')[0]             =\
+	self.getVariable('meta_context_open_crate')[0]             =\
                        context.open.crate
-	self.TreeMaker.getVariable('meta_context_open_datagrams')[0]         =\
+	self.getVariable('meta_context_open_datagrams')[0]         =\
                        context.open.datagrams
-	self.TreeMaker.getVariable('meta_context_open_mode')[0]              =\
+	self.getVariable('meta_context_open_mode')[0]              =\
                        context.open.mode
-	self.TreeMaker.getVariable('meta_context_open_modechanges')[0]       =\
+	self.getVariable('meta_context_open_modechanges')[0]       =\
                        context.open.modeChanges
-	self.TreeMaker.getVariable('meta_context_open_reason')[0]            =\
+	self.getVariable('meta_context_open_reason')[0]            =\
                        context.open.reason
-	self.TreeMaker.getVariable('meta_context_close_action')[0]           =\
+	self.getVariable('meta_context_close_action')[0]           =\
                        context.close.action
-	self.TreeMaker.getVariable('meta_context_close_reason')[0]           =\
+	self.getVariable('meta_context_close_reason')[0]           =\
                        context.close.reason
-	self.TreeMaker.getVariable('meta_context_run_origin')[0]             =\
+	self.getVariable('meta_context_run_origin')[0]             =\
                        context.run.origin   
-        self.TreeMaker.getVariable('meta_context_run_platform')[0]           =\
+        self.getVariable('meta_context_run_platform')[0]           =\
                        context.run.platform	       
-	self.TreeMaker.getVariable('meta_context_run_startedat')[0]          =\
+	self.getVariable('meta_context_run_startedat')[0]          =\
                        context.run.startedAt   
-	self.TreeMaker.getVariable('meta_context_gem_scalers_elapsed')[0]    =\
+	self.getVariable('meta_context_gem_scalers_elapsed')[0]    =\
                        context.scalers.elapsed
-	self.TreeMaker.getVariable('meta_context_gem_scalers_livetime')[0]   =\
+	self.getVariable('meta_context_gem_scalers_livetime')[0]   =\
                        context.scalers.livetime
-	self.TreeMaker.getVariable('meta_context_gem_scalers_prescaled')[0]  =\
+	self.getVariable('meta_context_gem_scalers_prescaled')[0]  =\
                        context.scalers.prescaled
-	self.TreeMaker.getVariable('meta_context_gem_scalers_discarded')[0]  =\
+	self.getVariable('meta_context_gem_scalers_discarded')[0]  =\
                        context.scalers.discarded
-	self.TreeMaker.getVariable('meta_context_gem_scalers_sequence')[0]   =\
+	self.getVariable('meta_context_gem_scalers_sequence')[0]   =\
                        context.scalers.sequence
-	self.TreeMaker.getVariable('meta_context_gem_scalers_deadzone')[0]   =\
+	self.getVariable('meta_context_gem_scalers_deadzone')[0]   =\
                        context.scalers.deadzone
-	self.TreeMaker.getVariable('meta_context_current_incomplete')[0]     =\
+	self.getVariable('meta_context_current_incomplete')[0]     =\
                        context.current.incomplete
-	self.TreeMaker.getVariable('meta_context_current_timesecs')[0]       =\
+	self.getVariable('meta_context_current_timesecs')[0]       =\
                        context.current.timeSecs
-	self.TreeMaker.getVariable('meta_context_current_flywheeling')[0]    =\
+	self.getVariable('meta_context_current_flywheeling')[0]    =\
                        context.current.flywheeling
-	self.TreeMaker.getVariable('meta_context_current_missing_gps')[0]    =\
+	self.getVariable('meta_context_current_missing_gps')[0]    =\
                        context.current.missingGps
-	self.TreeMaker.getVariable('meta_context_current_missing_cpupps')[0] =\
+	self.getVariable('meta_context_current_missing_cpupps')[0] =\
                        context.current.missingCpuPps
-	self.TreeMaker.getVariable('meta_context_current_missing_latpps')[0] =\
+	self.getVariable('meta_context_current_missing_latpps')[0] =\
                        context.current.missingLatPps
-	self.TreeMaker.getVariable('meta_context_current_missing_timetone')[0]=\
+	self.getVariable('meta_context_current_missing_timetone')[0]=\
                        context.current.missingTimeTone
-	self.TreeMaker.getVariable('meta_context_current_gem_timehacks')[0]  =\
+	self.getVariable('meta_context_current_gem_timehacks')[0]  =\
                        context.current.timeHack.hacks
-	self.TreeMaker.getVariable('meta_context_current_gem_timeticks')[0]  =\
+	self.getVariable('meta_context_current_gem_timeticks')[0]  =\
                        context.current.timeHack.tics
-	self.TreeMaker.getVariable('meta_context_previous_incomplete')[0]    =\
+	self.getVariable('meta_context_previous_incomplete')[0]    =\
                        context.previous.incomplete
-	self.TreeMaker.getVariable('meta_context_previous_timesecs')[0]      =\
+	self.getVariable('meta_context_previous_timesecs')[0]      =\
                        context.previous.timeSecs
-	self.TreeMaker.getVariable('meta_context_previous_flywheeling')[0]   =\
+	self.getVariable('meta_context_previous_flywheeling')[0]   =\
                        context.previous.flywheeling
-	self.TreeMaker.getVariable('meta_context_previous_missing_gps')[0]   =\
+	self.getVariable('meta_context_previous_missing_gps')[0]   =\
                        context.previous.missingGps
-	self.TreeMaker.getVariable('meta_context_previous_missing_cpupps')[0]=\
+	self.getVariable('meta_context_previous_missing_cpupps')[0]=\
                        context.previous.missingCpuPps
-	self.TreeMaker.getVariable('meta_context_previous_missing_latpps')[0]=\
+	self.getVariable('meta_context_previous_missing_latpps')[0]=\
                        context.previous.missingLatPps
-	self.TreeMaker.getVariable('meta_context_previous_missing_timetone')[0]=\
+	self.getVariable('meta_context_previous_missing_timetone')[0]=\
                        context.previous.missingTimeTone
-	self.TreeMaker.getVariable('meta_context_previous_gem_timehacks')[0] =\
+	self.getVariable('meta_context_previous_gem_timehacks')[0] =\
                        context.previous.timeHack.hacks
-	self.TreeMaker.getVariable('meta_context_previous_gem_timeticks')[0] =\
+	self.getVariable('meta_context_previous_gem_timeticks')[0] =\
                        context.previous.timeHack.tics
 
 

@@ -32,7 +32,6 @@ from pFastMonTreeProcessor            import pFastMonTreeProcessor
 from pFastMonReportGenerator          import pFastMonReportGenerator
 from pSafeROOT                        import ROOT
 
-
 ## @brief The data processor implementation.
 
 class pDataProcessor:
@@ -291,7 +290,7 @@ class pDataProcessor:
         self.ErrorHandler.setEventNumber(self.NumEvents)
 
     def __postEvent(self):
-	self.TreeMaker.VariablesDictionary['processor_event_number'][0] =\
+	self.TreeMaker.VariablesDictionary['%sprocessor_event_number' % FAST_MON_PREFIX][0] =\
                                                             self.NumEvents
         self.TreeMaker.fillTree()
 	self.NumEvents += 1
