@@ -10,6 +10,8 @@ import numpy
 
 from pGlobals  import *
 from pSafeROOT import ROOT
+from pUtils import Root2PythonCutConverter
+
 
 
 ## @brief Method mapping the content of a gem 16 bit register to the
@@ -154,6 +156,17 @@ def cal_2d_map(rootTree, plotRep):
     return histogram
 
 
+## @brief Return a ROOT TH1F object: the distribution of the number of
+#  planes hit in a tower.
+#
+#  This function uses the tkr_layer_end_strip_count variable;
+#  if it is not present in the TTree the histogram will be empty
+#  and a warning message will be sent.
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
+
 def tkr_layer_count(rootTree, plotRep, tower):
     startTime = time.time()
     xmin      = 0
@@ -172,7 +185,7 @@ def tkr_layer_count(rootTree, plotRep, tower):
         for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
             buffer0 = entry.tkr_layer_end_strip_count[tower*72 +layer*2]
             buffer1 = entry.tkr_layer_end_strip_count[tower*72 +layer*2 +1]
-            if (buffer0>0 or buffer1 >0) and eval(Root2PythonCutConverter(plotRep.Cut)):
+            if (buffer0>0 or buffer1 >0) and (eval(Root2PythonCutConverter(plotRep.Cut))):
                 tmpNumLayer +=1
 
         histogram.Fill(tmpNumLayer)
@@ -184,6 +197,3 @@ def tkr_layer_count(rootTree, plotRep, tower):
 
 
 
-def Root2PythonCutConverter(CutString, prefix = "entry." ):
-    
-    return prefix +CutString
