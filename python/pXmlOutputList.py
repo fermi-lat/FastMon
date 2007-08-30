@@ -517,12 +517,17 @@ class pCUSTOMXmlRep(pPlotXmlRep):
     ## @param rootTree
     #  The ROOT tree.
 
-    def getRootObject(self, rootTree):
-        histogram = eval('pCUSTOMplots.%s(rootTree, self)' % self.Type)
-        histogram.GetXaxis().SetTitle(self.XLabel)
-        histogram.GetYaxis().SetTitle(self.YLabel)
-        return histogram
-
+    def getRootObject(self, rootTree, tower=None, layer=None):
+        if tower == None:
+            histogram = eval('pCUSTOMplots.%s(rootTree, self)' % self.Type)
+            histogram.GetXaxis().SetTitle(self.XLabel)
+            histogram.GetYaxis().SetTitle(self.YLabel)
+            return histogram
+        else:
+            histogram = eval('pCUSTOMplots.%s(rootTree, self, %d)' % (self.Type, tower))
+            histogram.GetXaxis().SetTitle(self.XLabel)
+            histogram.GetYaxis().SetTitle(self.YLabel)
+            return histogram
 
 ## @brief Class describing an output list for the data monitor (i.e. a
 #  list of representations of the ROOT plots to be filled and saved when

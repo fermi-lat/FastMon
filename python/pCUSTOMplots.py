@@ -11,6 +11,7 @@ import numpy
 from pGlobals  import *
 from pSafeROOT import ROOT
 
+
 ## @brief Method mapping the content of a gem 16 bit register to the
 #  corresponding tower and returning a TH1F object.
 ## @param rootTree
@@ -151,3 +152,38 @@ def cal_2d_map(rootTree, plotRep):
     logger.debug('Custom plot %s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
+
+
+def tkr_layer_count(rootTree, plotRep, tower):
+    startTime = time.time()
+    xmin      = 0
+    xmax      = NUM_TKR_LAYERS_PER_TOWER+1
+    xbins     = xmax
+    histogram = ROOT.TH1F(plotRep.getExpandedName(tower), plotRep.getExpandedTitle(tower), xbins, xmin, xmax)
+    
+    if rootTree.GetLeaf("tkr_layer_end_strip_count") is None:
+        logger.warning('Custom plot %s requires tkr_layer_end_strip_count that is not in the processed tree' %\
+                       plotRep.getExpandedName(tower))
+        return histogram
+    print plotRep.Cut, Root2PythonCutConverter(plotRep.Cut)
+
+    for entry in rootTree:
+        tmpNumLayer = 0
+        for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
+            buffer0 = entry.tkr_layer_end_strip_count[tower*72 +layer*2]
+            buffer1 = entry.tkr_layer_end_strip_count[tower*72 +layer*2 +1]
+            if (buffer0>0 or buffer1 >0) and eval(Root2PythonCutConverter(plotRep.Cut)):
+                tmpNumLayer +=1
+
+        histogram.Fill(tmpNumLayer)
+
+    logger.debug('Custom plot %s created in %.2f s.' %\
+                  (plotRep.getExpandedName(tower), time.time() - startTime))
+    return histogram
+
+
+
+
+def Root2PythonCutConverter(CutString, prefix = "entry." ):
+    
+    return prefix +CutString

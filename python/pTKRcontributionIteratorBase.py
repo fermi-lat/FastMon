@@ -4,8 +4,8 @@
 
 import LDF
 
-from copy import copy
-
+from copy      import copy
+from pGlobals  import *
 
 ## @brief Base TKR contribution iterator.
 
@@ -107,4 +107,6 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     def tkr_layer_end_tot__TOT__(self, tower, layerEnd, tot):
         self.TreeMaker.getVariable("tkr_layer_end_tot")\
                         [self.TemId][layerEnd/2][layerEnd%2] = copy(tot)
+
+
 

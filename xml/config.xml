@@ -122,8 +122,7 @@
 	<variable name="tkr_layer_end_tot" enabled="True">
 	    <type>int</type>
 	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
-	</variable>
-	
+	</variable>	
     </inputList>
     
     
@@ -290,8 +289,19 @@
 	    <xmax>300</xmax>
             <expression>tkr_strip_count</expression>
         </TH1F>
+								
+        <CUSTOM type="tkr_layer_count" name="tkr_tower_layer_count" enabled="True" level="tower" >
+	    <title>Number of hit Tracker Tower Layer per event</title>
+	    <xlabel>Layer number</xlabel>
+	    <caption></caption>
+	    <!-- this tag is useless for this CUSTOM plot 
+			since it is dedicated to a specific task
+			<expression>tkr_layer_end_strip_count</expression> -->
+			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
+        </CUSTOM>				
+				
         <TH1F name="tkr_tower_strip_count" enabled="True" level="tower">
-	    <title>Tracker hit multiplicity</title>
+	    <title>Tracker Tower hit multiplicity</title>
 	    <xbins>100</xbins>
 	    <xmin>0</xmin>
 	    <xmax>100</xmax>
@@ -300,7 +310,7 @@
             <expression>tkr_tower_strip_count</expression>
             <cut><![CDATA[ tkr_tower_strip_count > 0 ]]></cut>
         </TH1F>
-        <CUSTOM type="tkr_2d_map" name="tkr_hitmap" enabled="True">
+        <CUSTOM type="tkr_2d_map" name="tkr_hitmap" enabled="True" >
 	    <title>Average number of strip hits per GTRC</title>
 	    <xlabel>Plane</xlabel>
 	    <ylabel>Tower</ylabel>
@@ -318,7 +328,7 @@
 	    <expression>tkr_layer_end_tot</expression>
 	    <exclude>[0, 255]</exclude>
         </CUSTOM>
-        <CUSTOM type="tkr_2d_map_project" name="tkr_hitmap_project" enabled="False">
+        <CUSTOM type="tkr_2d_map_project" name="tkr_hitmap_project" enabled="True">
 	    <title>Average number of strip hits in a Tracker plane</title>
 	    <xlabel>Plane</xlabel>
 	    <ylabel>Tower</ylabel>
