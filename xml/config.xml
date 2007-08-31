@@ -16,9 +16,17 @@
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
+	<variable name="gem_discarded_delta" reset="False" enabled="True">
+	    <type>int</type>
+            <shape>(2)</shape>
+	</variable>
 	<variable name="gem_dead_zone" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
+	</variable>
+	<variable name="gem_dead_zone_delta" reset="False" enabled="True">
+	    <type>int</type>
+            <shape>(2)</shape>
 	</variable>
 	<variable name="gem_live_time" enabled="True">
 	    <type>int</type>
@@ -185,6 +193,26 @@
 	    <xlabel>GEM delta window open time (clock tics)</xlabel>
 	    <ylabel>Number of events</ylabel>
             <expression>gem_delta_window_open_time</expression>
+        </TH1F>
+        <TH1F name="gem_discarded_delta" enabled="True">
+	    <title>GEM discarded events</title>
+	    <xbins>32</xbins>
+	    <xmin>0</xmin>
+	    <xmax>32</xmax>
+			<xlabel>number of events</xlabel>
+	    <caption>number of GEM discarded events between two consecutive events</caption>
+      <expression>gem_discarded_delta[0]</expression>
+			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
+        </TH1F>
+        <TH1F name="gem_dead_zone_delta" enabled="True">
+	    <title>GEM dead zone events</title>
+	    <xbins>32</xbins>
+	    <xmin>0</xmin>
+	    <xmax>32</xmax>
+			<xlabel>number of events</xlabel>
+	    <caption>number of GEM dead zone events between two consecutive events</caption>
+      <expression>gem_dead_zone_delta[0]</expression>
+			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
         </TH1F>
     </outputList>
     

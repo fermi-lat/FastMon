@@ -65,6 +65,17 @@ class pGEMcontributionBase:
     def gem_discarded(self):
         self.TreeMaker.getVariable('gem_discarded')[0] = copy(self.discarded())
 
+    ## @brief Function filling the gem_discarded_delta tree variable.
+    #  Do not reset this variable! 
+    ## @param self
+    #  The class instance.
+
+    def gem_discarded_delta(self):
+        tmpDisc = copy(self.discarded())
+        self.TreeMaker.getVariable('gem_discarded_delta')[0] = \
+        tmpDisc - self.TreeMaker.getVariable('gem_discarded_delta')[1]
+        self.TreeMaker.getVariable('gem_discarded_delta')[1] = tmpDisc
+            
     ## @brief Function filling the gem_dead_zone tree variable.
     ## @param self
     #  The class instance.
@@ -72,6 +83,17 @@ class pGEMcontributionBase:
     def gem_dead_zone(self):
         self.TreeMaker.getVariable('gem_dead_zone')[0] = copy(self.deadZone())
 
+    ## @brief Function filling the gem_dead_zone_delta tree variable.
+    #  Do not reset this variable!        
+    ## @param self
+    #  The class instance.
+	
+    def gem_dead_zone_delta(self):
+        tmpDZone = copy(self.deadZone())
+        self.TreeMaker.getVariable('gem_dead_zone_delta')[0] =\
+        tmpDZone - self.TreeMaker.getVariable('gem_dead_zone_delta')[1]
+        self.TreeMaker.getVariable('gem_dead_zone_delta')[1] = tmpDZone
+        
     ## @brief Function filling the gem_live_time tree variable.
     ## @param self
     #  The class instance.
