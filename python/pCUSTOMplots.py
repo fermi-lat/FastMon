@@ -215,7 +215,6 @@ def tkr_layer_count(rootTree, plotRep, tower):
         logger.warning('Custom plot %s requires tkr_layer_end_strip_count that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
-    #print plotRep.Cut, Root2PythonCutConverter(plotRep.Cut)
 
     for entry in rootTree:
         tmpNumLayer = 0
@@ -272,10 +271,8 @@ def tkr_no_tot_counter(rootTree, plotRep):
                 ToT1 = entry.tkr_layer_end_tot[index +1]
                 
                 if nStrips0>0 and ToT0==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
-                    print  "0 -",nStrips0, ToT0, layer, tower
                     histogram.Fill(layer, tower)  
                 if nStrips1>0 and ToT1==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
-                    print  "1 -",nStrips1, ToT1, layer, tower
                     histogram.Fill(layer+0.5, tower)
 
     logger.debug('Custom plot %s created in %.2f s.' %\
