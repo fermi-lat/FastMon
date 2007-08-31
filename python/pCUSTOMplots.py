@@ -26,7 +26,7 @@ def gem_vector_map(rootTree, plotRep):
     histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, 16, 0, 16)
     histogram.SetMinimum(0)
     for entry in rootTree:
-        for tower in range(NUM_TOWERS):
+        for tower in xrange(NUM_TOWERS):
             if eval('entry.%s & (0x1 << tower)' % plotRep.Expression):
                 histogram.Fill(tower)
     logger.debug('Custom plot %s created in %.2f s.' %\
@@ -63,16 +63,16 @@ def tkr_2d_map(rootTree, plotRep):
     for entry in rootTree:
         values = numpy.zeros((NUM_TKR_GTRC), dtype=int)
         buffer = eval('entry.%s' % plotRep.Expression)
-        for i in range(NUM_TKR_GTRC):
+        for i in xrange(NUM_TKR_GTRC):
             values[i] = buffer[i]
         status = numpy.ones((NUM_TKR_GTRC), dtype=int)
         means += values
         for value in plotRep.ExcludedValues:
             status = status*(values != value)
         entries += status
-    for tower in range(NUM_TOWERS):
-        for layer in range(NUM_TKR_LAYERS_PER_TOWER):
-            for end in range(NUM_GTRC_PER_LAYER):
+    for tower in xrange(NUM_TOWERS):
+        for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
+            for end in xrange(NUM_GTRC_PER_LAYER):
                 index = tower*NUM_TKR_LAYERS_PER_TOWER*NUM_GTRC_PER_LAYER +\
                         layer*NUM_GTRC_PER_LAYER +end
                 if entries[index] == 0:
@@ -104,9 +104,9 @@ def tkr_2d_map_project(rootTree, plotRep):
     ybins     = ymax
     histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
                           ybins, ymin, ymax)
-    for tower in range(NUM_TOWERS):
-        for layer in range(NUM_TKR_LAYERS_PER_TOWER):
-            for end in range(NUM_GTRC_PER_LAYER):
+    for tower in xrange(NUM_TOWERS):
+        for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
+            for end in xrange(NUM_GTRC_PER_LAYER):
                 rootTree.Project("h1",\
                              plotRep.getExpandedExpression(tower, layer, end),\
                              plotRep.getExpandedCut(tower, layer, end))
@@ -136,15 +136,15 @@ def cal_2d_map(rootTree, plotRep):
     for entry in rootTree:
         values = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
         buffer = eval('entry.%s' % plotRep.Expression)
-        for i in range(NUM_CAL_LAYERS):
+        for i in xrange(NUM_CAL_LAYERS):
             values[i] = buffer[i]
         status = numpy.ones((NUM_CAL_LAYERS), dtype=int)
         means += values
         for value in plotRep.ExcludedValues:
             status = status*(values != value)
         entries += status
-    for tower in range(NUM_TOWERS):
-        for layer in range(NUM_CAL_LAYERS_PER_TOWER):
+    for tower in xrange(NUM_TOWERS):
+        for layer in xrange(NUM_CAL_LAYERS_PER_TOWER):
             index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
             if entries[index] == 0:
                 mean  = 0
@@ -166,25 +166,29 @@ def cal_2d_map(rootTree, plotRep):
 #  The ROOT tree containing the variables.
 ## @param plotRep
 #  The custom plot representation from the pXmlParser object.
+## @param tower
+#  The Tracker tower under analysis
 
 def tkr_layer_count(rootTree, plotRep, tower):
     startTime = time.time()
     xmin      = 0
     xmax      = NUM_TKR_LAYERS_PER_TOWER+1
     xbins     = xmax
-    histogram = ROOT.TH1F(plotRep.getExpandedName(tower), plotRep.getExpandedTitle(tower), xbins, xmin, xmax)
+    histogram = ROOT.TH1F(plotRep.getExpandedName(tower), plotRep.getExpandedTitle(tower),
+                          xbins, xmin, xmax)
     
     if rootTree.GetLeaf("tkr_layer_end_strip_count") is None:
         logger.warning('Custom plot %s requires tkr_layer_end_strip_count that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
-    print plotRep.Cut, Root2PythonCutConverter(plotRep.Cut)
+    #print plotRep.Cut, Root2PythonCutConverter(plotRep.Cut)
 
     for entry in rootTree:
         tmpNumLayer = 0
         for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
-            buffer0 = entry.tkr_layer_end_strip_count[tower*72 +layer*2]
-            buffer1 = entry.tkr_layer_end_strip_count[tower*72 +layer*2 +1]
+            index = tower*NUM_TKR_LAYERS_PER_TOWER*NUM_GTRC_PER_LAYER + layer*NUM_GTRC_PER_LAYER
+            buffer0 = entry.tkr_layer_end_strip_count[index]
+            buffer1 = entry.tkr_layer_end_strip_count[index +1]
             if (buffer0>0 or buffer1 >0) and (eval(Root2PythonCutConverter(plotRep.Cut))):
                 tmpNumLayer +=1
 
@@ -196,4 +200,48 @@ def tkr_layer_count(rootTree, plotRep, tower):
 
 
 
+## @brief Return a ROOT TH2F object:
+#
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
 
+def tkr_no_tot_counter(rootTree, plotRep):
+
+    startTime = time.time()
+    xmin      = 0
+    xmax      = NUM_TKR_LAYERS_PER_TOWER # 36
+    xbins     = NUM_GTRC_PER_LAYER*xmax # 72
+    ymin      = 0
+    ymax      = NUM_TOWERS
+    ybins     = ymax
+    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+
+    if rootTree.GetLeaf("tkr_layer_end_strip_count") is None:
+        logger.warning('Custom plot %s requires tkr_layer_end_strip_count that is not in the processed tree' %\
+                       plotRep.getExpandedName(tower))
+        return histogram
+    if rootTree.GetLeaf("tkr_layer_end_tot") is None:
+        logger.warning('Custom plot %s requires tkr_layer_end_tot that is not in the processed tree' %\
+                       plotRep.getExpandedName(tower))
+        return histogram
+    for entry in rootTree:
+        for tower in xrange(NUM_TOWERS):
+            for layer in xrange(NUM_CAL_LAYERS_PER_TOWER):
+                index = tower*NUM_TKR_LAYERS_PER_TOWER*NUM_GTRC_PER_LAYER + layer*NUM_GTRC_PER_LAYER
+                nStrips0 = entry.tkr_layer_end_strip_count[index]
+                nStrips1 = entry.tkr_layer_end_strip_count[index +1]
+                ToT0 = entry.tkr_layer_end_tot[index]
+                ToT1 = entry.tkr_layer_end_tot[index +1]
+                
+                if nStrips0>0 and ToT0==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
+                    print  "0 -",nStrips0, ToT0, layer, tower
+                    histogram.Fill(layer, tower)  
+                if nStrips1>0 and ToT1==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
+                    print  "1 -",nStrips1, ToT1, layer, tower
+                    histogram.Fill(layer+0.5, tower)
+    logger.debug('Custom plot %s created in %.2f s.' %\
+                 (plotRep.Name, time.time() - startTime))          
+    return histogram

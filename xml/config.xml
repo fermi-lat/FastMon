@@ -289,7 +289,19 @@
 	    <xmax>300</xmax>
             <expression>tkr_strip_count</expression>
         </TH1F>
-								
+				
+        <CUSTOM type="tkr_no_tot_counter" name="tkr_no_tot_counter" enabled="True">
+	    <title>No TOT counter</title>
+	    <xlabel>Layer number</xlabel>
+			<ylabel>Tower</ylabel>
+			<drawoptions>colz</drawoptions>
+	    <caption>Number of times that the TOT is 0 while there are 1 or more strips hit in the same controller</caption>
+	    <!-- this tag is useless for this CUSTOM plot 
+			since it is dedicated to a specific task
+			<expression></expression> -->
+			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
+        </CUSTOM>		
+											
         <CUSTOM type="tkr_layer_count" name="tkr_tower_layer_count" enabled="True" level="tower" >
 	    <title>Number of hit Tracker Tower Layer per event</title>
 	    <xlabel>Layer number</xlabel>
