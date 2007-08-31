@@ -348,6 +348,15 @@
 	    <expression>tkr_layer_end_strip_count</expression>
             <cut><![CDATA[ tkr_layer_end_strip_count > 0 ]]></cut>
         </CUSTOM>
+				
+        <CUSTOM type="tkr_2d_map_project_count" name="tkr_no_hit_count" enabled="True">
+	    <title>Number of times there are no strip hits in a Tracker plane</title>
+	    <xlabel>Plane</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <expression>tkr_layer_end_strip_count</expression>
+            <cut><![CDATA[ tkr_layer_end_strip_count ==0 && gem_condition_summary&30]]></cut>
+        </CUSTOM>				
     </outputList>
 
     <!--
