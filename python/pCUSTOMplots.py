@@ -118,6 +118,40 @@ def tkr_2d_map_project(rootTree, plotRep):
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
+## @brief This is like tkr_2d_map_project, but plot the number of entries
+#  instread of the mean .
+#
+#  It is fairly slow, though it has the advantage of making any kind of
+#  cut on whatever variable possible in evaluating the average.
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
+
+def tkr_2d_map_project_count(rootTree, plotRep):
+    startTime = time.time()
+    xmin      = 0
+    xmax      = NUM_TKR_LAYERS_PER_TOWER
+    xbins     = NUM_GTRC_PER_LAYER*xmax
+    ymin      = 0
+    ymax      = NUM_TOWERS
+    ybins     = ymax
+    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+    for tower in xrange(NUM_TOWERS):
+        for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
+            for end in xrange(NUM_GTRC_PER_LAYER):
+                rootTree.Project("h1",\
+                             plotRep.getExpandedExpression(tower, layer, end),\
+                             plotRep.getExpandedCut(tower, layer, end))
+                h1 = ROOT.gROOT.FindObjectAny("h1")
+                entries = h1.GetEntries()
+                histogram.Fill((layer + end/2.0 + 0.25), tower, entries)
+                h1.Delete()
+    logger.debug('Custom plot %s created in %2.f s.' %\
+                  (plotRep.Name, time.time() - startTime))
+    return histogram
+
 
 ## @brief Return a...
 
@@ -227,9 +261,10 @@ def tkr_no_tot_counter(rootTree, plotRep):
         logger.warning('Custom plot %s requires tkr_layer_end_tot that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
+    
     for entry in rootTree:
         for tower in xrange(NUM_TOWERS):
-            for layer in xrange(NUM_CAL_LAYERS_PER_TOWER):
+            for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
                 index = tower*NUM_TKR_LAYERS_PER_TOWER*NUM_GTRC_PER_LAYER + layer*NUM_GTRC_PER_LAYER
                 nStrips0 = entry.tkr_layer_end_strip_count[index]
                 nStrips1 = entry.tkr_layer_end_strip_count[index +1]
@@ -242,6 +277,7 @@ def tkr_no_tot_counter(rootTree, plotRep):
                 if nStrips1>0 and ToT1==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
                     print  "1 -",nStrips1, ToT1, layer, tower
                     histogram.Fill(layer+0.5, tower)
+
     logger.debug('Custom plot %s created in %.2f s.' %\
                  (plotRep.Name, time.time() - startTime))          
     return histogram
