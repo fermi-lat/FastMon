@@ -58,55 +58,58 @@ class pGEMcontributionBase:
         self.TreeMaker.getVariable('gem_timebase')[0] =\
                        copy(self.triggerTime())
 
-    ## @brief Function filling the gem_discarded tree variable.
+    ## @brief Function filling the DiscardedLast tree variable.
     ## @param self
     #  The class instance.
 
-    def gem_discarded(self):
-        self.TreeMaker.getVariable('gem_discarded')[0] = copy(self.discarded())
+    def DiscardedLast(self):
+        self.TreeMaker.getVariable('DiscardedLast')[0] = copy(self.discarded())
 
-    ## @brief Function filling the gem_discarded_delta tree variable.
+    ## @brief Function filling the DiscardedDelta tree variable.
     #  Do not reset this variable! 
     ## @param self
     #  The class instance.
 
-    def gem_discarded_delta(self):
+    def DiscardedDelta(self):
         tmpDisc = copy(self.discarded())
-        self.TreeMaker.getVariable('gem_discarded_delta')[0] = \
-        tmpDisc - self.TreeMaker.getVariable('gem_discarded_delta')[1]
-        self.TreeMaker.getVariable('gem_discarded_delta')[1] = tmpDisc
+        self.TreeMaker.getVariable('DiscardedDelta')[0] = \
+        tmpDisc - self.TreeMaker.getVariable('DiscardedDelta')[1]
+        self.TreeMaker.getVariable('DiscardedDelta')[1] = tmpDisc
             
-    ## @brief Function filling the gem_dead_zone tree variable.
+    ## @brief Function filling the DeadZoneLast tree variable.
     ## @param self
     #  The class instance.
 	
-    def gem_dead_zone(self):
-        self.TreeMaker.getVariable('gem_dead_zone')[0] = copy(self.deadZone())
+    def DeadZoneLast(self):
+        self.TreeMaker.getVariable('DeadZoneLast')[0] = copy(self.deadZone())
 
-    ## @brief Function filling the gem_dead_zone_delta tree variable.
+    ## @brief Function filling the DeadZoneDelta tree variable.
     #  Do not reset this variable!        
     ## @param self
     #  The class instance.
 	
-    def gem_dead_zone_delta(self):
+    def DeadZoneDelta(self):
         tmpDZone = copy(self.deadZone())
-        self.TreeMaker.getVariable('gem_dead_zone_delta')[0] =\
-        tmpDZone - self.TreeMaker.getVariable('gem_dead_zone_delta')[1]
-        self.TreeMaker.getVariable('gem_dead_zone_delta')[1] = tmpDZone
+        self.TreeMaker.getVariable('DeadZoneDelta')[0] =\
+        tmpDZone - self.TreeMaker.getVariable('DeadZoneDelta')[1]
+        self.TreeMaker.getVariable('DeadZoneDelta')[1] = tmpDZone
         
-    ## @brief Function filling the gem_live_time tree variable.
+    ## @brief Function filling the LivetimeLast tree variable.
     ## @param self
     #  The class instance.
 	
-    def gem_live_time(self):
-        self.TreeMaker.getVariable('gem_live_time')[0] = copy(self.liveTime())
+    def LivetimeLast(self):
+        self.TreeMaker.getVariable('LivetimeLast')[0] = copy(self.liveTime())
 
-    ## @brief Function filling the gem_condition_summary tree variable.
+    def PrescaledLast(self):
+        self.TreeMaker.getVariable('PrescaledLast')[0] = copy(self.prescaled())
+
+    ## @brief Function filling the condsummary tree variable.
     ## @param self
     #  The class instance.
 
-    def gem_condition_summary(self):
-        self.TreeMaker.getVariable('gem_condition_summary')[0] =\
+    def condsummary(self):
+        self.TreeMaker.getVariable('condsummary')[0] =\
                        copy(self.conditionSummary())
 
     ## @brief Function filling the gem_tkr_vector tree variable.
@@ -145,40 +148,40 @@ class pGEMcontributionBase:
     ## @param self
     #  The class instance.
 
-    def gem_cond_arr_time_tkr(self):
-        self.TreeMaker.getVariable('gem_cond_arr_time_tkr')[0] =\
+    def condarrtkr(self):
+        self.TreeMaker.getVariable('condarrtkr')[0] =\
                        copy(self.condArrTime().tkr())
 
     ## @brief Function filling the gem_cond_arr_time_cal_le tree variable.
     ## @param self
     #  The class instance.
 
-    def gem_cond_arr_time_cal_le(self):
-        self.TreeMaker.getVariable('gem_cond_arr_time_cal_le')[0] =\
+    def condarrcallo(self):
+        self.TreeMaker.getVariable('condarrcallo')[0] =\
                        copy(self.condArrTime().calLE())
 
     ## @brief Function filling the gem_cond_arr_time_cal_he tree variable.
     ## @param self
     #  The class instance.
 
-    def gem_cond_arr_time_cal_he(self):
-        self.TreeMaker.getVariable('gem_cond_arr_time_cal_he')[0] =\
+    def condarrcalhi(self):
+        self.TreeMaker.getVariable('condarrcalhi')[0] =\
                        copy(self.condArrTime().calHE())
 
     ## @brief Function filling the gem_cond_arr_time_roi tree variable.
     ## @param self
     #  The class instance.
 
-    def gem_cond_arr_time_roi(self):
-        self.TreeMaker.getVariable('gem_cond_arr_time_roi')[0] =\
+    def condarrroi(self):
+        self.TreeMaker.getVariable('condarrroi')[0] =\
                        copy(self.condArrTime().roi())
 
     ## @brief Function filling the gem_cond_arr_time_cno tree variable.
     ## @param self
     #  The class instance.
 
-    def gem_cond_arr_time_cno(self):
-        self.TreeMaker.getVariable('gem_cond_arr_time_cno')[0] =\
+    def condarrcno(self):
+        self.TreeMaker.getVariable('condarrcno')[0] =\
                        copy(self.condArrTime().cno())
 
     ## @brief Function filling the gem_trigger_time tree variable.
