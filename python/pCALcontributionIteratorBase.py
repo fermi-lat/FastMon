@@ -43,25 +43,25 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
     def log(self, tower, layer, calLog):
         pass
     
-    ## @brief Fill cal_log_count tree branch
+    ## @brief Fill CalXHit tree branch
     ## Number of logs hit in the LAT
     ## @param self
     #  The class instance.
 
-    def cal_log_count(self):
-        self.TreeMaker.getVariable("cal_log_count")[0] +=\
+    def CalXHit(self):
+        self.TreeMaker.getVariable("CalXHit")[0] +=\
                        copy(self.contribution().numLogAccepts())
 
-    ## @brief Fill cal_tower_log_count tree branch
+    ## @brief Fill CalXHit_Tower tree branch
     ## Number of logs hit in each tower of the LAT
     ## @param self
     #  The class instance.
 
-    def cal_tower_log_count(self):
-        self.TreeMaker.getVariable("cal_tower_log_count")[self.TemId] =\
+    def CalXHit_Tower(self):
+        self.TreeMaker.getVariable("CalXHit_Tower")[self.TemId] =\
                        copy(self.contribution().numLogAccepts())
 
-    ## @brief Fill cal_layer_log_count tree branch
+    ## @brief Fill CalXHit_TowerCalLayer tree branch
     ## Number of logs hit per layer for each tower of the LAT
     ## @param self
     #  The class instance.
@@ -72,10 +72,10 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
     ## @param calLog
     #  The CAL log object.
     
-    def cal_layer_log_count__log__(self, tower, layer, calLog):
-        self.TreeMaker.getVariable("cal_layer_log_count")[tower][layer] += 1
+    def CalXHit_TowerCalLayer__log__(self, tower, layer, calLog):
+        self.TreeMaker.getVariable("CalXHit_TowerCalLayer")[tower][layer] += 1
 
-    ## @brief Fill cal_layer_column_log_count tree branch
+    ## @brief Fill CalXHit_TowerCalLayerCalColumn tree branch
     ## Number of logs hit per column per layer for each tower of the LAT
     ## @param self
     #  The class instance.
@@ -86,18 +86,18 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
     ## @param calLog
     #  The CAL log object.
 
-    def cal_layer_column_log_count__log__(self, tower, layer, calLog):
-        self.TreeMaker.getVariable("cal_hit_map")\
+    def CalXHit_TowerCalLayerCalColumn__log__(self, tower, layer, calLog):
+        self.TreeMaker.getVariable("CalXHit_TowerCalLayerCalColumn")\
              [tower][layer][calLog.column()] = 1
 
-    ## @brief Fill cal_tower_count tree branch
+    ## @brief Fill CalTowerCount tree branch
     ## Number of calorimeters with at least one log hit
     ## @param self
     #  The class instance.
 
-    def cal_tower_count(self):
+    def CalTowerCount(self):
         if self.contribution().numLogAccepts() > 0:
-	    self.TreeMaker.getVariable("cal_tower_count")[0] += 1
+	    self.TreeMaker.getVariable("CalTowerCount")[0] += 1
 
 
 

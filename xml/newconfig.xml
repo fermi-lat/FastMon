@@ -164,4 +164,93 @@
         </TH1F-->
     </outputList>
 
+    <!--
+    CAL group.
+    -->
+    <inputList group="CAL" name="CAL base" enabled="True">
+	<variable name="CalXHit_TowerCalLayer" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER)</shape>
+	</variable>
+	<variable name="CalXHit_TowerCalLayerCalColumn" enabled="False">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER, NUM_CAL_COLUMNS_PER_TOWER)</shape>
+	</variable>
+	<variable name="CalXHit_Tower" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS)</shape>
+	</variable>
+	<variable name="CalXHit" enabled="True">
+	    <type>int</type>
+	    <shape>(1)</shape>
+	</variable>
+	<variable name="CalTowerCount" enabled="True">
+	    <type>int</type>
+	    <shape>(1)</shape>
+	</variable>
+    </inputList>
+	    
+    <outputList group="CAL" name="CAL base" enabled="True">
+	
+        <CUSTOM type="CalXHit_NHit_Counter_TowerCalLayer_Histo2" name="CalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
+	    <title>Number of hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>Cal-Layer</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <expression>CalXHit_TowerCalLayer</expression>
+	    <exclude>[0]</exclude>
+	    <cut><![CDATA[ condsummary&30 && !(condsummary&32)]]></cut>	    
+        </CUSTOM>
+
+        <CUSTOM type="ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2" name="ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
+	    <title>Number of times there is ZERO hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>Cal-Layer</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <expression>CalXHit_TowerCalLayer</expression>
+	    <exclude>[0]</exclude>
+	    <cut><![CDATA[ condsummary&30 && !(condsummary&32)]]></cut>	    
+        </CUSTOM>
+
+        <TH1F name="CalX_NHit_Histo1" enabled="True" level="lat">
+	    <title>Distribution of  Cal crystals hits  per event (all towers included)</title>
+	    <xbins>201</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>200.5</xmax>
+	    <xlabel>Number of CalX_Hits</xlabel>
+            <expression>CalXHit</expression>
+	    <cut><![CDATA[ condsummary&30  ]]></cut>
+        </TH1F>
+	
+        <TH1F name="CalXHit_NHit_Histo1_Tower" enabled="True" level="tower">
+	    <title>Distribution of  Cal crystals hits per event in this tower</title>
+	    <xbins>151</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>150.5</xmax>
+	    <ylog>True</ylog>
+	    <xlabel>Number of CalX_Hits in this tower</xlabel>
+            <expression>CalXHit_Tower</expression>
+	    <cut><![CDATA[ condsummary&30  ]]></cut>
+        </TH1F>
+	
+        <TH1F name="CalTower_NHit_Histo1" enabled="True" level="lat">
+	    <title>Number of CAL modules hit</title>
+	    <xbins>16</xbins>
+	    <xmin>0</xmin>
+	    <xmax>16</xmax>
+	    <xlabel>Number of Cal Towers Hit</xlabel>
+            <expression>CalTowerCount</expression>
+        </TH1F>
+	
+        <!--CUSTOM type="cal_2d_map" name="cal_hitmap" enabled="True">
+	    <title>Average number of logs hit per layer</title>
+	    <xlabel>Layer</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <expression>cal_layer_log_count</expression>
+	    <exclude>[0]</exclude>
+        </CUSTOM-->
+
+    </outputList>
+
 </monitoring>

@@ -153,8 +153,13 @@ def tkr_2d_map_project_count(rootTree, plotRep):
     return histogram
 
 
-## @brief Return a...
-
+## @brief Return a hit map of the calorimeter. DEPRECATED
+#
+#  Each (Tower,Layer) bin contains the average number of logs hit per layer
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
 def cal_2d_map(rootTree, plotRep):
     startTime = time.time()
     xmin      = 0
@@ -185,6 +190,87 @@ def cal_2d_map(rootTree, plotRep):
             else:
                 mean  = means[index]/float(entries[index])
             histogram.Fill((layer + 0.25), tower, mean)
+    logger.debug('Custom plot %s created in %.2f s.' %\
+                  (plotRep.Name, time.time() - startTime))
+    return histogram
+
+## @brief Return a summed hit map of the calorimeter.
+#
+#  Each (Tower,Layer) bin contains the summed number of logs hit per layer
+#  Over all events but periodic triggers
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
+def CalXHit_NHit_Counter_TowerCalLayer_Histo2(rootTree, plotRep):
+    startTime = time.time()
+    xmin      = -0.5
+    xmax      = NUM_CAL_LAYERS_PER_TOWER-0.5
+    xbins     = NUM_CAL_LAYERS_PER_TOWER
+    ymin      = -0.5
+    ymax      = NUM_TOWERS-.5
+    ybins     = NUM_TOWERS
+    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+    means   = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+    entries = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+    for entry in rootTree:
+	if eval(Root2PythonCutConverter(plotRep.Cut)):
+	    values = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+	    buffer = eval('entry.%s' % plotRep.Expression)
+	    for i in xrange(NUM_CAL_LAYERS):
+	        values[i] = buffer[i]
+	    status = numpy.ones((NUM_CAL_LAYERS), dtype=int)
+	    means += values
+	    for value in plotRep.ExcludedValues:
+	        status = status*(values != value)
+	    entries += status
+
+    for tower in xrange(NUM_TOWERS):
+        for layer in xrange(NUM_CAL_LAYERS_PER_TOWER):
+            index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
+            histogram.Fill((layer + 0.25), tower, entries[index])
+	    
+    logger.debug('Custom plot %s created in %.2f s.' %\
+                  (plotRep.Name, time.time() - startTime))
+    return histogram
+
+## @brief Return a map of the number of time there was no hit in a layer.
+#
+#  Each (Tower,Layer) bin contains the number of time the layer had no hits
+#  Over all events but periodic triggers
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
+def ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2(rootTree, plotRep):
+    startTime = time.time()
+    xmin      = -0.5
+    xmax      = NUM_CAL_LAYERS_PER_TOWER-0.5
+    xbins     = NUM_CAL_LAYERS_PER_TOWER
+    ymin      = -0.5
+    ymax      = NUM_TOWERS-.5
+    ybins     = NUM_TOWERS
+    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+    entries = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+    for entry in rootTree:
+	if eval(Root2PythonCutConverter(plotRep.Cut)):
+	    values = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+	    buffer = eval('entry.%s' % plotRep.Expression)
+	    for i in xrange(NUM_CAL_LAYERS):
+	        values[i] = buffer[i]
+	    status = numpy.ones((NUM_CAL_LAYERS), dtype=int)
+	    for value in plotRep.ExcludedValues:
+	        status = status*(values != value)
+	    isZero = eval('status==0')	
+	    entries += isZero
+
+    for tower in xrange(NUM_TOWERS):
+        for layer in xrange(NUM_CAL_LAYERS_PER_TOWER):
+            index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
+	    histogram.Fill( (layer + 0.25), tower, entries[index])
+	    
     logger.debug('Custom plot %s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
@@ -239,7 +325,7 @@ def tkr_layer_count(rootTree, plotRep, tower):
 #  The ROOT tree containing the variables.
 ## @param plotRep
 #  The custom plot representation from the pXmlParser object.
-
+## @todo move cut at the beginning of the event loop to save processing time
 def tkr_no_tot_counter(rootTree, plotRep):
 
     startTime = time.time()
