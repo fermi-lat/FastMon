@@ -1,0 +1,167 @@
+<?xml version="1.0" ?>
+
+<monitoring>
+
+    <inputList group="GEM" name="GEM base">
+	<variable name="condsummary">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="condarrcallo">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="condarrcalhi">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="condarrtkr">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="condarrcno">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="condarrroi">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="LivetimeLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="ElapsedLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="DeadZoneLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="DiscardedLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="PrescaledLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="DiscardedDelta" reset="False">
+	    <type>int</type>
+            <shape>(2)</shape>
+	</variable>
+	<variable name="DeadZoneDelta" reset="False">
+	    <type>int</type>
+            <shape>(2)</shape>
+	</variable>
+	<variable name="LivetimeLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+    </inputList>
+    
+
+    <outputList group="GEM" name="GEM base">
+        <TH1F name="CondSummaryWord_Histo1">
+	    <expression><![CDATA[ condsummary ]]></expression>
+	    <cut><![CDATA[  ]]></cut>
+	    <xbins>51</xbins>
+	    <xmin>-10.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of CondSummary Word values</title>
+	    <xlabel>consummary value</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of CondSummary Word values</caption>
+        </TH1F>
+        <TH1F name="CondArrTKRTrigger_Histo1">
+	    <expression><![CDATA[ condarrtkr ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival TKR triggers</title>
+	    <xlabel>Condition arrival times for TKR triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for TKR triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="CondArrCalLowTrigger_Histo1">
+	    <expression><![CDATA[ condarrcallo ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival Cal-Low triggers</title>
+	    <xlabel>Condition arrival times for Cal-Low triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for Cal-Low triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="CondArrCalHiTrigger_Histo1">
+	    <expression><![CDATA[ condarrcalhi ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival Cal-Hi triggers</title>
+	    <xlabel>Condition arrival times for Cal-Hi triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for Cal-Hi triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="CondArrCNOTrigger_Histo1">
+	    <expression><![CDATA[ condarrcno ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival CNO triggers</title>
+	    <xlabel>Condition arrival times for CNO triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for CNO triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="CondArrROITrigger_Histo1">
+	    <expression><![CDATA[ condarrroi ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival ROI triggers</title>
+	    <xlabel>Condition arrival times for ROI triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for ROI triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="DiscardedDelta_Histo1">
+	    <expression><![CDATA[ DiscardedDelta ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32)  ]]></cut>
+	    <xbins>31</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>30.5</xmax>
+	    <title>Number of GEM discarded events between two successive read out events</title>
+	    <xlabel>Number Gem discarded events</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Number of GEM discarded events between two successive read out events. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="DeadZoneDelta_Histo1">
+	    <expression><![CDATA[ DeadZoneDelta ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>31</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>30.5</xmax>
+	    <title>Number of GEM deadzone events between two successive read out events</title>
+	    <xlabel>Number Gem deadzone events</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Number of GEM deadzone events between two successive read out events. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <!--TH1F name="">
+	    <expression><![CDATA[  ]]></expression>
+	    <cut><![CDATA[  ]]></cut>
+	    <xbins></xbins>
+	    <xmin></xmin>
+	    <xmax></xmax>
+	    <title></title>
+	    <xlabel></xlabel>
+	    <ylabel></ylabel>
+	    <caption></caption>
+        </TH1F-->
+    </outputList>
+
+</monitoring>
