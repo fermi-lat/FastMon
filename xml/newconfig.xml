@@ -252,5 +252,102 @@
         </CUSTOM-->
 
     </outputList>
+    <!--
+    TKR group.
+    -->		
+    <inputList group="TKR" name="TKR base" enabled="True">
+	<variable name="TkrHitsTowerPlane" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>
+	<variable name="TkrHits" enabled="True">
+	    <type>int</type>
+	    <shape>(1)</shape>
+	</variable>
+	<variable name="TkrHitsTower" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS)</shape>
+	</variable>
+	<variable name="TkrHitsTowerPlaneEnd" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
+	</variable>
+	<variable name="tkr_layer_end_tot" enabled="False">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
+	</variable>	
+	<variable name="ToT_con0_TowerPlane" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>		
+	<variable name="ToT_con1_TowerPlane" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>	
+    </inputList>
+		
+    <outputList group="TKR" name="TKR base" enabled="True">
+		
+        <TH1F name="TkrHits_Histo1" enabled="True">
+	    <title>Distribution of strip hits per event (all towers included)</title>
+	    <xbins>300</xbins>
+	    <xmin>0</xmin>
+	    <xmax>3000</xmax>
+	    <xlabel>Number of strip hits</xlabel>
+	    <ylabel>N</ylabel>
+			<cut><![CDATA[ condsummary&30 ]]></cut>
+      <expression>TkrHits</expression>
+        </TH1F>
+				
+        <CUSTOM type="tkr_2d_map_project_count" name="ZeroTkrHitsCounter_TowerPlane_Histo2" enabled="True">
+	    <title>Counter of ZERO strip hits vs Tower and Tracker plane</title>
+			<caption>Number of times there are no strip hits in a Tracker plane</caption>
+	    <xlabel>Tracker plane</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <expression>tkr_layer_end_strip_count</expression>
+            <cut><![CDATA[ tkr_layer_end_strip_count ==0 && gem_condition_summary&30]]></cut>
+        </CUSTOM>					
+				
+    </outputList>
+		
+    <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
+        <TH1F name="TkrHits_Histo1_Tower" enabled="True" level="tower">
+	    <title>Distribution of strip hits per tower</title>
+	    <xbins>200</xbins>
+	    <xmin>0</xmin>
+	    <xmax>1000</xmax>
+	    <xlabel>Number of strip hits</xlabel>
+	    <ylabel>N</ylabel>
+			<cut><![CDATA[ condsummary&30 ]]></cut>
+            <expression>TkrHitsTower</expression>
+        </TH1F>				
+    </outputList>
 
+    <outputList group="TKR" name="TKR Details - Planes hit in a tower" enabled="True">		
+        <CUSTOM type="TkrPlanesHit" name="TkrPlanesHit_Histo1_Tower" enabled="True" level="tower" >
+	    <title>Distribution of the number of planes hit in a tower</title>
+	    <xlabel>Layer number</xlabel>
+	    <caption></caption>
+	    <!-- this tag is useless for this CUSTOM plot 
+			since it is dedicated to a specific task
+			<expression></expression> -->
+			<cut><![CDATA[ condsummary&30 ]]></cut>
+        </CUSTOM>			
+    </outputList>				
+
+    <outputList group="TKR" name="TKR Details - ToT" enabled="True">		
+        <CUSTOM type="ToT_0_WhenTkrHitsExist_TowerPlane" name="ToT_0_WhenTkrHitsExist_TowerPlane_Histo2" enabled="True">
+	    <title>Number of times that, existing at least one hit, ToT==0 in both controllers</title>
+	    <xlabel>Tracker plane</xlabel>
+			<ylabel>Tower Number</ylabel>
+			<drawoptions>colz</drawoptions>
+	    <!--caption>Number of times that the TOT is 0 while there are 1 or more strips hit in the same controller</caption-->
+	    <!-- this tag is useless for this CUSTOM plot 
+			since it is dedicated to a specific task
+			<expression></expression> -->
+			<cut><![CDATA[ condsummary&30 ]]></cut>
+        </CUSTOM>	
+				
+    </outputList>
 </monitoring>

@@ -424,7 +424,11 @@
         </CUSTOM>
     </outputList>
 
-    <outputList group="ACD" name="ACD1" enabled="True">
+    <!--
+    ACD group.
+    -->
+
+    <outputList group="ACD" name="ACD base" enabled="True">
 
         <TH1F name="acd_tile_count" enabled="True" level="lat">
 	    <title>Number of tiles hit</title>
@@ -433,7 +437,8 @@
 	    <xmax>220</xmax>
 	    <xlabel>Number of events</xlabel>
 	    <ylabel>Number of tile hits</ylabel>
-            <expression>acd_tile_count</expression>
+      <expression>acd_tile_count</expression>
+			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
         </TH1F>
 
     </outputList>

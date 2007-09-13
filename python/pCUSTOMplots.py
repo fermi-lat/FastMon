@@ -119,7 +119,7 @@ def tkr_2d_map_project(rootTree, plotRep):
     return histogram
 
 ## @brief This is like tkr_2d_map_project, but plot the number of entries
-#  instread of the mean .
+#  instread of the mean.
 #
 #  It is fairly slow, though it has the advantage of making any kind of
 #  cut on whatever variable possible in evaluating the average.
@@ -289,7 +289,7 @@ def ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2(rootTree, plotRep):
 ## @param tower
 #  The Tracker tower under analysis
 
-def tkr_layer_count(rootTree, plotRep, tower):
+def TkrPlanesHit(rootTree, plotRep, tower):
     startTime = time.time()
     xmin      = 0
     xmax      = NUM_TKR_LAYERS_PER_TOWER+1
@@ -297,18 +297,17 @@ def tkr_layer_count(rootTree, plotRep, tower):
     histogram = ROOT.TH1F(plotRep.getExpandedName(tower), plotRep.getExpandedTitle(tower),
                           xbins, xmin, xmax)
     
-    if rootTree.GetLeaf("tkr_layer_end_strip_count") is None:
-        logger.warning('Custom plot %s requires tkr_layer_end_strip_count that is not in the processed tree' %\
+    if rootTree.GetLeaf("TkrHitsTowerPlane") is None:
+        logger.warning('Custom plot %s requires TkrHitsTowerPlane that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
 
     for entry in rootTree:
         tmpNumLayer = 0
         for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
-            index = tower*NUM_TKR_LAYERS_PER_TOWER*NUM_GTRC_PER_LAYER + layer*NUM_GTRC_PER_LAYER
-            buffer0 = entry.tkr_layer_end_strip_count[index]
-            buffer1 = entry.tkr_layer_end_strip_count[index +1]
-            if (buffer0>0 or buffer1 >0) and (eval(Root2PythonCutConverter(plotRep.Cut))):
+            index = tower*NUM_TKR_LAYERS_PER_TOWER + layer
+            buffer = entry.TkrHitsTowerPlane[index]
+            if (buffer>0 ) and (eval(Root2PythonCutConverter(plotRep.Cut))):
                 tmpNumLayer +=1
 
         histogram.Fill(tmpNumLayer)
@@ -319,8 +318,9 @@ def tkr_layer_count(rootTree, plotRep, tower):
 
 
 
-## @brief Return a ROOT TH2F object:
+## @brief Return a ROOT TH2F object.
 #
+## @deprecated use ToT_0_WhenTkrHitsExist_TowerPlane instead
 ## @param rootTree
 #  The ROOT tree containing the variables.
 ## @param plotRep
@@ -360,6 +360,58 @@ def tkr_no_tot_counter(rootTree, plotRep):
                     histogram.Fill(layer, tower)  
                 if nStrips1>0 and ToT1==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
                     histogram.Fill(layer+0.5, tower)
+
+    logger.debug('Custom plot %s created in %.2f s.' %\
+                 (plotRep.Name, time.time() - startTime))          
+    return histogram
+
+## @brief Return a ROOT TH2F object:
+#
+#  Custom plot to count the number of times that
+#  the TOT is 0 in both controllers
+#  while there are 1 or more strips hit in that plane
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
+def ToT_0_WhenTkrHitsExist_TowerPlane(rootTree, plotRep):
+
+    startTime = time.time()
+    xmin      = 0
+    xmax      = NUM_TKR_LAYERS_PER_TOWER # 36
+    xbins     = xmax # 36
+    ymin      = 0
+    ymax      = NUM_TOWERS
+    ybins     = ymax
+    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+
+    if rootTree.GetLeaf("TkrHitsTowerPlane") is None:
+        logger.warning('Custom plot %s requires TkrHitsTowerPlane that is not in the processed tree' %\
+                       plotRep.getExpandedName(tower))
+        return histogram
+    if rootTree.GetLeaf("ToT_con0_TowerPlane") is None:
+        logger.warning('Custom plot %s requires ToT_con0_TowerPlane that is not in the processed tree' %\
+                       plotRep.getExpandedName(tower))
+        return histogram
+    if rootTree.GetLeaf("ToT_con1_TowerPlane") is None:
+        logger.warning('Custom plot %s requires ToT_con1_TowerPlane that is not in the processed tree' %\
+                       plotRep.getExpandedName(tower))
+        return histogram
+
+    for entry in rootTree:
+        for tower in xrange(NUM_TOWERS):
+            for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
+                index = tower*NUM_TKR_LAYERS_PER_TOWER + layer
+                nStrips = entry.TkrHitsTowerPlane[index]
+                ToT0 = entry.ToT_con0_TowerPlane[index]
+                ToT1 = entry.ToT_con1_TowerPlane[index]
+                
+                if nStrips>0 and ToT0==0 and ToT1==0 \
+                       and (eval(Root2PythonCutConverter(plotRep.Cut))):
+                    histogram.Fill(layer, tower)
+
+
 
     logger.debug('Custom plot %s created in %.2f s.' %\
                  (plotRep.Name, time.time() - startTime))          
