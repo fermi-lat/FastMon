@@ -7,6 +7,7 @@ logger = pSafeLogger.getLogger('pCUSTOMplots')
 
 import time
 import numpy
+import array
 
 from pGlobals  import *
 from pSafeROOT import ROOT
@@ -27,7 +28,8 @@ def gem_vector_map(rootTree, plotRep):
     histogram.SetMinimum(0)
     for entry in rootTree:
         for tower in xrange(NUM_TOWERS):
-            if eval('entry.%s & (0x1 << tower)' % plotRep.Expression):
+            if eval('entry.%s & (0x1 << tower)' % plotRep.Expression) \
+                   and (eval(Root2PythonCutConverter(plotRep.Cut))):
                 histogram.Fill(tower)
     logger.debug('Custom plot %s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
@@ -377,12 +379,12 @@ def tkr_no_tot_counter(rootTree, plotRep):
 def ToT_0_WhenTkrHitsExist_TowerPlane(rootTree, plotRep):
 
     startTime = time.time()
-    xmin      = 0
-    xmax      = NUM_TKR_LAYERS_PER_TOWER # 36
-    xbins     = xmax # 36
-    ymin      = 0
-    ymax      = NUM_TOWERS
-    ybins     = ymax
+    xmin      = -0.5
+    xmax      = NUM_TKR_LAYERS_PER_TOWER -0.5
+    xbins     = NUM_TKR_LAYERS_PER_TOWER
+    ymin      =  -0.5
+    ymax      = NUM_TOWERS -0.5
+    ybins     = NUM_TOWERS
     histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
                           ybins, ymin, ymax)
 
@@ -415,4 +417,68 @@ def ToT_0_WhenTkrHitsExist_TowerPlane(rootTree, plotRep):
 
     logger.debug('Custom plot %s created in %.2f s.' %\
                  (plotRep.Name, time.time() - startTime))          
+    return histogram
+
+## @brief  Return a ROOT TH2F object: Tower number vs Plane
+# 
+#  
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
+
+def TkrTwrVsPlaneVariableCounter(rootTree, plotRep):
+    startTime = time.time()
+    xmin      = -0.5
+    xmax      = NUM_TKR_LAYERS_PER_TOWER -0.5
+    xbins     = NUM_TKR_LAYERS_PER_TOWER
+    ymin      = -0.5
+    ymax      = NUM_TOWERS -0.5
+    ybins     = NUM_TOWERS
+    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+    for tower in xrange(NUM_TOWERS):
+        for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
+            rootTree.Project("h1",\
+                             plotRep.getExpandedExpression(tower, layer),\
+                             plotRep.getExpandedCut(tower, layer))
+            h1 = ROOT.gROOT.FindObjectAny("h1")
+            entries = h1.GetEntries()
+            histogram.Fill(layer, tower, entries)
+            h1.Delete()
+    logger.debug('Custom plot %s created in %2.f s.' %\
+                  (plotRep.Name, time.time() - startTime))
+    return histogram
+
+
+## @brief  Return a ROOT TH2F object: Tower number vs Plane
+# 
+#  
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
+
+def TkrTwrVsPlaneVariableSumwx(rootTree, plotRep):
+    startTime = time.time()
+    xmin      = -0.5
+    xmax      = NUM_TKR_LAYERS_PER_TOWER -0.5
+    xbins     = NUM_TKR_LAYERS_PER_TOWER
+    ymin      = -0.5
+    ymax      = NUM_TOWERS -0.5
+    ybins     = NUM_TOWERS
+    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+    stats = array.array('d',7*[0.])
+    for tower in xrange(NUM_TOWERS):
+        for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
+            rootTree.Project("h1",\
+                             plotRep.getExpandedExpression(tower, layer),\
+                             plotRep.getExpandedCut(tower, layer))
+            h1 = ROOT.gROOT.FindObjectAny("h1")
+            h1.GetStats(stats)
+            histogram.Fill(layer, tower, stats[2])
+            h1.Delete()
+    logger.debug('Custom plot %s created in %2.f s.' %\
+                  (plotRep.Name, time.time() - startTime))
     return histogram

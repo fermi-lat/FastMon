@@ -112,36 +112,37 @@ class pGEMcontributionBase:
         self.TreeMaker.getVariable('condsummary')[0] =\
                        copy(self.conditionSummary())
 
-    ## @brief Function filling the gem_tkr_vector tree variable.
+    ## @brief Function filling the TkrTriggerTower tree variable (used to be gem_tkr_vector).
     ## @param self
     #  The class instance.
 
-    def gem_tkr_vector(self):
-        self.TreeMaker.getVariable('gem_tkr_vector')[0] =\
+    def TkrTriggerTower(self):
+        self.TreeMaker.getVariable('TkrTriggerTower')[0] =\
                        copy(self.tkrVector())
 
-    ## @brief Function filling the gem_roi_vector tree variable.
+    ## @brief Function filling the AcdGemROI_Tower tree variable (used to be gem_roi_vector).
+    ## @note This name is inconsistent with the others: requires a change!
     ## @param self
     #  The class instance.
 
-    def gem_roi_vector(self):
-        self.TreeMaker.getVariable('gem_roi_vector')[0] =\
+    def AcdGemROI_Tower(self):
+        self.TreeMaker.getVariable('AcdGemROI_Tower')[0] =\
                        copy(self.roiVector())
 
-    ## @brief Function filling the gem_cal_le_vector tree variable.
+    ## @brief Function filling the gem_cal_le_vector tree variable (used to be gem_cal_le_vector).
     ## @param self
     #  The class instance.
 
-    def gem_cal_le_vector(self):
-        self.TreeMaker.getVariable('gem_cal_le_vector')[0] =\
+    def CalLoTriggerTower(self):
+        self.TreeMaker.getVariable('CalLoTriggerTower')[0] =\
                        copy(self.calLEvector())
 
-    ## @brief Function filling the gem_cal_he_vector tree variable.
+    ## @brief Function filling the CalHiTriggerTower tree variable (used to be gem_cal_he_vector).
     ## @param self
     #  The class instance.
 
-    def gem_cal_he_vector(self):
-        self.TreeMaker.getVariable('gem_cal_he_vector')[0] =\
+    def CalHiTriggerTower(self):
+        self.TreeMaker.getVariable('CalHiTriggerTower')[0] =\
                        copy(self.calHEvector())
 
     ## @brief Function filling the gem_cond_arr_time_tkr tree variable.
