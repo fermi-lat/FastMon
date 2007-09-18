@@ -99,7 +99,7 @@
 	    <caption>Distribution of CondSummary Word values</caption>
         </TH1F>
         <TH1F name="DiscardedDelta_Histo1">
-	    <expression><![CDATA[ DiscardedDelta ]]></expression>
+	    <expression><![CDATA[ DiscardedDelta[0] ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32)  ]]></cut>
 	    <xbins>31</xbins>
 	    <xmin>-0.5</xmin>
@@ -110,7 +110,7 @@
 	    <caption>Number of GEM discarded events between two successive read out events. Periodic triggers have been taken out.</caption>
         </TH1F>
         <TH1F name="DeadZoneDelta_Histo1">
-	    <expression><![CDATA[ DeadZoneDelta ]]></expression>
+	    <expression><![CDATA[ DeadZoneDelta[0] ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
 	    <xbins>31</xbins>
 	    <xmin>-0.5</xmin>
@@ -196,21 +196,21 @@
 	    <title>Number of tracker triggers per tower</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>N</ylabel>
-			<cut><![CDATA[ condsummary&30 ]]></cut>	
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>TkrTriggerTower</expression>
         </CUSTOM>
         <CUSTOM type="gem_vector_map" name="CalHiTrigger_Tower_Histo1" enabled="True">
 	    <title>Number of Cal HI triggers per tower</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>N</ylabel>
-			<cut><![CDATA[ condsummary&30 ]]></cut>	
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>CalHiTriggerTower</expression>
         </CUSTOM>
         <CUSTOM type="gem_vector_map" name="CalLoTrigger_Tower_Histo1" enabled="True">
 	    <title>Number of Cal LO triggers per tower</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>N</ylabel>
-			<cut><![CDATA[ condsummary&30 ]]></cut>	
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>CalLoTriggerTower</expression>
         </CUSTOM>	
         <CUSTOM type="gem_vector_map" name="AcdGemROI_Tower_Histo1" enabled="True">
@@ -218,12 +218,12 @@
 			<caption>This bit is set if any of the tile in the ROI fired a veto. This bit is independent of if the Tower bit is set.</caption>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>N</ylabel>
-			<cut><![CDATA[ condsummary&30 ]]></cut>	
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>AcdGemROI_Tower</expression>
         </CUSTOM>
         <CUSTOM type="gem_acd_tile_map" name="AcdGemVeto_AcdTile_Histo1" enabled="True">
 	    <expression><![CDATA[ AcdGemVeto_AcdTile ]]></expression>
-	    <cut><![CDATA[ condsummary&30 ]]></cut>
+	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
 	    <title>Number of Acd Gem vetoes by tile</title>
 	    <xlabel>Acd Tile Number (coded in 128 entries)</xlabel>
 	    <ylabel>N</ylabel>
@@ -231,7 +231,7 @@
         </CUSTOM>
         <CUSTOM type="gem_acd_cable_map" name="AcdGemCNO_GARC_Histo1" enabled="True">
 	    <expression><![CDATA[ AcdGemCNO_GARC ]]></expression>
-	    <cut><![CDATA[ condsummary&30 ]]></cut>
+	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
 	    <title>Number of Acd CNO by board</title>
 	    <xlabel>Acd CARC Number</xlabel>
 	    <ylabel>N</ylabel>
@@ -276,7 +276,7 @@
 	    <drawoptions>colz</drawoptions>
 	    <expression>CalXHit_TowerCalLayer</expression>
 	    <exclude>[0]</exclude>
-	    <cut><![CDATA[ condsummary&30 && !(condsummary&32)]]></cut>	    
+	    <cut><![CDATA[ (condsummary&30)>0 && !(condsummary&32)]]></cut>	    
         </CUSTOM>
 
         <CUSTOM type="ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2" name="ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
@@ -286,7 +286,7 @@
 	    <drawoptions>colz</drawoptions>
 	    <expression>CalXHit_TowerCalLayer</expression>
 	    <exclude>[0]</exclude>
-	    <cut><![CDATA[ condsummary&30 && !(condsummary&32)]]></cut>	    
+	    <cut><![CDATA[ (condsummary&30)>0 && !(condsummary&32)]]></cut>	    
         </CUSTOM>
 
         <TH1F name="CalX_NHit_Histo1" enabled="True" level="lat">
@@ -296,7 +296,7 @@
 	    <xmax>200.5</xmax>
 	    <xlabel>Number of CalX_Hits</xlabel>
             <expression>CalXHit</expression>
-	    <cut><![CDATA[ condsummary&30  ]]></cut>
+	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
         </TH1F>
 	
         <TH1F name="CalXHit_NHit_Histo1_Tower" enabled="True" level="tower">
@@ -307,7 +307,7 @@
 	    <ylog>True</ylog>
 	    <xlabel>Number of CalX_Hits in this tower</xlabel>
             <expression>CalXHit_Tower</expression>
-	    <cut><![CDATA[ condsummary&30  ]]></cut>
+	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
         </TH1F>
 	
         <TH1F name="CalTower_NHit_Histo1" enabled="True" level="lat">
@@ -372,7 +372,7 @@
 	    <xmax>3000</xmax>
 	    <xlabel>Number of strip hits</xlabel>
 	    <ylabel>N</ylabel>
-			<cut><![CDATA[ condsummary&30 ]]></cut>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
       <expression>TkrHits</expression>
         </TH1F>
 				
@@ -383,7 +383,7 @@
 	    <ylabel>Tower</ylabel>
 	    <drawoptions>colz</drawoptions>
 	    <expression>TkrHitsTowerPlane</expression>
-            <cut><![CDATA[ TkrHitsTowerPlane ==0 && condsummary&30]]></cut>
+            <cut><![CDATA[ TkrHitsTowerPlane ==0 && (condsummary&30)>0]]></cut>
         </CUSTOM>					
 				
         <CUSTOM type="TkrTwrVsPlaneVariableSumwx" name="TkrHitsCounter_TowerPlane_Histo2" enabled="True">
@@ -393,7 +393,7 @@
 	    <ylabel>Tower</ylabel>
 	    <drawoptions>colz</drawoptions>
 	    <expression>TkrHitsTowerPlane</expression>
-            <cut><![CDATA[ TkrHitsTowerPlane >0 && condsummary&30]]></cut>
+            <cut><![CDATA[ TkrHitsTowerPlane >0 && (condsummary&30)>0]]></cut>
         </CUSTOM>		
 				
     </outputList>
@@ -406,7 +406,7 @@
 	    <xmax>1000</xmax>
 	    <xlabel>Number of strip hits</xlabel>
 	    <ylabel>N</ylabel>
-			<cut><![CDATA[ condsummary&30 ]]></cut>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
             <expression>TkrHitsTower</expression>
         </TH1F>				
     </outputList>
@@ -419,7 +419,7 @@
 	    <!-- this tag is useless for this CUSTOM plot 
 			since it is dedicated to a specific task
 			<expression></expression> -->
-			<cut><![CDATA[ condsummary&30 ]]></cut>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
         </CUSTOM>			
     </outputList>				
 
@@ -433,7 +433,7 @@
 	    <!-- this tag is useless for this CUSTOM plot 
 			since it is dedicated to a specific task
 			<expression></expression> -->
-			<cut><![CDATA[ condsummary&30 ]]></cut>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
         </CUSTOM>	
 				
     </outputList>
@@ -467,7 +467,7 @@
 	    <xlabel>N</xlabel>
 	    <ylabel>Number of ACD tile hits</ylabel>
       <expression>acd_tile_count</expression>
-			<cut><![CDATA[ condsummary&30 ]]></cut>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
         </TH1F>
 
     </outputList>
