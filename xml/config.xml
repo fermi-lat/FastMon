@@ -442,7 +442,10 @@
         </TH1F>
 
     </outputList>
-
+		
+    <!--
+    Trending group.
+    -->
 
     <outputList group="Trending" name="TkrTrending" enabled="True">
 

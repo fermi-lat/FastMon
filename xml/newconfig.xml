@@ -75,7 +75,14 @@
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>	
-		
+	<variable name="AcdGemVeto_AcdTile" > 
+	    <type>int</type>
+            <shape>(NUM_ACD_VETOES)</shape>
+	</variable>	
+	<variable name="AcdGemCNO_GARC" > 
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>				
     </inputList>
     
 
@@ -184,8 +191,6 @@
         </TH1F>
     </outputList>				
 
-
-
     <outputList group="GEM" name="GEM trigger vectors" enabled="True">
         <CUSTOM type="gem_vector_map" name="TkrTrigger_Tower_Histo1" enabled="True">
 	    <title>Number of tracker triggers per tower</title>
@@ -215,8 +220,27 @@
 	    <ylabel>N</ylabel>
 			<cut><![CDATA[ condsummary&30 ]]></cut>	
 	    <expression>AcdGemROI_Tower</expression>
-        </CUSTOM>		
+        </CUSTOM>
+        <CUSTOM type="gem_acd_tile_map" name="AcdGemVeto_AcdTile_Histo1" enabled="True">
+	    <expression><![CDATA[ AcdGemVeto_AcdTile ]]></expression>
+	    <cut><![CDATA[ condsummary&30 ]]></cut>
+	    <title>Number of Acd Gem vetoes by tile</title>
+	    <xlabel>Acd Tile Number (coded in 128 entries)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Expect to see spikes at 15, 31, 47, 63. These are large tiles at the bottom of the sides of the ACD.</caption>
+        </CUSTOM>
+        <CUSTOM type="gem_acd_cable_map" name="AcdGemCNO_GARC_Histo1" enabled="True">
+	    <expression><![CDATA[ AcdGemCNO_GARC ]]></expression>
+	    <cut><![CDATA[ condsummary&30 ]]></cut>
+	    <title>Number of Acd CNO by board</title>
+	    <xlabel>Acd CARC Number</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>This bit is the OR of the CNO signal on a single board. 
+			Because of the tile to boad mapping, a factor two variation 
+			between boards is normal</caption>
+        </CUSTOM>						
     </outputList>
+		
     <!--
     CAL group.
     -->
@@ -413,4 +437,54 @@
         </CUSTOM>	
 				
     </outputList>
+		
+		<!--
+    ACD group.
+    -->		
+		
+    <inputList group="ACD" name="ACD1" enabled="True">
+	<variable name="acd_tile_count" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="acd_tile_hitmap" enabled="False">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="acd_cable_tile_count" enabled="True">
+	    <type>int</type>
+            <shape>(NUM_ACD_CABLES)</shape>
+	</variable>
+    </inputList>		
+		
+    <outputList group="ACD" name="ACD base" enabled="True">
+
+        <TH1F name="AcdDigis_Histo1" enabled="True" level="lat">
+	    <title>Distribution of ACD tiles hit per event</title>
+	    <xbins>111</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>110.5</xmax>
+	    <xlabel>N</xlabel>
+	    <ylabel>Number of ACD tile hits</ylabel>
+      <expression>acd_tile_count</expression>
+			<cut><![CDATA[ condsummary&30 ]]></cut>
+        </TH1F>
+
+    </outputList>
+		
+    <!--
+    Meta event group.
+    -->
+    <outputList group="META" name="Meta event base" enabled="True">
+        <TH1F name="meta_context_open_crate" enabled="True">
+	    <title>Crate number</title>
+	    <xbins>10</xbins>
+	    <xmin>0</xmin>
+	    <xmax>10</xmax>
+	    <xlabel>Crate number (EPU0, EPU1, EPU2, SIU0, SIU1, AUX)</xlabel>
+	    <ylabel>Number of events</ylabel>
+            <expression>meta_context_open_crate</expression>
+        </TH1F>
+    </outputList>    
+		
 </monitoring>

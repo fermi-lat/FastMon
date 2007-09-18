@@ -35,6 +35,49 @@ def gem_vector_map(rootTree, plotRep):
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
+## @brief 
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
+
+def gem_acd_tile_map(rootTree, plotRep):
+    startTime = time.time()
+    xbin = NUM_ACD_VETOES
+    xmin = -0.5
+    xmax = NUM_ACD_VETOES -0.5
+    histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, xbin, xmin, xmax)
+    #histogram.SetMinimum(0)
+    for entry in rootTree:
+        for tile in xrange(NUM_ACD_VETOES):
+            if eval('entry.%s[tile]' % plotRep.Expression) \
+                   and (eval(Root2PythonCutConverter(plotRep.Cut))):
+                histogram.Fill(tile)
+    logger.debug('Custom plot %s created in %.2f s.' %\
+                  (plotRep.Name, time.time() - startTime))
+    return histogram
+
+## @brief 
+## @param rootTree
+#  The ROOT tree containing the variables.
+## @param plotRep
+#  The custom plot representation from the pXmlParser object.
+
+def gem_acd_cable_map(rootTree, plotRep):
+    startTime = time.time()
+    xbin = NUM_ACD_CABLES
+    xmin = -0.5
+    xmax = NUM_ACD_CABLES -0.5
+    histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, xbin, xmin, xmax)
+    #histogram.SetMinimum(0)
+    for entry in rootTree:
+        for board in xrange(NUM_ACD_CABLES):
+            if eval('entry.%s & (0x1 << board)' % plotRep.Expression) \
+                   and (eval(Root2PythonCutConverter(plotRep.Cut))):
+                histogram.Fill(board)
+    logger.debug('Custom plot %s created in %.2f s.' %\
+                  (plotRep.Name, time.time() - startTime))
+    return histogram
 
 ## @brief Return a ROOT TH2F object with the layer id on the x axis
 #  and the tower id on the y axis.

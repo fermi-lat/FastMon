@@ -120,6 +120,35 @@ class pGEMcontributionBase:
         self.TreeMaker.getVariable('TkrTriggerTower')[0] =\
                        copy(self.tkrVector())
 
+    ## @brief TBD 
+
+    def AcdGemVeto_AcdTile(self):
+        gemTL = self.tileList()
+        for iGemIdx in range(16):
+            if ( gemTL.XZM() & ( 1 << iGemIdx ) ):
+                self.TreeMaker.getVariable('AcdGemVeto_AcdTile')[iGemIdx]+=1
+            if ( gemTL.XZP() & ( 1 << iGemIdx ) ):
+                self.TreeMaker.getVariable('AcdGemVeto_AcdTile')[iGemIdx+16]+=1
+            if ( gemTL.YZM() & ( 1 << iGemIdx ) ):
+                self.TreeMaker.getVariable('AcdGemVeto_AcdTile')[iGemIdx+32]+=1
+            if ( gemTL.YZP() & ( 1 << iGemIdx ) ):
+                self.TreeMaker.getVariable('AcdGemVeto_AcdTile')[iGemIdx+48]+=1
+            if ( gemTL.XY() & ( 1 << iGemIdx ) ):
+                self.TreeMaker.getVariable('AcdGemVeto_AcdTile')[iGemIdx+64]+=1
+            if ( gemTL.XY() & ( 1 << (16+iGemIdx) ) ):
+                self.TreeMaker.getVariable('AcdGemVeto_AcdTile')[iGemIdx+80]+=1
+            if ( gemTL.RBN() & ( 1 << iGemIdx ) ):
+                self.TreeMaker.getVariable('AcdGemVeto_AcdTile')[iGemIdx+96]+=1
+            if ( gemTL.NA() & ( 1 << iGemIdx ) ):
+                self.TreeMaker.getVariable('AcdGemVeto_AcdTile')[iGemIdx+112]+=1
+        
+
+    ## @brief TBD 
+
+    def AcdGemCNO_GARC(self):
+        self.TreeMaker.getVariable('AcdGemCNO_GARC')[0] =\
+                       copy(self.cnoVector())
+        
     ## @brief Function filling the AcdGemROI_Tower tree variable (used to be gem_roi_vector).
     ## @note This name is inconsistent with the others: requires a change!
     ## @param self
@@ -225,7 +254,6 @@ class pGEMcontributionBase:
         self.TreeMaker.getVariable('gem_delta_window_open_time')[0] =\
                        copy(self.deltaWindowOpenTime())
 
-	
-	
-	
+
+
 
