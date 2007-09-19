@@ -221,8 +221,8 @@
 			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>AcdGemROI_Tower</expression>
         </CUSTOM>
-        <CUSTOM type="gem_acd_tile_map" name="AcdGemVeto_AcdTile_Histo1" enabled="True">
-	    <expression><![CDATA[ AcdGemVeto_AcdTile ]]></expression>
+        <CUSTOM type="AcdGemVeto_AcdTile" name="AcdGemVeto_AcdTile_Histo1" enabled="True">
+	    <!--expression><![CDATA[ AcdGemVeto_AcdTile ]]></expression-->
 	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
 	    <title>Number of Acd Gem vetoes by tile</title>
 	    <xlabel>Acd Tile Number (coded in 128 entries)</xlabel>
@@ -376,7 +376,7 @@
       <expression>TkrHits</expression>
         </TH1F>
 				
-        <CUSTOM type="TkrTwrVsPlaneVariableCounter" name="ZeroTkrHitsCounter_TowerPlane_Histo2" enabled="True">
+        <CUSTOM type="TkrTwrVsPlaneVariableCounter" name="ZeroTkrHitsCounter_TowerPlane_Histo2" enabled="False">
 	    <title>Counter of ZERO strip hits vs Tower and Tracker plane</title>
 			<caption>Number of times there are no strip hits in a Tracker plane</caption>
 	    <xlabel>Tracker plane</xlabel>
@@ -386,7 +386,7 @@
             <cut><![CDATA[ TkrHitsTowerPlane ==0 && (condsummary&30)>0]]></cut>
         </CUSTOM>					
 				
-        <CUSTOM type="TkrTwrVsPlaneVariableSumwx" name="TkrHitsCounter_TowerPlane_Histo2" enabled="True">
+        <CUSTOM type="TkrTwrVsPlaneVariableSumwx" name="TkrHitsCounter_TowerPlane_Histo2" enabled="False">
 	    <title>Number of strip hits vs Tower and Tracker plane</title>
 			<caption>Test</caption>
 	    <xlabel>Tracker plane</xlabel>

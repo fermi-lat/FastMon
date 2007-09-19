@@ -533,9 +533,13 @@ class pCUSTOMXmlRep(pPlotXmlRep):
                 logger.warn('Using old style custom plot implementation.')
                 histogram = eval('pCUSTOMplots.%s(rootTree, self)' % self.Type)
         else:
-            logger.warn('Using old style custom plot implementation.')
-            histogram = eval('pCUSTOMplots.%s(rootTree, self, %d)' %\
-                             (self.Type, tower))
+            try:
+                histogram = eval('self.Plotter.%s(self, %d)' %\
+                                 (self.Type, tower))
+            except:
+                logger.warn('Using old style custom plot implementation.')
+                histogram = eval('pCUSTOMplots.%s(rootTree, self, %d)' %\
+                                 (self.Type, tower))
         histogram.GetXaxis().SetTitle(self.XLabel)
         histogram.GetYaxis().SetTitle(self.YLabel)
         return histogram

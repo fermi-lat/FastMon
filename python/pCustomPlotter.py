@@ -57,6 +57,18 @@ class pCustomPlotter:
         self.__closeTmpRootFile()
         self.RootTree.SetBranchStatus('*', 1)
 
+    def __templateFunction(self, plotRep):
+        self.__startTimer()
+        # Create the histograms.
+        # self.__createTmpRootTree([], plotRep.Cut)
+        # Create numpy arrays.
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            # Do stuff.
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histogram
+        
     def ToT_0_WhenTkrHitsExist_TowerPlane(self, plotRep):
         self.__startTimer()
         histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 36, -0.5, 35.5,
@@ -76,3 +88,102 @@ class pCustomPlotter:
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histogram
+
+    ## @brief Create an acd tile map.
+    #
+    #  
+    ## @param self
+    #  The class instance.
+    ## @param plotRep
+    #  The custom plot representation from the pXmlParser object.
+
+    def AcdGemVeto_AcdTile(self, plotRep):
+        self.__startTimer()
+        histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, NUM_ACD_VETOES,\
+                              -0.5, NUM_ACD_VETOES -0.5)
+        self.__createTmpRootTree(['AcdGemVeto_AcdTile'], plotRep.Cut)
+        acdVeto = self.__createNumpyArray('AcdGemVeto_AcdTile',\
+                                          (NUM_ACD_VETOES), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            for tile in xrange(NUM_ACD_VETOES):
+                if acdVeto[tile]:
+                    histogram.Fill(tile)
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histogram
+    
+    ## @brief Method mapping the content of a gem 16 bit register to the
+    #  corresponding tower and returning a TH1F object.
+    ## @param self
+    #  The class instance.
+    ## @param plotRep
+    #  The custom plot representation from the pXmlParser object.
+
+    def gem_vector_map(self, plotRep):
+        self.__startTimer()
+        histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, 16, 0, 16)
+        self.__createTmpRootTree([plotRep.Expression], plotRep.Cut)
+        towerVec = self.__createNumpyArray(plotRep.Expression, (1), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            for tower in xrange(16):
+                if towerVec & (0x1 << tower):
+                    histogram.Fill(tower)
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histogram
+
+    ## @brief Return a ROOT TH1F object: the distribution of the number of
+    #  planes hit in a tower.
+    #
+    #  This function uses the tkr_layer_end_strip_count variable;
+    #  if it is not present in the TTree the histogram will be empty
+    #  and a warning message will be sent.
+    ## @param self
+    #  The class instance.
+    ## @param plotRep
+    #  The custom plot representation from the pXmlParser object.
+    ## @param tower
+    #  The Tracker tower under analysis
+
+    def TkrPlanesHit(self, plotRep, tower):
+        self.__startTimer()
+        histogram = ROOT.TH1F(plotRep.getExpandedName(tower),\
+                              plotRep.getExpandedTitle(tower),
+                              NUM_TKR_LAYERS_PER_TOWER, -0.5,\
+                              NUM_TKR_LAYERS_PER_TOWER - 0.5)
+        self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
+        tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            numHitLayers = 0
+            for layer in range(36):
+                if tkrHits[tower][layer]:
+                    numHitLayers += 1
+            histogram.Fill(numHitLayers)
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histogram
+
+    ## @brief 
+    ## @param rootTree
+    #  The ROOT tree containing the variables.
+    ## @param plotRep
+    #  The custom plot representation from the pXmlParser object.
+
+    def gem_acd_cable_map(self, plotRep):
+        self.__startTimer()
+        histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, NUM_ACD_CABLES,\
+                              -0.5 , NUM_ACD_CABLES -0.5)
+        self.__createTmpRootTree([plotRep.Expression], plotRep.Cut)
+        varArray = self.__createNumpyArray(plotRep.Expression, (1), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            for board in xrange(NUM_ACD_CABLES):
+                if varArray & (0x1 << board):
+                    histogram.Fill(board)
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histogram      
+ 
