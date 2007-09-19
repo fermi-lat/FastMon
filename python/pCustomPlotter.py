@@ -77,8 +77,8 @@ class pCustomPlotter:
         
     def ToT_0_WhenTkrHitsExist_TowerPlane(self, plotRep):
         self.__startTimer()
-        histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 36, -0.5, 35.5,
-                              16, -0.5, 15.5)
+        histogram = ROOT.TH2F(plotRep.Name, plotRep.Title,16, -0.5, 15.5,\
+                              36, -0.5, 35.5)
         self.__createTmpRootTree(['TkrHitsTowerPlane', 'ToT_con0_TowerPlane',\
                                   'ToT_con1_TowerPlane'], plotRep.Cut)
         nHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
@@ -90,7 +90,7 @@ class pCustomPlotter:
                 for layer in xrange(36):
                     if nHits[tower][layer] > 0 and tot0[tower][layer] == 0\
                            and tot1[tower][layer] == 0:
-                        histogram.Fill(layer, tower)
+                        histogram.Fill(tower, layer)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histogram
@@ -157,8 +157,7 @@ class pCustomPlotter:
         self.__startTimer()
         histogram = ROOT.TH1F(plotRep.getExpandedName(tower),\
                               plotRep.getExpandedTitle(tower),
-                              NUM_TKR_LAYERS_PER_TOWER, -0.5,\
-                              NUM_TKR_LAYERS_PER_TOWER - 0.5)
+                              38, -0.5, 38 - 0.5)
         self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
         tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
@@ -219,8 +218,7 @@ class pCustomPlotter:
             self.TmpRootTree.GetEntry(i)
             for tower in range(NUM_TOWERS):
                 for layer in range(NUM_CAL_LAYERS_PER_TOWER):
-                    if calHits[tower][layer]:
-                         histogram.Fill(tower, layer)
+                    histogram.Fill(tower, layer, calHits[tower][layer])
 
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()

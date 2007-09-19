@@ -299,7 +299,7 @@
 	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
         </TH1F>
 	
-        <TH1F name="CalXHit_NHit_Histo1_Tower" enabled="True" level="tower">
+        <TH1F name="CalX_NHit_Histo1_Tower" enabled="True" level="tower">
 	    <title>Distribution of  Cal crystals hits per event in this tower</title>
 	    <xbins>151</xbins>
 	    <xmin>-0.5</xmin>
@@ -463,7 +463,7 @@
 	    <title>Distribution of ACD tiles hit per event</title>
 	    <xbins>111</xbins>
 	    <xmin>-0.5</xmin>
-	    <xmax>110.5</xmax>
+	    <xmax>110</xmax>
 	    <xlabel>N</xlabel>
 	    <ylabel>Number of ACD tile hits</ylabel>
       <expression>acd_tile_count</expression>
