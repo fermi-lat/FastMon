@@ -299,7 +299,7 @@
 	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
         </TH1F>
 	
-        <TH1F name="CalX_NHit_Histo1_Tower" enabled="True" level="tower">
+        <TH1F name="CalX_NHit_Histo1" enabled="True" level="tower">
 	    <title>Distribution of  Cal crystals hits per event in this tower</title>
 	    <xbins>151</xbins>
 	    <xmin>-0.5</xmin>
@@ -399,7 +399,7 @@
     </outputList>
 		
     <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
-        <TH1F name="TkrHits_Histo1_Tower" enabled="True" level="tower">
+        <TH1F name="TkrHits_Histo1" enabled="True" level="tower">
 	    <title>Distribution of strip hits per tower</title>
 	    <xbins>200</xbins>
 	    <xmin>0</xmin>
@@ -412,7 +412,7 @@
     </outputList>
 
     <outputList group="TKR" name="TKR Details - Planes hit in a tower" enabled="True">		
-        <CUSTOM type="TkrPlanesHit" name="TkrPlanesHit_Histo1_Tower" enabled="True" level="tower" >
+        <CUSTOM type="TkrPlanesHit" name="TkrPlanesHit_Histo1" enabled="True" level="tower" >
 	    <title>Distribution of the number of planes hit in a tower</title>
 	    <xlabel>Layer number</xlabel>
 	    <caption></caption>

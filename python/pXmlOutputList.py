@@ -128,11 +128,11 @@ class pPlotXmlRep(pXmlElement):
     def getSuffix(self, tower=None, layer=None, end=None):
         suffix = ''
         if tower is not None:
-            suffix += '_tower_%d' % tower
+            suffix += '_Tower_%d' % tower
         if layer is not None:
-            suffix += '_layer_%d' % layer
+            suffix += '_Layer_%d' % layer
         if end is not None:
-            suffix += '_end_%d' % end
+            suffix += '_End_%d' % end
         return suffix
 
 

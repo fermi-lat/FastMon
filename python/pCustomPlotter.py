@@ -128,7 +128,7 @@ class pCustomPlotter:
 
     def gem_vector_map(self, plotRep):
         self.__startTimer()
-        histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, 16, 0, 16)
+        histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, 16, -0.5, 16-0.5)
         self.__createTmpRootTree([plotRep.Expression], plotRep.Cut)
         towerVec = self.__createNumpyArray(plotRep.Expression, (1), 'int')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
