@@ -5,10 +5,14 @@
 #  It contains the definition of the output list and all the plot
 #  representations.
 
-from pXmlElement import pXmlElement
-from pXmlList    import pXmlList
-from pGlobals    import *
-from pSafeROOT   import ROOT
+import pSafeLogger
+logger = pSafeLogger.getLogger('pXmlOutputList')
+
+from pXmlElement    import pXmlElement
+from pXmlList       import pXmlList
+from pGlobals       import *
+from pSafeROOT      import ROOT
+from pCustomPlotter import pCustomPlotter
 
 import pCUSTOMplots
 
@@ -510,6 +514,10 @@ class pCUSTOMXmlRep(pPlotXmlRep):
         pPlotXmlRep.__init__(self, element)
 	self.Type           = element.getAttribute('type')
         self.ExcludedValues = self.evalTagValue('exclude')
+        self.Plotter = None
+
+    def setPlotter(self, customPlotter):
+        self.Plotter = customPlotter
 
     ## @brief Return the custom ROOT histogram
     ## @param self
@@ -519,15 +527,19 @@ class pCUSTOMXmlRep(pPlotXmlRep):
 
     def getRootObject(self, rootTree, tower=None, layer=None):
         if tower == None:
-            histogram = eval('pCUSTOMplots.%s(rootTree, self)' % self.Type)
-            histogram.GetXaxis().SetTitle(self.XLabel)
-            histogram.GetYaxis().SetTitle(self.YLabel)
-            return histogram
+            try:
+                histogram = eval('self.Plotter.%s(self)' % self.Type)
+            except AttributeError:
+                logger.warn('Using old style custom plot implementation.')
+                histogram = eval('pCUSTOMplots.%s(rootTree, self)' % self.Type)
         else:
-            histogram = eval('pCUSTOMplots.%s(rootTree, self, %d)' % (self.Type, tower))
-            histogram.GetXaxis().SetTitle(self.XLabel)
-            histogram.GetYaxis().SetTitle(self.YLabel)
-            return histogram
+            logger.warn('Using old style custom plot implementation.')
+            histogram = eval('pCUSTOMplots.%s(rootTree, self, %d)' %\
+                             (self.Type, tower))
+        histogram.GetXaxis().SetTitle(self.XLabel)
+        histogram.GetYaxis().SetTitle(self.YLabel)
+        return histogram
+
 
 ## @brief Class describing an output list for the data monitor (i.e. a
 #  list of representations of the ROOT plots to be filled and saved when

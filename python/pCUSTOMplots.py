@@ -11,8 +11,21 @@ import array
 
 from pGlobals  import *
 from pSafeROOT import ROOT
-from pUtils import Root2PythonCutConverter
+from pUtils    import Root2PythonCutConverter
+from pUtils    import getCutVariables
 
+
+## def getReducedTree(rootTree, varList, cut = ''):
+    
+##     for varName in varList:
+##         if rootTree.GetLeaf(varName) is None:
+    
+##     if rootTree.GetLeaf("TkrHitsTowerPlane") is not None:
+##         return 0
+##     else:
+##         logger.warning('Could not find %s (required by %s.)' %\
+##                        (varName, plotName))
+##         return 1
 
 
 ## @brief Method mapping the content of a gem 16 bit register to the
@@ -31,7 +44,7 @@ def gem_vector_map(rootTree, plotRep):
             if eval('entry.%s & (0x1 << tower)' % plotRep.Expression) \
                    and (eval(Root2PythonCutConverter(plotRep.Cut))):
                 histogram.Fill(tower)
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -53,7 +66,7 @@ def gem_acd_tile_map(rootTree, plotRep):
             if eval('entry.%s[tile]' % plotRep.Expression) \
                    and (eval(Root2PythonCutConverter(plotRep.Cut))):
                 histogram.Fill(tile)
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -75,7 +88,7 @@ def gem_acd_cable_map(rootTree, plotRep):
             if eval('entry.%s & (0x1 << board)' % plotRep.Expression) \
                    and (eval(Root2PythonCutConverter(plotRep.Cut))):
                 histogram.Fill(board)
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -125,7 +138,7 @@ def tkr_2d_map(rootTree, plotRep):
                 else:
                     mean  = means[index]/float(entries[index])
                 histogram.Fill((layer + end/2.0 + 0.25), tower, mean)
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -159,7 +172,7 @@ def tkr_2d_map_project(rootTree, plotRep):
                 mean = h1.GetMean()
                 histogram.Fill((layer + end/2.0 + 0.25), tower, mean)
                 h1.Delete()
-    logger.debug('Custom plot %s created in %2.f s.' %\
+    logger.debug('%s created in %2.f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -193,7 +206,7 @@ def tkr_2d_map_project_count(rootTree, plotRep):
                 entries = h1.GetEntries()
                 histogram.Fill((layer + end/2.0 + 0.25), tower, entries)
                 h1.Delete()
-    logger.debug('Custom plot %s created in %2.f s.' %\
+    logger.debug('%s created in %2.f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -235,7 +248,7 @@ def cal_2d_map(rootTree, plotRep):
             else:
                 mean  = means[index]/float(entries[index])
             histogram.Fill((layer + 0.25), tower, mean)
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -276,7 +289,7 @@ def CalXHit_NHit_Counter_TowerCalLayer_Histo2(rootTree, plotRep):
             index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
             histogram.Fill((layer + 0.25), tower, entries[index])
 	    
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -316,7 +329,7 @@ def ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2(rootTree, plotRep):
             index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
 	    histogram.Fill( (layer + 0.25), tower, entries[index])
 	    
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -343,7 +356,7 @@ def TkrPlanesHit(rootTree, plotRep, tower):
                           xbins, xmin, xmax)
     
     if rootTree.GetLeaf("TkrHitsTowerPlane") is None:
-        logger.warning('Custom plot %s requires TkrHitsTowerPlane that is not in the processed tree' %\
+        logger.warning('%s requires TkrHitsTowerPlane that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
 
@@ -357,7 +370,7 @@ def TkrPlanesHit(rootTree, plotRep, tower):
 
         histogram.Fill(tmpNumLayer)
 
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                   (plotRep.getExpandedName(tower), time.time() - startTime))
     return histogram
 
@@ -384,11 +397,11 @@ def tkr_no_tot_counter(rootTree, plotRep):
                           ybins, ymin, ymax)
 
     if rootTree.GetLeaf("tkr_layer_end_strip_count") is None:
-        logger.warning('Custom plot %s requires tkr_layer_end_strip_count that is not in the processed tree' %\
+        logger.warning('%s requires tkr_layer_end_strip_count that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
     if rootTree.GetLeaf("tkr_layer_end_tot") is None:
-        logger.warning('Custom plot %s requires tkr_layer_end_tot that is not in the processed tree' %\
+        logger.warning('%s requires tkr_layer_end_tot that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
     
@@ -406,7 +419,7 @@ def tkr_no_tot_counter(rootTree, plotRep):
                 if nStrips1>0 and ToT1==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
                     histogram.Fill(layer+0.5, tower)
 
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                  (plotRep.Name, time.time() - startTime))          
     return histogram
 
@@ -419,8 +432,8 @@ def tkr_no_tot_counter(rootTree, plotRep):
 #  The ROOT tree containing the variables.
 ## @param plotRep
 #  The custom plot representation from the pXmlParser object.
-def ToT_0_WhenTkrHitsExist_TowerPlane(rootTree, plotRep):
 
+def ToT_0_WhenTkrHitsExist_TowerPlane(rootTree, plotRep):
     startTime = time.time()
     xmin      = -0.5
     xmax      = NUM_TKR_LAYERS_PER_TOWER -0.5
@@ -432,33 +445,62 @@ def ToT_0_WhenTkrHitsExist_TowerPlane(rootTree, plotRep):
                           ybins, ymin, ymax)
 
     if rootTree.GetLeaf("TkrHitsTowerPlane") is None:
-        logger.warning('Custom plot %s requires TkrHitsTowerPlane that is not in the processed tree' %\
+        logger.warning('%s requires TkrHitsTowerPlane that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
     if rootTree.GetLeaf("ToT_con0_TowerPlane") is None:
-        logger.warning('Custom plot %s requires ToT_con0_TowerPlane that is not in the processed tree' %\
+        logger.warning('%s requires ToT_con0_TowerPlane that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
     if rootTree.GetLeaf("ToT_con1_TowerPlane") is None:
-        logger.warning('Custom plot %s requires ToT_con1_TowerPlane that is not in the processed tree' %\
+        logger.warning('%s requires ToT_con1_TowerPlane that is not in the processed tree' %\
                        plotRep.getExpandedName(tower))
         return histogram
 
-    for entry in rootTree:
+##     for entry in rootTree:
+##         for tower in xrange(NUM_TOWERS):
+##             for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
+##                 index = tower*NUM_TKR_LAYERS_PER_TOWER + layer
+##                 nStrips = entry.TkrHitsTowerPlane[index]
+##                 ToT0 = entry.ToT_con0_TowerPlane[index]
+##                 ToT1 = entry.ToT_con1_TowerPlane[index]
+                
+##                 if nStrips>0 and ToT0==0 and ToT1==0 \
+##                        and (eval(Root2PythonCutConverter(plotRep.Cut))):
+##                     histogram.Fill(layer, tower)
+
+
+    rootTree.SetBranchStatus('*', 0)
+    rootTree.SetBranchStatus('TkrHitsTowerPlane', 1)
+    rootTree.SetBranchStatus('ToT_con0_TowerPlane', 1)
+    rootTree.SetBranchStatus('ToT_con1_TowerPlane', 1)
+    rootTree.SetBranchStatus('condsummary', 1)
+    
+    lastFile = ROOT.gDirectory.GetPath()
+    tmpFile = ROOT.TFile('tmp.root','RECREATE')
+    tmpTree = rootTree.CopyTree(plotRep.Cut)
+    
+    TkrHitsTowerPlane = numpy.zeros((16, 36), dtype=int)
+    ToT_con0_TowerPlane = numpy.zeros((16, 36), dtype=int)
+    ToT_con1_TowerPlane = numpy.zeros((16, 36), dtype=int)
+    tmpTree.SetBranchAddress('TkrHitsTowerPlane', TkrHitsTowerPlane)
+    tmpTree.SetBranchAddress('ToT_con0_TowerPlane', ToT_con0_TowerPlane)
+    tmpTree.SetBranchAddress('ToT_con1_TowerPlane', ToT_con1_TowerPlane)
+    for i in xrange(tmpTree.GetEntriesFast()):
+        tmpTree.GetEntry(i)
         for tower in xrange(NUM_TOWERS):
             for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
-                index = tower*NUM_TKR_LAYERS_PER_TOWER + layer
-                nStrips = entry.TkrHitsTowerPlane[index]
-                ToT0 = entry.ToT_con0_TowerPlane[index]
-                ToT1 = entry.ToT_con1_TowerPlane[index]
-                
-                if nStrips>0 and ToT0==0 and ToT1==0 \
-                       and (eval(Root2PythonCutConverter(plotRep.Cut))):
+                nStrips = TkrHitsTowerPlane[tower][layer]
+                ToT0 = ToT_con0_TowerPlane[tower][layer]
+                ToT1 = ToT_con1_TowerPlane[tower][layer]
+                if nStrips>0 and ToT0==0 and ToT1==0:
                     histogram.Fill(layer, tower)
 
+    tmpFile.Close()
+    ROOT.gROOT.cd(lastFile)
+    rootTree.SetBranchStatus('*', 1)
 
-
-    logger.debug('Custom plot %s created in %.2f s.' %\
+    logger.debug('%s created in %.2f s.' %\
                  (plotRep.Name, time.time() - startTime))          
     return histogram
 
@@ -489,7 +531,7 @@ def TkrTwrVsPlaneVariableCounter(rootTree, plotRep):
             entries = h1.GetEntries()
             histogram.Fill(layer, tower, entries)
             h1.Delete()
-    logger.debug('Custom plot %s created in %2.f s.' %\
+    logger.debug('%s created in %2.f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
 
@@ -522,6 +564,6 @@ def TkrTwrVsPlaneVariableSumwx(rootTree, plotRep):
             h1.GetStats(stats)
             histogram.Fill(layer, tower, stats[2])
             h1.Delete()
-    logger.debug('Custom plot %s created in %2.f s.' %\
+    logger.debug('%s created in %2.f s.' %\
                   (plotRep.Name, time.time() - startTime))
     return histogram
