@@ -8,6 +8,7 @@ logger = pSafeLogger.getLogger('pCustomPlotter')
 import time
 import numpy
 import pUtils
+import os
 
 from pGlobals  import *
 from pSafeROOT import ROOT
@@ -23,6 +24,11 @@ class pCustomPlotter:
         self.RootTree = rootTree
         self.TmpRootTree = None
         self.StartTime = None
+
+    def cleanup(self):
+        logger.info('Removing temp root file...')
+        os.system('rm -f %s' % TMP_FILE_PATH)
+        logger.info('Done.')
 
     def __startTimer(self):
         self.StartTime = time.time()

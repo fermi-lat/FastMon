@@ -23,6 +23,7 @@ class pFastMonTreeProcessor(pBaseTreeProcessor):
         self.CustomPlotter = pCustomPlotter(self.OutputFilePath, self.RootTree)
         self.createObjects()
         logger.info('Done in %.2f s.\n' % (time.time() - startTime))
+        self.CustomPlotter.cleanup()
         self.close()
     
     ## @brief Create the ROOT objects defined in the enabled output lists
