@@ -167,8 +167,8 @@ class pCustomPlotter:
         return histogram
 
     ## @brief 
-    ## @param rootTree
-    #  The ROOT tree containing the variables.
+    ## @param self
+    #  The class instance.
     ## @param plotRep
     #  The custom plot representation from the pXmlParser object.
 
@@ -186,4 +186,71 @@ class pCustomPlotter:
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histogram      
- 
+
+    ## @brief Return a summed hit map of the calorimeter.
+    #
+    #  Each (Tower,Layer) bin contains the summed number of logs hit per layer
+    #  Over all events but periodic triggers
+    ## @param self
+    #  The class instance.
+    ## @param plotRep
+    #  The custom plot representation from the pXmlParser object.
+    def CalXHit_NHit_Counter_TowerCalLayer(self, plotRep):
+        self.__startTimer()
+        ymin      = -0.5
+        ymax      = NUM_CAL_LAYERS_PER_TOWER-0.5
+        ybins     = NUM_CAL_LAYERS_PER_TOWER
+        xmin      = -0.5
+        xmax      = NUM_TOWERS-0.5
+        xbins     = NUM_TOWERS
+
+        histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+        self.__createTmpRootTree(['CalXHit_TowerCalLayer'], plotRep.Cut)
+        calHits = self.__createNumpyArray('CalXHit_TowerCalLayer',\
+                                          (16, 8), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            for tower in range(NUM_TOWERS):
+                for layer in range(NUM_CAL_LAYERS_PER_TOWER):
+                    if calHits[tower][layer]:
+                         histogram.Fill(tower, layer)
+
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histogram
+    
+    ## @brief Return a map of the number of time there was no hit in a layer.
+    #
+    #  Each (Tower,Layer) bin contains the number of time the layer had no hits
+    #  Over all events but periodic triggers
+    ## @param self
+    #  The class instance.
+    ## @param plotRep
+    #  The custom plot representation from the pXmlParser object.
+
+    def ZeroCalXHit_NHit_Counter_TowerCalLayer(self, plotRep):
+        self.__startTimer()    
+        ymin      = -0.5
+        ymax      = NUM_CAL_LAYERS_PER_TOWER-0.5
+        ybins     = NUM_CAL_LAYERS_PER_TOWER
+        xmin      = -0.5
+        xmax      = NUM_TOWERS-0.5
+        xbins     = NUM_TOWERS
+        histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+                          ybins, ymin, ymax)
+        self.__createTmpRootTree(['CalXHit_TowerCalLayer'], plotRep.Cut)
+        calHits = self.__createNumpyArray('CalXHit_TowerCalLayer',\
+                                          (16, 8), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            for tower in range(NUM_TOWERS):
+                for layer in range(NUM_CAL_LAYERS_PER_TOWER):
+                    if calHits[tower][layer]==0:
+                         histogram.Fill(tower, layer)
+
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histogram 
+
+

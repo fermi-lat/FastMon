@@ -269,24 +269,24 @@
 	    
     <outputList group="CAL" name="CAL base" enabled="True">
 	
-        <CUSTOM type="CalXHit_NHit_Counter_TowerCalLayer_Histo2" name="CalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
+        <CUSTOM type="CalXHit_NHit_Counter_TowerCalLayer" name="CalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
 	    <title>Number of hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>Cal-Layer</ylabel>
 	    <drawoptions>colz</drawoptions>
-	    <expression>CalXHit_TowerCalLayer</expression>
-	    <exclude>[0]</exclude>
-	    <cut><![CDATA[ (condsummary&30)>0 && !(condsummary&32)]]></cut>	    
+	    <!--expression>CalXHit_TowerCalLayer</expression-->
+	    <!--exclude>[0]</exclude-->
+	    <cut><![CDATA[ (condsummary&30)>0 && (condsummary&32)==0]]></cut>	    
         </CUSTOM>
 
-        <CUSTOM type="ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2" name="ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
+        <CUSTOM type="ZeroCalXHit_NHit_Counter_TowerCalLayer" name="ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
 	    <title>Number of times there is ZERO hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>Cal-Layer</ylabel>
 	    <drawoptions>colz</drawoptions>
-	    <expression>CalXHit_TowerCalLayer</expression>
-	    <exclude>[0]</exclude>
-	    <cut><![CDATA[ (condsummary&30)>0 && !(condsummary&32)]]></cut>	    
+	    <!--expression>CalXHit_TowerCalLayer</expression-->
+	    <!--exclude>[0]</exclude-->
+	    <cut><![CDATA[ (condsummary&30)>0 && (condsummary&32)==0]]></cut>	    
         </CUSTOM>
 
         <TH1F name="CalX_NHit_Histo1" enabled="True" level="lat">

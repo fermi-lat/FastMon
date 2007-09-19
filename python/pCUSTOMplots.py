@@ -247,38 +247,39 @@ def cal_2d_map(rootTree, plotRep):
 #  The ROOT tree containing the variables.
 ## @param plotRep
 #  The custom plot representation from the pXmlParser object.
-def CalXHit_NHit_Counter_TowerCalLayer_Histo2(rootTree, plotRep):
-    startTime = time.time()
-    xmin      = -0.5
-    xmax      = NUM_CAL_LAYERS_PER_TOWER-0.5
-    xbins     = NUM_CAL_LAYERS_PER_TOWER
-    ymin      = -0.5
-    ymax      = NUM_TOWERS-.5
-    ybins     = NUM_TOWERS
-    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
-                          ybins, ymin, ymax)
-    means   = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
-    entries = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
-    for entry in rootTree:
-	if eval(Root2PythonCutConverter(plotRep.Cut)):
-	    values = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
-	    buffer = eval('entry.%s' % plotRep.Expression)
-	    for i in xrange(NUM_CAL_LAYERS):
-	        values[i] = buffer[i]
-	    status = numpy.ones((NUM_CAL_LAYERS), dtype=int)
-	    means += values
-	    for value in plotRep.ExcludedValues:
-	        status = status*(values != value)
-	    entries += status
 
-    for tower in xrange(NUM_TOWERS):
-        for layer in xrange(NUM_CAL_LAYERS_PER_TOWER):
-            index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
-            histogram.Fill((layer + 0.25), tower, entries[index])
+## def CalXHit_NHit_Counter_TowerCalLayer(rootTree, plotRep):
+##     startTime = time.time()
+##     xmin      = -0.5
+##     xmax      = NUM_CAL_LAYERS_PER_TOWER-0.5
+##     xbins     = NUM_CAL_LAYERS_PER_TOWER
+##     ymin      = -0.5
+##     ymax      = NUM_TOWERS-.5
+##     ybins     = NUM_TOWERS
+##     histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+##                           ybins, ymin, ymax)
+##     means   = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+##     entries = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+##     for entry in rootTree:
+## 	if eval(Root2PythonCutConverter(plotRep.Cut)):
+## 	    values = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+## 	    buffer = eval('entry.%s' % plotRep.Expression)
+## 	    for i in xrange(NUM_CAL_LAYERS):
+## 	        values[i] = buffer[i]
+## 	    status = numpy.ones((NUM_CAL_LAYERS), dtype=int)
+## 	    means += values
+## 	    for value in plotRep.ExcludedValues:
+## 	        status = status*(values != value)
+## 	    entries += status
+
+##     for tower in xrange(NUM_TOWERS):
+##         for layer in xrange(NUM_CAL_LAYERS_PER_TOWER):
+##             index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
+##             histogram.Fill((layer + 0.25), tower, entries[index])
 	    
-    logger.debug('%s created in %.2f s.' %\
-                  (plotRep.Name, time.time() - startTime))
-    return histogram
+##     logger.debug('%s created in %.2f s.' %\
+##                   (plotRep.Name, time.time() - startTime))
+##     return histogram
 
 ## @brief Return a map of the number of time there was no hit in a layer.
 #
@@ -288,37 +289,38 @@ def CalXHit_NHit_Counter_TowerCalLayer_Histo2(rootTree, plotRep):
 #  The ROOT tree containing the variables.
 ## @param plotRep
 #  The custom plot representation from the pXmlParser object.
-def ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2(rootTree, plotRep):
-    startTime = time.time()
-    xmin      = -0.5
-    xmax      = NUM_CAL_LAYERS_PER_TOWER-0.5
-    xbins     = NUM_CAL_LAYERS_PER_TOWER
-    ymin      = -0.5
-    ymax      = NUM_TOWERS-.5
-    ybins     = NUM_TOWERS
-    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
-                          ybins, ymin, ymax)
-    entries = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
-    for entry in rootTree:
-	if eval(Root2PythonCutConverter(plotRep.Cut)):
-	    values = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
-	    buffer = eval('entry.%s' % plotRep.Expression)
-	    for i in xrange(NUM_CAL_LAYERS):
-	        values[i] = buffer[i]
-	    status = numpy.ones((NUM_CAL_LAYERS), dtype=int)
-	    for value in plotRep.ExcludedValues:
-	        status = status*(values != value)
-	    isZero = eval('status==0')	
-	    entries += isZero
 
-    for tower in xrange(NUM_TOWERS):
-        for layer in xrange(NUM_CAL_LAYERS_PER_TOWER):
-            index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
-	    histogram.Fill( (layer + 0.25), tower, entries[index])
+## def ZeroCalXHit_NHit_Counter_TowerCalLayer(rootTree, plotRep):
+##     startTime = time.time()
+##     xmin      = -0.5
+##     xmax      = NUM_CAL_LAYERS_PER_TOWER-0.5
+##     xbins     = NUM_CAL_LAYERS_PER_TOWER
+##     ymin      = -0.5
+##     ymax      = NUM_TOWERS-.5
+##     ybins     = NUM_TOWERS
+##     histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+##                           ybins, ymin, ymax)
+##     entries = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+##     for entry in rootTree:
+## 	if eval(Root2PythonCutConverter(plotRep.Cut)):
+## 	    values = numpy.zeros((NUM_CAL_LAYERS), dtype=int)
+## 	    buffer = eval('entry.%s' % plotRep.Expression)
+## 	    for i in xrange(NUM_CAL_LAYERS):
+## 	        values[i] = buffer[i]
+## 	    status = numpy.ones((NUM_CAL_LAYERS), dtype=int)
+## 	    for value in plotRep.ExcludedValues:
+## 	        status = status*(values != value)
+## 	    isZero = eval('status==0')	
+## 	    entries += isZero
+
+##     for tower in xrange(NUM_TOWERS):
+##         for layer in xrange(NUM_CAL_LAYERS_PER_TOWER):
+##             index = tower*NUM_CAL_LAYERS_PER_TOWER + layer
+## 	    histogram.Fill( (layer + 0.25), tower, entries[index])
 	    
-    logger.debug('%s created in %.2f s.' %\
-                  (plotRep.Name, time.time() - startTime))
-    return histogram
+##     logger.debug('%s created in %.2f s.' %\
+##                   (plotRep.Name, time.time() - startTime))
+##     return histogram
 
 
 ## @brief Return a ROOT TH1F object: the distribution of the number of
@@ -371,44 +373,45 @@ def ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2(rootTree, plotRep):
 ## @param plotRep
 #  The custom plot representation from the pXmlParser object.
 ## @todo move cut at the beginning of the event loop to save processing time
-def tkr_no_tot_counter(rootTree, plotRep):
 
-    startTime = time.time()
-    xmin      = 0
-    xmax      = NUM_TKR_LAYERS_PER_TOWER # 36
-    xbins     = NUM_GTRC_PER_LAYER*xmax # 72
-    ymin      = 0
-    ymax      = NUM_TOWERS
-    ybins     = ymax
-    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
-                          ybins, ymin, ymax)
+## def tkr_no_tot_counter(rootTree, plotRep):
 
-    if rootTree.GetLeaf("tkr_layer_end_strip_count") is None:
-        logger.warning('%s requires tkr_layer_end_strip_count that is not in the processed tree' %\
-                       plotRep.getExpandedName(tower))
-        return histogram
-    if rootTree.GetLeaf("tkr_layer_end_tot") is None:
-        logger.warning('%s requires tkr_layer_end_tot that is not in the processed tree' %\
-                       plotRep.getExpandedName(tower))
-        return histogram
+##     startTime = time.time()
+##     xmin      = 0
+##     xmax      = NUM_TKR_LAYERS_PER_TOWER # 36
+##     xbins     = NUM_GTRC_PER_LAYER*xmax # 72
+##     ymin      = 0
+##     ymax      = NUM_TOWERS
+##     ybins     = ymax
+##     histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
+##                           ybins, ymin, ymax)
+
+##     if rootTree.GetLeaf("tkr_layer_end_strip_count") is None:
+##         logger.warning('%s requires tkr_layer_end_strip_count that is not in the processed tree' %\
+##                        plotRep.getExpandedName(tower))
+##         return histogram
+##     if rootTree.GetLeaf("tkr_layer_end_tot") is None:
+##         logger.warning('%s requires tkr_layer_end_tot that is not in the processed tree' %\
+##                        plotRep.getExpandedName(tower))
+##         return histogram
     
-    for entry in rootTree:
-        for tower in xrange(NUM_TOWERS):
-            for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
-                index = tower*NUM_TKR_LAYERS_PER_TOWER*NUM_GTRC_PER_LAYER + layer*NUM_GTRC_PER_LAYER
-                nStrips0 = entry.tkr_layer_end_strip_count[index]
-                nStrips1 = entry.tkr_layer_end_strip_count[index +1]
-                ToT0 = entry.tkr_layer_end_tot[index]
-                ToT1 = entry.tkr_layer_end_tot[index +1]
+##     for entry in rootTree:
+##         for tower in xrange(NUM_TOWERS):
+##             for layer in xrange(NUM_TKR_LAYERS_PER_TOWER):
+##                 index = tower*NUM_TKR_LAYERS_PER_TOWER*NUM_GTRC_PER_LAYER + layer*NUM_GTRC_PER_LAYER
+##                 nStrips0 = entry.tkr_layer_end_strip_count[index]
+##                 nStrips1 = entry.tkr_layer_end_strip_count[index +1]
+##                 ToT0 = entry.tkr_layer_end_tot[index]
+##                 ToT1 = entry.tkr_layer_end_tot[index +1]
                 
-                if nStrips0>0 and ToT0==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
-                    histogram.Fill(layer, tower)  
-                if nStrips1>0 and ToT1==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
-                    histogram.Fill(layer+0.5, tower)
+##                 if nStrips0>0 and ToT0==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
+##                     histogram.Fill(layer, tower)  
+##                 if nStrips1>0 and ToT1==0 and (eval(Root2PythonCutConverter(plotRep.Cut))):
+##                     histogram.Fill(layer+0.5, tower)
 
-    logger.debug('%s created in %.2f s.' %\
-                 (plotRep.Name, time.time() - startTime))          
-    return histogram
+##     logger.debug('%s created in %.2f s.' %\
+##                  (plotRep.Name, time.time() - startTime))          
+##     return histogram
 
 ## ## @brief Return a ROOT TH2F object:
 ## #
