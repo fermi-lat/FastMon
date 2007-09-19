@@ -463,7 +463,7 @@
 	    <title>Number of ACD PMT hit per event</title>
 	    <xbins>111</xbins>
 	    <xmin>-0.5</xmin>
-	    <xmax>110</xmax>
+	    <xmax>110.5</xmax>
 	    <xlabel>N</xlabel>
 	    <ylabel>Number of ACD hits</ylabel>
       <expression>acd_tile_count</expression>
