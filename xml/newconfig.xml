@@ -451,7 +451,7 @@
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="acd_cable_tile_count" enabled="True">
+	<variable name="acd_cable_tile_count" enabled="False">
 	    <type>int</type>
             <shape>(NUM_ACD_CABLES)</shape>
 	</variable>
@@ -459,14 +459,15 @@
 		
     <outputList group="ACD" name="ACD base" enabled="True">
 
-        <TH1F name="AcdDigis_Histo1" enabled="True" level="lat">
-	    <title>Distribution of ACD tiles hit per event</title>
+        <TH1F name="AcdChannelsHits" enabled="True" level="lat">
+	    <title>Number of ACD PMT hit per event</title>
 	    <xbins>111</xbins>
 	    <xmin>-0.5</xmin>
 	    <xmax>110</xmax>
 	    <xlabel>N</xlabel>
-	    <ylabel>Number of ACD tile hits</ylabel>
+	    <ylabel>Number of ACD hits</ylabel>
       <expression>acd_tile_count</expression>
+			<caption>This is the number of PHA values per event</caption>
 			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
         </TH1F>
 
