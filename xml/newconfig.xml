@@ -206,7 +206,7 @@
 			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>CalHiTriggerTower</expression>
         </CUSTOM>
-        <CUSTOM type="gem_vector_map" name="CalLoTrigger_Tower_Histo1" enabled="True">
+        <CUSTOM type="gem_vector_map" name="CalLOWTrigger_Tower_Histo1" enabled="True">
 	    <title>Number of Cal LO triggers per tower</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>N</ylabel>
@@ -221,7 +221,7 @@
 			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>AcdGemROI_Tower</expression>
         </CUSTOM>
-        <CUSTOM type="AcdGemVeto_AcdTile" name="AcdGemVeto_AcdTile_Histo1" enabled="True">
+        <CUSTOM type="AcdGemVeto_AcdTile" name="Acd_GemVeto_AcdTile_Histo1" enabled="True">
 	    <!--expression><![CDATA[ AcdGemVeto_AcdTile ]]></expression-->
 	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
 	    <title>Number of Acd Gem vetoes by tile</title>
@@ -299,7 +299,7 @@
 	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
         </TH1F>
 	
-        <TH1F name="CalX_NHit_Histo1" enabled="True" level="tower">
+        <TH1F name="CalX_NHit_Histo1" enabled="False" level="tower">
 	    <title>Distribution of  Cal crystals hits per event in this tower</title>
 	    <xbins>151</xbins>
 	    <xmin>-0.5</xmin>
@@ -399,7 +399,7 @@
     </outputList>
 		
     <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
-        <TH1F name="TkrHits_Histo1" enabled="True" level="tower">
+        <TH1F name="TkrHits_Histo1" enabled="False" level="tower">
 	    <title>Distribution of strip hits per tower</title>
 	    <xbins>200</xbins>
 	    <xmin>0</xmin>
