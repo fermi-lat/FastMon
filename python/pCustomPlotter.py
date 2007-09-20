@@ -218,8 +218,10 @@ class pCustomPlotter:
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(NUM_TOWERS):
-                for layer in range(NUM_CAL_LAYERS_PER_TOWER):
-                    histogram.Fill(tower, layer, calHits[tower][layer].sum())
+                # This is for optimizing speed---we gain a factor of 5.
+                if calHits[tower].sum():
+                    for layer in range(NUM_CAL_LAYERS_PER_TOWER):
+                        histogram.Fill(tower,layer,calHits[tower][layer].sum())
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histogram
@@ -250,9 +252,14 @@ class pCustomPlotter:
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(NUM_TOWERS):
-                for layer in range(NUM_CAL_LAYERS_PER_TOWER):
-                    if calHits[tower][layer].sum() == 0:
+                # This is for optimizing speed---we gain a factor of 3.
+                if calHits[tower].sum() == 0:
+                    for layer in range(NUM_CAL_LAYERS_PER_TOWER):
                         histogram.Fill(tower, layer)
+                else:
+                    for layer in range(NUM_CAL_LAYERS_PER_TOWER):
+                        if calHits[tower][layer].sum() == 0:
+                            histogram.Fill(tower, layer)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histogram 
