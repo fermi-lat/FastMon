@@ -12,9 +12,10 @@ import os
 
 from pGlobals  import *
 from pSafeROOT import ROOT
+import random
 
 
-TMP_FILE_PATH = 'tmp.root'
+
 
 
 class pCustomPlotter:
@@ -24,10 +25,15 @@ class pCustomPlotter:
         self.RootTree = rootTree
         self.TmpRootTree = None
         self.StartTime = None
+        self.TmpFilePath = os.path.join(os.path.dirname(rootFilePath),\
+                                        'tmp_%s.root' % (random.randint(0,100000)))
+        if os.path.exists(self.TmpFilePath):
+            self.TmpFilePath = self.TmpFilePath.replace('.root', '_1.root')
+        logger.debug('Using temp file %s.' % (self.TmpFilePath))
 
     def cleanup(self):
         logger.info('Removing temp root file...')
-        os.system('rm -f %s' % TMP_FILE_PATH)
+        os.system('rm -f %s' % self.TmpFilePath)
         logger.info('Done.')
 
     def __startTimer(self):
@@ -38,8 +44,8 @@ class pCustomPlotter:
                      (plotRep.Name, time.time() - self.StartTime))
 
     def __openTmpRootFile(self):
-        self.TmpRootFile = ROOT.TFile(TMP_FILE_PATH, 'RECREATE')
-
+        self.TmpRootFile = ROOT.TFile(self.TmpFilePath, 'RECREATE')
+        
     def __closeTmpRootFile(self):
         self.TmpRootFile.Close()
         ROOT.gROOT.cd('%s:/' % self.RootFilePath)
@@ -62,18 +68,6 @@ class pCustomPlotter:
         self.TmpRootTree = None
         self.__closeTmpRootFile()
         self.RootTree.SetBranchStatus('*', 1)
-
-    def __templateFunction(self, plotRep):
-        self.__startTimer()
-        # Create the histograms.
-        # self.__createTmpRootTree([], plotRep.Cut)
-        # Create numpy arrays.
-        for i in xrange(self.TmpRootTree.GetEntriesFast()):
-            self.TmpRootTree.GetEntry(i)
-            # Do stuff.
-        self.__stopTimer(plotRep)
-        self.__deleteTmpRootTree()
-        return histogram
         
     def ToT_0_WhenTkrHitsExist_TowerPlane(self, plotRep):
         self.__startTimer()
