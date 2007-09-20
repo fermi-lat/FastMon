@@ -72,9 +72,18 @@ class pGEMcontributionBase:
 
     def DiscardedDelta(self):
         tmpDisc = copy(self.discarded())
-        self.TreeMaker.getVariable('DiscardedDelta')[0] = \
-        tmpDisc - self.TreeMaker.getVariable('DiscardedDelta')[1]
+        if self.ErrorHandler.EventNumber == 0:
+            self.TreeMaker.getVariable('DiscardedDelta')[0] = 0
+        else:
+            if self.TreeMaker.getVariable('DiscardedDelta')[1] > tmpDisc:
+                self.TreeMaker.getVariable('DiscardedDelta')[0] =\
+                tmpDisc - self.TreeMaker.getVariable('DiscardedDelta')[1] + 2**24                
+            else:
+                self.TreeMaker.getVariable('DiscardedDelta')[0] =\
+                tmpDisc - self.TreeMaker.getVariable('DiscardedDelta')[1]
         self.TreeMaker.getVariable('DiscardedDelta')[1] = tmpDisc
+
+
             
     ## @brief Function filling the DeadZoneLast tree variable.
     ## @param self
@@ -87,12 +96,22 @@ class pGEMcontributionBase:
     #  Do not reset this variable!        
     ## @param self
     #  The class instance.
+    ## @note The DeadZone counter is a 16 bit counter, but the GEMcontribution::deadZone()
+    #  used here use only the last 8 bit (see LDF docs for more information)
 	
     def DeadZoneDelta(self):
         tmpDZone = copy(self.deadZone())
-        self.TreeMaker.getVariable('DeadZoneDelta')[0] =\
-        tmpDZone - self.TreeMaker.getVariable('DeadZoneDelta')[1]
+        if self.ErrorHandler.EventNumber == 0:
+            self.TreeMaker.getVariable('DeadZoneDelta')[0] = 0
+        else:
+            if self.TreeMaker.getVariable('DeadZoneDelta')[1] > tmpDZone:
+                self.TreeMaker.getVariable('DeadZoneDelta')[0] =\
+                tmpDZone - self.TreeMaker.getVariable('DeadZoneDelta')[1] + 2**8             
+            else:
+                self.TreeMaker.getVariable('DeadZoneDelta')[0] =\
+                tmpDZone - self.TreeMaker.getVariable('DeadZoneDelta')[1]
         self.TreeMaker.getVariable('DeadZoneDelta')[1] = tmpDZone
+
         
     ## @brief Function filling the LivetimeLast tree variable.
     ## @param self
