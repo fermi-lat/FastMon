@@ -1,3 +1,4 @@
+#! /bin/env python
 
 import pSafeLogger
 logger = pSafeLogger.getLogger('pFastMonTreeProcessor')
@@ -11,9 +12,8 @@ import time
 
 class pFastMonTreeProcessor(pBaseTreeProcessor):
 
-    def __init__(self, dataProcessor):
-        pBaseTreeProcessor.__init__(self, dataProcessor.XmlParser          ,\
-                                    dataProcessor.TreeMaker.OutputFilePath,\
+    def __init__(self, xmlParser, inputFilePath):
+        pBaseTreeProcessor.__init__(self, xmlParser, inputFilePath,\
                                     FAST_MON_TREE_NAME, None)
 
     def run(self):
@@ -36,3 +36,18 @@ class pFastMonTreeProcessor(pBaseTreeProcessor):
             if rep.__class__.__name__ == 'pCUSTOMXmlRep':
                 rep.setPlotter(self.CustomPlotter)
             rep.createRootObjects(self.RootTree)
+
+
+if __name__ == '__main__':
+    from pXmlParser import pXmlParser
+    from pOptionParser import pOptionParser
+    optparser = pOptionParser('crvL',1,1,False)
+
+    xmlParser = pXmlParser(optparser.Options.c)
+    treeProcessor = pFastMonTreeProcessor(xmlParser, optparser.Argument)
+    treeProcessor.run()
+##     if optparser.Options.r:
+##         from pFastMonReportGenerator  import pFastMonReportGenerator
+##         ReportGenerator = pFastMonReportGenerator(self)
+##         ReportGenerator.run(optparser.Options.v,\
+##                                           not optparser.Options.L)

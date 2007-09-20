@@ -123,7 +123,7 @@ class pDataProcessor:
         self.XmlParser       = pXmlParser(configFilePath)
         self.TreeMaker       = pFastMonTreeMaker(self)
         self.ErrorHandler    = pErrorHandler()
-        self.TreeProcessor   = pFastMonTreeProcessor(self)
+        self.TreeProcessor   = pFastMonTreeProcessor(self.XmlParser, self.TreeMaker.OutputFilePath)
         self.ReportGenerator = pFastMonReportGenerator(self)
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
 	self.EvtMetaContextProcessor = pEvtMetaContextProcessor(self.TreeMaker)

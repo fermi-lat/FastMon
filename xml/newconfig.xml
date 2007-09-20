@@ -245,11 +245,7 @@
     CAL group.
     -->
     <inputList group="CAL" name="CAL base" enabled="True">
-	<variable name="CalXHit_TowerCalLayer" enabled="True">
-	    <type>int</type>
-	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER)</shape>
-	</variable>
-	<variable name="CalXHit_TowerCalLayerCalColumn" enabled="False">
+	<variable name="CalXHit_TowerCalLayerCalColumn" enabled="True">
 	    <type>int</type>
 	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER, NUM_CAL_COLUMNS_PER_TOWER)</shape>
 	</variable>
@@ -274,7 +270,7 @@
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>Cal-Layer</ylabel>
 	    <drawoptions>colz</drawoptions>
-	    <!--expression>CalXHit_TowerCalLayer</expression-->
+	    <!--expression>CalXHit_TowerCalLayerCalColumn</expression-->
 	    <!--exclude>[0]</exclude-->
 	    <cut><![CDATA[ (condsummary&30)>0 && (condsummary&32)==0]]></cut>	    
         </CUSTOM>
@@ -284,12 +280,12 @@
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>Cal-Layer</ylabel>
 	    <drawoptions>colz</drawoptions>
-	    <!--expression>CalXHit_TowerCalLayer</expression-->
+	    <!--expression>CalXHit_TowerCalLayerCalColumn</expression-->
 	    <!--exclude>[0]</exclude-->
 	    <cut><![CDATA[ (condsummary&30)>0 && (condsummary&32)==0]]></cut>	    
         </CUSTOM>
 
-        <TH1F name="CalX_NHit_Histo1" enabled="True" level="lat">
+        <TH1F name="CalX_Total_NHit_Histo1" enabled="True" level="lat">
 	    <title>Distribution of  Cal crystals hits  per event (all towers included)</title>
 	    <xbins>201</xbins>
 	    <xmin>-0.5</xmin>
@@ -299,7 +295,7 @@
 	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
         </TH1F>
 	
-        <TH1F name="CalX_NHit_Histo1" enabled="False" level="tower">
+        <TH1F name="CalX_NHit_Histo1" enabled="True" level="tower">
 	    <title>Distribution of  Cal crystals hits per event in this tower</title>
 	    <xbins>151</xbins>
 	    <xmin>-0.5</xmin>
@@ -365,7 +361,7 @@
 		
     <outputList group="TKR" name="TKR base" enabled="True">
 		
-        <TH1F name="TkrHits_Histo1" enabled="True">
+        <TH1F name="TkrTotalHits_Histo1" enabled="True">
 	    <title>Distribution of strip hits per event (all towers included)</title>
 	    <xbins>300</xbins>
 	    <xmin>0</xmin>
@@ -399,7 +395,7 @@
     </outputList>
 		
     <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
-        <TH1F name="TkrHits_Histo1" enabled="False" level="tower">
+        <TH1F name="TkrHits_Histo1" enabled="True" level="tower">
 	    <title>Distribution of strip hits per tower</title>
 	    <xbins>200</xbins>
 	    <xmin>0</xmin>

@@ -211,15 +211,15 @@ class pCustomPlotter:
 
         histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
                           ybins, ymin, ymax)
-        self.__createTmpRootTree(['CalXHit_TowerCalLayer'], plotRep.Cut)
-        calHits = self.__createNumpyArray('CalXHit_TowerCalLayer',\
-                                          (16, 8), 'int')
+        self.__createTmpRootTree(['CalXHit_TowerCalLayerCalColumn'], plotRep.Cut)
+        calHits = self.__createNumpyArray('CalXHit_TowerCalLayerCalColumn',\
+                                          (16, 8, 12), 'int')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(NUM_TOWERS):
                 for layer in range(NUM_CAL_LAYERS_PER_TOWER):
-                    histogram.Fill(tower, layer, calHits[tower][layer])
-
+                    histogram.Fill(tower, layer, calHits[tower][layer].sum())
+                    
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histogram
@@ -243,16 +243,15 @@ class pCustomPlotter:
         xbins     = NUM_TOWERS
         histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, xbins, xmin, xmax,
                           ybins, ymin, ymax)
-        self.__createTmpRootTree(['CalXHit_TowerCalLayer'], plotRep.Cut)
-        calHits = self.__createNumpyArray('CalXHit_TowerCalLayer',\
-                                          (16, 8), 'int')
+        self.__createTmpRootTree(['CalXHit_TowerCalLayerCalColumn'], plotRep.Cut)
+        calHits = self.__createNumpyArray('CalXHit_TowerCalLayerCalColumn',\
+                                          (16, 8, 12), 'int')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(NUM_TOWERS):
                 for layer in range(NUM_CAL_LAYERS_PER_TOWER):
-                    if calHits[tower][layer]==0:
-                         histogram.Fill(tower, layer)
-
+                    if calHits[tower][layer].sum() == 0:
+                        histogram.Fill(tower, layer)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histogram 

@@ -62,7 +62,7 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
                        copy(self.contribution().numLogAccepts())
 
     ## @brief Fill CalXHit_TowerCalLayer tree branch
-    ## Number of logs hit per layer for each tower of the LAT
+    ## Number of logs iterator call per layer for each tower of the LAT
     ## @param self
     #  The class instance.
     ## @param tower
@@ -72,8 +72,8 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
     ## @param calLog
     #  The CAL log object.
     
-    def CalXHit_TowerCalLayer__log__(self, tower, layer, calLog):
-        self.TreeMaker.getVariable("CalXHit_TowerCalLayer")[tower][layer] += 1
+##     def CalXHit_TowerCalLayer__log__(self, tower, layer, calLog):
+##         self.TreeMaker.getVariable("CalXHit_TowerCalLayer")[tower][layer] += 1
 
     ## @brief Fill CalXHit_TowerCalLayerCalColumn tree branch
     ## Number of logs hit per column per layer for each tower of the LAT
