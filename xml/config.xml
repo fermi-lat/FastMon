@@ -2,295 +2,473 @@
 
 <monitoring>
 
-    <!--
-    Input lists:
-    Definition of the variables for filling the ROOT tree.
-    -->
-
-    <inputList group="GEM" name="GEM1" enabled="True">
-	<variable name="gem_timebase" enabled="True">
+    <inputList group="GEM" name="GEM base">
+	<variable name="condsummary">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="gem_discarded" enabled="True">
+	<variable name="condarrcallo">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="gem_discarded_delta" reset="False" enabled="True">
+	<variable name="condarrcalhi">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="condarrtkr">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="condarrcno">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="condarrroi">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="LivetimeLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="ElapsedLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="DeadZoneLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="DiscardedLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="PrescaledLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="DiscardedDelta" reset="False">
 	    <type>int</type>
             <shape>(2)</shape>
 	</variable>
-	<variable name="gem_dead_zone" enabled="True">
-	    <type>int</type>
-            <shape>(1)</shape>
-	</variable>
-	<variable name="gem_dead_zone_delta" reset="False" enabled="True">
+	<variable name="DeadZoneDelta" reset="False">
 	    <type>int</type>
             <shape>(2)</shape>
 	</variable>
-	<variable name="gem_live_time" enabled="True">
+	<variable name="LivetimeLast">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="gem_condition_summary" enabled="True">
+	<variable name="TkrTriggerTower" >
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="gem_tkr_vector" enabled="True">
+	<variable name="CalHiTriggerTower" >
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="gem_roi_vector" enabled="True">
+	<variable name="CalLoTriggerTower" >
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>	
-	<variable name="gem_cal_le_vector" enabled="True">
+	<variable name="AcdGemROI_Tower" > <!-- This name is inconsistent with the others: require a change!-->
 	    <type>int</type>
             <shape>(1)</shape>
-	</variable>
-	<variable name="gem_cal_he_vector" enabled="True">
+	</variable>	
+	<variable name="AcdGemVeto_AcdTile" > 
+	    <type>int</type>
+            <shape>(NUM_ACD_VETOES)</shape>
+	</variable>	
+	<variable name="AcdGemCNO_GARC" > 
 	    <type>int</type>
             <shape>(1)</shape>
-	</variable>
-	<variable name="gem_cond_arr_time_tkr" enabled="True">
+	</variable>				
+    </inputList>
+    
+
+    <outputList group="GEM" name="GEM base">
+        <TH1F name="CondSummaryWord_Histo1">
+	    <expression><![CDATA[ condsummary ]]></expression>
+	    <cut><![CDATA[  ]]></cut>
+	    <xbins>51</xbins>
+	    <xmin>-10.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of CondSummary Word values</title>
+	    <xlabel>consummary value</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of CondSummary Word values</caption>
+        </TH1F>
+        <TH1F name="DiscardedDelta_Histo1">
+	    <expression><![CDATA[ DiscardedDelta[0] ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32)  ]]></cut>
+	    <xbins>31</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>30.5</xmax>
+	    <title>Number of GEM discarded events between two successive read out events</title>
+	    <xlabel>Number Gem discarded events</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Number of GEM discarded events between two successive read out events. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="DeadZoneDelta_Histo1">
+	    <expression><![CDATA[ DeadZoneDelta[0] ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>31</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>30.5</xmax>
+	    <title>Number of GEM deadzone events between two successive read out events</title>
+	    <xlabel>Number Gem deadzone events</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Number of GEM deadzone events between two successive read out events. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <!--TH1F name="">
+	    <expression><![CDATA[  ]]></expression>
+	    <cut><![CDATA[  ]]></cut>
+	    <xbins></xbins>
+	    <xmin></xmin>
+	    <xmax></xmax>
+	    <title></title>
+	    <xlabel></xlabel>
+	    <ylabel></ylabel>
+	    <caption></caption>
+        </TH1F-->
+    </outputList>
+						
+    <outputList group="GEM" name="GEM arrival times" enabled="True">				
+        <TH1F name="CondArrTKRTrigger_Histo1">
+	    <expression><![CDATA[ condarrtkr ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival TKR triggers</title>
+	    <xlabel>Condition arrival times for TKR triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for TKR triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="CondArrCalLowTrigger_Histo1">
+	    <expression><![CDATA[ condarrcallo ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival Cal-Low triggers</title>
+	    <xlabel>Condition arrival times for Cal-Low triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for Cal-Low triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="CondArrCalHiTrigger_Histo1">
+	    <expression><![CDATA[ condarrcalhi ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival Cal-Hi triggers</title>
+	    <xlabel>Condition arrival times for Cal-Hi triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for Cal-Hi triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="CondArrCNOTrigger_Histo1">
+	    <expression><![CDATA[ condarrcno ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival CNO triggers</title>
+	    <xlabel>Condition arrival times for CNO triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for CNO triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+        <TH1F name="CondArrROITrigger_Histo1">
+	    <expression><![CDATA[ condarrroi ]]></expression>
+	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
+	    <xbins>41</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of Condition arrival ROI triggers</title>
+	    <xlabel>Condition arrival times for ROI triggers (nomially 50 ns ticks)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of Condition arrival times for ROI triggers. Periodic triggers have been taken out.</caption>
+        </TH1F>
+    </outputList>				
+
+    <outputList group="GEM" name="GEM trigger vectors" enabled="True">
+        <CUSTOM type="gem_vector_map" name="TkrTrigger_Tower_Histo1" enabled="True">
+	    <title>Number of tracker triggers per tower</title>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>N</ylabel>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
+	    <expression>TkrTriggerTower</expression>
+        </CUSTOM>
+        <CUSTOM type="gem_vector_map" name="CalHiTrigger_Tower_Histo1" enabled="True">
+	    <title>Number of Cal HI triggers per tower</title>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>N</ylabel>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
+	    <expression>CalHiTriggerTower</expression>
+        </CUSTOM>
+        <CUSTOM type="gem_vector_map" name="CalLOWTrigger_Tower_Histo1" enabled="True">
+	    <title>Number of Cal LO triggers per tower</title>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>N</ylabel>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
+	    <expression>CalLoTriggerTower</expression>
+        </CUSTOM>	
+        <CUSTOM type="gem_vector_map" name="AcdGemROI_Tower_Histo1" enabled="True">
+	    <title>Number of ACD ROI per tower</title>
+			<caption>This bit is set if any of the tile in the ROI fired a veto. This bit is independent of if the Tower bit is set.</caption>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>N</ylabel>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
+	    <expression>AcdGemROI_Tower</expression>
+        </CUSTOM>
+        <CUSTOM type="AcdGemVeto_AcdTile" name="Acd_GemVeto_AcdTile_Histo1" enabled="True">
+	    <!--expression><![CDATA[ AcdGemVeto_AcdTile ]]></expression-->
+	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
+	    <title>Number of Acd Gem vetoes by tile</title>
+	    <xlabel>Acd Tile Number (coded in 128 entries)</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Expect to see spikes at 15, 31, 47, 63. These are large tiles at the bottom of the sides of the ACD.</caption>
+        </CUSTOM>
+        <CUSTOM type="gem_acd_cable_map" name="AcdGemCNO_GARC_Histo1" enabled="True">
+	    <expression><![CDATA[ AcdGemCNO_GARC ]]></expression>
+	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
+	    <title>Number of Acd CNO by board</title>
+	    <xlabel>Acd CARC Number</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>This bit is the OR of the CNO signal on a single board. 
+			Because of the tile to boad mapping, a factor two variation 
+			between boards is normal</caption>
+        </CUSTOM>						
+    </outputList>
+		
+    <!--
+    CAL group.
+    -->
+    <inputList group="CAL" name="CAL base" enabled="True">
+	<variable name="CalXHit_TowerCalLayerCalColumn" enabled="True">
 	    <type>int</type>
-            <shape>(1)</shape>
+	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER, NUM_CAL_COLUMNS_PER_TOWER)</shape>
 	</variable>
-	<variable name="gem_cond_arr_time_cal_le" enabled="True">
+	<variable name="CalXHit_Tower" enabled="True">
 	    <type>int</type>
-            <shape>(1)</shape>
+	    <shape>(NUM_TOWERS)</shape>
 	</variable>
-	<variable name="gem_cond_arr_time_cal_he" enabled="True">
+	<variable name="CalXHit" enabled="True">
 	    <type>int</type>
-            <shape>(1)</shape>
+	    <shape>(1)</shape>
 	</variable>
-	<variable name="gem_cond_arr_time_roi" enabled="True">
+	<variable name="CalTowerCount" enabled="True">
 	    <type>int</type>
-            <shape>(1)</shape>
-	</variable>
-	<variable name="gem_cond_arr_time_cno" enabled="True">
-	    <type>int</type>
-            <shape>(1)</shape>
-	</variable>
-	<variable name="gem_trigger_time" enabled="True">
-	    <type>int</type>
-            <shape>(1)</shape>
-	</variable>
-	<variable name="gem_one_pps_time_time_base" enabled="True">
-	    <type>int</type>
-            <shape>(1)</shape>
-	</variable>
-	<variable name="gem_one_pps_time_seconds" enabled="True">
-	    <type>int</type>
-            <shape>(1)</shape>
-	</variable>
-	<variable name="gem_delta_event_time" enabled="True">
-	    <type>double</type>
-            <shape>(1)</shape>
-	</variable>
-	<variable name="gem_delta_window_open_time" enabled="True">
-	    <type>double</type>
-            <shape>(1)</shape>
+	    <shape>(1)</shape>
 	</variable>
     </inputList>
+	    
+    <outputList group="CAL" name="CAL base" enabled="True">
+	
+        <CUSTOM type="CalXHit_NHit_Counter_TowerCalLayer" name="CalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
+	    <title>Number of hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>Cal-Layer</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <!--expression>CalXHit_TowerCalLayerCalColumn</expression-->
+	    <!--exclude>[0]</exclude-->
+	    <cut><![CDATA[ (condsummary&30)>0 && (condsummary&32)==0]]></cut>	    
+        </CUSTOM>
 
+        <CUSTOM type="ZeroCalXHit_NHit_Counter_TowerCalLayer" name="ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
+	    <title>Number of times there is ZERO hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>Cal-Layer</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <!--expression>CalXHit_TowerCalLayerCalColumn</expression-->
+	    <!--exclude>[0]</exclude-->
+	    <cut><![CDATA[ (condsummary&30)>0 && (condsummary&32)==0]]></cut>	    
+        </CUSTOM>
+
+        <TH1F name="CalX_Total_NHit_Histo1" enabled="True" level="lat">
+	    <title>Distribution of  Cal crystals hits  per event (all towers included)</title>
+	    <xbins>201</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>200.5</xmax>
+	    <xlabel>Number of CalX_Hits</xlabel>
+            <expression>CalXHit</expression>
+	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
+        </TH1F>
+	
+        <TH1F name="CalX_NHit_Histo1" enabled="True" level="tower">
+	    <title>Distribution of  Cal crystals hits per event in this tower</title>
+	    <xbins>151</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>150.5</xmax>
+	    <ylog>True</ylog>
+	    <xlabel>Number of CalX_Hits in this tower</xlabel>
+            <expression>CalXHit_Tower</expression>
+	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
+        </TH1F>
+	
+        <TH1F name="CalTower_NHit_Histo1" enabled="True" level="lat">
+	    <title>Number of CAL modules hit</title>
+	    <xbins>16</xbins>
+	    <xmin>0</xmin>
+	    <xmax>16</xmax>
+	    <xlabel>Number of Cal Towers Hit</xlabel>
+            <expression>CalTowerCount</expression>
+        </TH1F>
+	
+        <!--CUSTOM type="cal_2d_map" name="cal_hitmap" enabled="True">
+	    <title>Average number of logs hit per layer</title>
+	    <xlabel>Layer</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <expression>cal_layer_log_count</expression>
+	    <exclude>[0]</exclude>
+        </CUSTOM-->
+
+    </outputList>
+    <!--
+    TKR group.
+    -->		
+    <inputList group="TKR" name="TKR base" enabled="True">
+	<variable name="TkrHitsTowerPlane" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>
+	<variable name="TkrHits" enabled="True">
+	    <type>int</type>
+	    <shape>(1)</shape>
+	</variable>
+	<variable name="TkrHitsTower" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS)</shape>
+	</variable>
+	<variable name="TkrHitsTowerPlaneEnd" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
+	</variable>
+	<variable name="tkr_layer_end_tot" enabled="False">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
+	</variable>	
+	<variable name="ToT_con0_TowerPlane" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>		
+	<variable name="ToT_con1_TowerPlane" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>	
+    </inputList>
+		
+    <outputList group="TKR" name="TKR base" enabled="True">
+		
+        <TH1F name="TkrTotalHits_Histo1" enabled="True">
+	    <title>Distribution of strip hits per event (all towers included)</title>
+	    <xbins>300</xbins>
+	    <xmin>0</xmin>
+	    <xmax>3000</xmax>
+	    <xlabel>Number of strip hits</xlabel>
+	    <ylabel>N</ylabel>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
+      <expression>TkrHits</expression>
+        </TH1F>
+				
+        <CUSTOM type="TkrTwrVsPlaneVariableCounter" name="ZeroTkrHitsCounter_TowerPlane_Histo2" enabled="False">
+	    <title>Counter of ZERO strip hits vs Tower and Tracker plane</title>
+			<caption>Number of times there are no strip hits in a Tracker plane</caption>
+	    <xlabel>Tracker plane</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <expression>TkrHitsTowerPlane</expression>
+            <cut><![CDATA[ TkrHitsTowerPlane ==0 && (condsummary&30)>0]]></cut>
+        </CUSTOM>					
+				
+        <CUSTOM type="TkrTwrVsPlaneVariableSumwx" name="TkrHitsCounter_TowerPlane_Histo2" enabled="False">
+	    <title>Number of strip hits vs Tower and Tracker plane</title>
+			<caption>Test</caption>
+	    <xlabel>Tracker plane</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <expression>TkrHitsTowerPlane</expression>
+            <cut><![CDATA[ TkrHitsTowerPlane >0 && (condsummary&30)>0]]></cut>
+        </CUSTOM>		
+				
+    </outputList>
+		
+    <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
+        <TH1F name="TkrHits_Histo1" enabled="True" level="tower">
+	    <title>Distribution of strip hits per tower</title>
+	    <xbins>200</xbins>
+	    <xmin>0</xmin>
+	    <xmax>1000</xmax>
+	    <xlabel>Number of strip hits</xlabel>
+	    <ylabel>N</ylabel>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
+            <expression>TkrHitsTower</expression>
+        </TH1F>				
+    </outputList>
+
+    <outputList group="TKR" name="TKR Details - Planes hit in a tower" enabled="True">		
+        <CUSTOM type="TkrPlanesHit" name="TkrPlanesHit_Histo1" enabled="True" level="tower" >
+	    <title>Distribution of the number of planes hit in a tower</title>
+	    <xlabel>Layer number</xlabel>
+	    <caption></caption>
+	    <!-- this tag is useless for this CUSTOM plot 
+			since it is dedicated to a specific task
+			<expression></expression> -->
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
+        </CUSTOM>			
+    </outputList>				
+
+    <outputList group="TKR" name="TKR Details - ToT" enabled="True">		
+        <CUSTOM type="ToT_0_WhenTkrHitsExist_TowerPlane" name="ToT_0_WhenTkrHitsExist_TowerPlane_Histo2" enabled="True">
+	    <title>Number of times that, existing at least one hit, ToT==0 in both controllers</title>
+			<xlabel>Tower Number</xlabel>
+	    <ylabel>Tracker plane</ylabel>
+			<drawoptions>colz</drawoptions>
+	    <!--caption>Number of times that the TOT is 0 while there are 1 or more strips hit in the same controller</caption-->
+	    <!-- this tag is useless for this CUSTOM plot 
+			since it is dedicated to a specific task
+			<expression></expression> -->
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
+        </CUSTOM>	
+				
+    </outputList>
+		
+		<!--
+    ACD group.
+    -->		
+		
     <inputList group="ACD" name="ACD1" enabled="True">
-
 	<variable name="acd_tile_count" enabled="True">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
 	<variable name="acd_tile_hitmap" enabled="False">
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-
-	<variable name="acd_cable_tile_count" enabled="True">
+	<variable name="acd_cable_tile_count" enabled="False">
 	    <type>int</type>
             <shape>(NUM_ACD_CABLES)</shape>
 	</variable>
+    </inputList>		
+		
+    <outputList group="ACD" name="ACD base" enabled="True">
 
-    </inputList>
+        <TH1F name="AcdChannelsHits" enabled="True" level="lat">
+	    <title>Number of ACD PMT hit per event</title>
+	    <xbins>111</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>110.5</xmax>
+	    <xlabel>N</xlabel>
+	    <ylabel>Number of ACD hits</ylabel>
+      <expression>acd_tile_count</expression>
+			<caption>This is the number of PHA values per event</caption>
+			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
+        </TH1F>
 
-
-    <inputList group="TKR" name="TKR base" enabled="True">
-	<variable name="tkr_strip_count" enabled="True">
-	    <type>int</type>
-	    <shape>(1)</shape>
-	</variable>
-	<variable name="tkr_tower_strip_count" enabled="True">
-	    <type>int</type>
-	    <shape>(NUM_TOWERS)</shape>
-	</variable>
-	<variable name="tkr_layer_end_strip_count" enabled="True">
-	    <type>int</type>
-	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
-	</variable>
-	<variable name="tkr_layer_end_tot" enabled="True">
-	    <type>int</type>
-	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
-	</variable>	
-    </inputList>
-    
-    
-    <inputList group="CAL" name="CAL base" enabled="True">
-	<variable name="cal_log_count" enabled="True">
-	    <type>int</type>
-	    <shape>(1)</shape>
-	</variable>
-	<variable name="cal_tower_log_count" enabled="True">
-	    <type>int</type>
-	    <shape>(NUM_TOWERS)</shape>
-	</variable>
-	<variable name="cal_layer_log_count" enabled="True">
-	    <type>int</type>
-	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER)</shape>
-	</variable>
-	<variable name="cal_layer_column_log_count" enabled="False">
-	    <type>int</type>
-	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER, NUM_CAL_COLUMNS_PER_TOWER)</shape>
-	</variable>
-	<variable name="cal_tower_count" enabled="True">
-	    <type>int</type>
-	    <shape>(1)</shape>
-	</variable>
-    </inputList>
-	
-	
-    <!--
-    Output lists:
-    Definition of the plot which are filled from the ROOT tree.
-    -->
-
-    <!--
-    GEM group.
-    -->
-    <outputList group="GEM" name="GEM base" enabled="True">
-        <TH1F name="gem_condition_summary" enabled="True">
-	    <title>GEM condition summary</title>
-	    <xbins>64</xbins>
-	    <xmin>0</xmin>
-	    <xmax>64</xmax>
-	    <xlabel>GEM condition summary word</xlabel>
-	    <ylabel>Number of events</ylabel>
-            <expression>gem_condition_summary</expression>
-        </TH1F>
-        <TH1F name="gem_delta_event_time" enabled="True">
-	    <title>GEM delta event time</title>
-	    <xbins>200</xbins>
-	    <xmin>0</xmin>
-	    <xmax>70000</xmax>
-	    <xlabel>GEM delta event time (clock tics)</xlabel>
-	    <ylabel>Number of events</ylabel>
-            <expression>gem_delta_event_time</expression>
-        </TH1F>
-        <TH1F name="gem_delta_window_open_time" enabled="True">
-	    <title>GEM delta window open time</title>
-	    <xbins>200</xbins>
-	    <xmin>0</xmin>
-	    <xmax>70000</xmax>
-	    <xlabel>GEM delta window open time (clock tics)</xlabel>
-	    <ylabel>Number of events</ylabel>
-            <expression>gem_delta_window_open_time</expression>
-        </TH1F>
-        <TH1F name="gem_discarded_delta" enabled="True">
-	    <title>GEM discarded events</title>
-	    <xbins>32</xbins>
-	    <xmin>0</xmin>
-	    <xmax>32</xmax>
-			<xlabel>number of events</xlabel>
-	    <caption>number of GEM discarded events between two consecutive events</caption>
-      <expression>gem_discarded_delta[0]</expression>
-			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
-        </TH1F>
-        <TH1F name="gem_dead_zone_delta" enabled="True">
-	    <title>GEM dead zone events</title>
-	    <xbins>32</xbins>
-	    <xmin>0</xmin>
-	    <xmax>32</xmax>
-			<xlabel>number of events</xlabel>
-	    <caption>number of GEM dead zone events between two consecutive events</caption>
-      <expression>gem_dead_zone_delta[0]</expression>
-			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
-        </TH1F>
     </outputList>
-    
-    <outputList group="GEM" name="GEM arrival times" enabled="True">
-        <TH1F name="gem_cond_arr_time_roi" enabled="True">
-	    <title>GEM condition arrival time for ROI</title>
-	    <xbins>35</xbins>
-	    <xmin>0</xmin>
-	    <xmax>35</xmax>
-	    <xlabel>Arrival time (clock tics)</xlabel>
-	    <ylabel>Number of events</ylabel>
-            <expression>gem_cond_arr_time_roi</expression>
-        </TH1F>
-        <TH1F name="gem_cond_arr_time_tkr" enabled="True">
-	    <title>GEM condition arrival time for TKR</title>
-	    <xbins>35</xbins>
-	    <xmin>0</xmin>
-	    <xmax>35</xmax>
-	    <xlabel>Arrival time (clock tics)</xlabel>
-	    <ylabel>Number of events</ylabel>
-            <expression>gem_cond_arr_time_tkr</expression>
-        </TH1F>
-        <TH1F name="gem_cond_arr_time_cal_le" enabled="True">
-	    <title>GEM condition arrival time for CAL LE</title>
-	    <xbins>35</xbins>
-	    <xmin>0</xmin>
-	    <xmax>35</xmax>
-	    <xlabel>Arrival time (clock tics)</xlabel>
-	    <ylabel>Number of events</ylabel>
-            <expression>gem_cond_arr_time_cal_le</expression>
-        </TH1F>
-        <TH1F name="gem_cond_arr_time_cal_he" enabled="True">
-	    <title>GEM condition arrival time for CAL HE</title>
-	    <xbins>35</xbins>
-	    <xmin>0</xmin>
-	    <xmax>35</xmax>
-	    <xlabel>Arrival time (clock tics)</xlabel>
-	    <ylabel>Number of events</ylabel>
-            <expression>gem_cond_arr_time_cal_he</expression>
-        </TH1F>
-        <TH1F name="gem_cond_arr_time_cno" enabled="True">
-	    <title>GEM condition arrival time for CNO</title>
-	    <xbins>35</xbins>
-	    <xmin>0</xmin>
-	    <xmax>35</xmax>
-	    <xlabel>Arrival time (clock tics)</xlabel>
-	    <ylabel>Number of events</ylabel>
-            <expression>gem_cond_arr_time_cno</expression>
-        </TH1F>
-    </outputList>
- 
-    <outputList group="GEM" name="GEM trigger vectors" enabled="True">
-        <CUSTOM type="gem_vector_map" name="gem_tkr_vector" enabled="True">
-	    <title>TKR triggers statistics</title>
-	    <xlabel>Tower</xlabel>
-	    <ylabel>Number of triggers</ylabel>
-	    <expression>gem_tkr_vector</expression>
-        </CUSTOM>
-        <CUSTOM type="gem_vector_map" name="gem_roi_vector" enabled="True">
-	    <title>ROI triggers statistics</title>
-	    <xlabel>Tower</xlabel>
-	    <ylabel>Number of triggers</ylabel>
-	    <expression>gem_roi_vector</expression>
-        </CUSTOM>
-        <CUSTOM type="gem_vector_map" name="gem_cal_le_vector" enabled="True">
-	    <title>CAL LE triggers statistics</title>
-	    <xlabel>Tower</xlabel>
-	    <ylabel>Number of triggers</ylabel>
-	    <expression>gem_cal_le_vector</expression>
-        </CUSTOM>
-        <CUSTOM type="gem_vector_map" name="gem_cal_he_vector" enabled="True">
-	    <title>CAL HE triggers statistics</title>
-	    <xlabel>Tower</xlabel>
-	    <ylabel>Number of triggers</ylabel>
-	    <expression>gem_cal_he_vector</expression>
-        </CUSTOM>
-    </outputList>
-    
+		
     <!--
     Meta event group.
     -->
@@ -305,197 +483,5 @@
             <expression>meta_context_open_crate</expression>
         </TH1F>
     </outputList>    
-
-    <!--
-    TKR group.
-    -->
-    <outputList group="TKR" name="TKR base" enabled="True">
-        <TH1F name="tkr_strip_count" enabled="True">
-	    <title>Tracker hit multiplicity</title>
-	    <xbins>100</xbins>
-	    <xmin>0</xmin>
-	    <xmax>300</xmax>
-            <expression>tkr_strip_count</expression>
-        </TH1F>
-				
-        <CUSTOM type="tkr_no_tot_counter" name="tkr_no_tot_counter" enabled="True">
-	    <title>No TOT counter</title>
-	    <xlabel>Layer number</xlabel>
-			<ylabel>Tower</ylabel>
-			<drawoptions>colz</drawoptions>
-	    <caption>Number of times that the TOT is 0 while there are 1 or more strips hit in the same controller</caption>
-	    <!-- this tag is useless for this CUSTOM plot 
-			since it is dedicated to a specific task
-			<expression></expression> -->
-			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
-        </CUSTOM>		
-											
-        <CUSTOM type="tkr_layer_count" name="tkr_tower_layer_count" enabled="True" level="tower" >
-	    <title>Number of hit Tracker Tower Layer per event</title>
-	    <xlabel>Layer number</xlabel>
-	    <caption></caption>
-	    <!-- this tag is useless for this CUSTOM plot 
-			since it is dedicated to a specific task
-			<expression>tkr_layer_end_strip_count</expression> -->
-			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
-        </CUSTOM>				
-				
-        <TH1F name="tkr_tower_strip_count" enabled="True" level="tower">
-	    <title>Tracker Tower hit multiplicity</title>
-	    <xbins>100</xbins>
-	    <xmin>0</xmin>
-	    <xmax>100</xmax>
-	    <xlabel>Number of hits</xlabel>
-	    <ylog>True</ylog>
-            <expression>tkr_tower_strip_count</expression>
-            <cut><![CDATA[ tkr_tower_strip_count > 0 ]]></cut>
-        </TH1F>
-        <CUSTOM type="tkr_2d_map" name="tkr_hitmap" enabled="True" >
-	    <title>Average number of strip hits per GTRC</title>
-	    <xlabel>Plane</xlabel>
-	    <ylabel>Tower</ylabel>
-	    <drawoptions>colz</drawoptions>
-	    <caption>Events with no hits have been removed.</caption>
-	    <expression>tkr_layer_end_strip_count</expression>
-	    <exclude>[0]</exclude>
-        </CUSTOM>
-        <CUSTOM type="tkr_2d_map" name="tkr_totmap" enabled="True">
-	    <title>Average TOT per GTRC</title>
-	    <xlabel>Plane</xlabel>
-	    <ylabel>Tower</ylabel>
-	    <drawoptions>colz</drawoptions>
-	    <caption>Events with TOT 0 or 255 (saturated) have been removed.</caption>
-	    <expression>tkr_layer_end_tot</expression>
-	    <exclude>[0, 255]</exclude>
-        </CUSTOM>
-        <CUSTOM type="tkr_2d_map_project" name="tkr_hitmap_project" enabled="True">
-	    <title>Average number of strip hits in a Tracker plane</title>
-	    <xlabel>Plane</xlabel>
-	    <ylabel>Tower</ylabel>
-	    <drawoptions>colz</drawoptions>
-	    <expression>tkr_layer_end_strip_count</expression>
-            <cut><![CDATA[ tkr_layer_end_strip_count > 0 ]]></cut>
-        </CUSTOM>
-				
-        <CUSTOM type="tkr_2d_map_project_count" name="tkr_no_hit_count" enabled="True">
-	    <title>Number of times there are no strip hits in a Tracker plane</title>
-	    <xlabel>Plane</xlabel>
-	    <ylabel>Tower</ylabel>
-	    <drawoptions>colz</drawoptions>
-	    <expression>tkr_layer_end_strip_count</expression>
-            <cut><![CDATA[ tkr_layer_end_strip_count ==0 && gem_condition_summary&30]]></cut>
-        </CUSTOM>				
-    </outputList>
-
-    <!--
-    CAL group.
-    -->
-    <outputList group="CAL" name="CAL base" enabled="True">
-
-        <TH1F name="cal_log_count" enabled="True" level="lat">
-	    <title>CAL total hit multiplicity</title>
-	    <xbins>100</xbins>
-	    <xmin>0</xmin>
-	    <xmax>1600</xmax>
-            <expression>cal_log_count</expression>
-        </TH1F>
-        <TH1F name="cal_tower_log_count" enabled="True" level="tower">
-	    <title>CAL hit multiplicity per tower</title>
-	    <xbins>100</xbins>
-	    <xmin>0</xmin>
-	    <xmax>100</xmax>
-	    <ylog>True</ylog>
-            <expression>cal_tower_log_count</expression>
-        </TH1F>
-        <TH1F name="cal_tower_count" enabled="True" level="lat">
-	    <title>Number of CAL modules hit</title>
-	    <xbins>16</xbins>
-	    <xmin>0</xmin>
-	    <xmax>16</xmax>
-            <expression>cal_tower_count</expression>
-        </TH1F>
-        <CUSTOM type="cal_2d_map" name="cal_hitmap" enabled="True">
-	    <title>Average number of log hit per layer</title>
-	    <xlabel>Layer</xlabel>
-	    <ylabel>Tower</ylabel>
-	    <drawoptions>colz</drawoptions>
-	    <expression>cal_layer_log_count</expression>
-	    <exclude>[0]</exclude>
-        </CUSTOM>
-    </outputList>
-
-    <!--
-    ACD group.
-    -->
-
-    <outputList group="ACD" name="ACD base" enabled="True">
-
-        <TH1F name="acd_tile_count" enabled="True" level="lat">
-	    <title>Number of tiles hit</title>
-	    <xbins>220</xbins>
-	    <xmin>0</xmin>
-	    <xmax>220</xmax>
-	    <xlabel>Number of events</xlabel>
-	    <ylabel>Number of tile hits</ylabel>
-      <expression>acd_tile_count</expression>
-			<cut><![CDATA[ gem_condition_summary&30 ]]></cut>
-        </TH1F>
-
-    </outputList>
 		
-    <!--
-    Trending group.
-    -->
-
-    <outputList group="Trending" name="TkrTrending" enabled="True">
-
-        <StripChart name="trending_tkr_strip_count_lat" enabled="True" level="lat">
-	    <title>LAT TKR Trending</title>
- 	    <dtime>10</dtime>
-            <expression>tkr_strip_count</expression>
-	    <ymin>0</ymin>
-	    <ymax>1000</ymax>
-       </StripChart>
-
-       <StripChart name="trending_tkr_strip_count" enabled="True" level="tower">
-	    <title>Tkr Trending</title>
- 	    <dtime>10</dtime>
-            <expression>tkr_tower_strip_count</expression>
-	    <ymin>0</ymin>
-	    <ymax>300</ymax>
-	    <xlabel>Elapsed time (s)</xlabel>
-	    <ylabel>Average hit multiplicity</ylabel>
-            <cut><![CDATA[ tkr_tower_strip_count > 0 ]]></cut>
-       </StripChart>
-
-    </outputList>
-
-    <outputList group="Trending" name="CalTrending" enabled="True">
-
-        <StripChart name="trending_cal_log_count" enabled="True" level="lat">
-	    <title>CAL hit multiplicity trending</title>
- 	    <dtime>10</dtime>
-            <expression>cal_log_count</expression>
-	    <ymin>0</ymin>
-	    <ymax>1600</ymax>
-       </StripChart>
-
-        <StripChart name="trending_cal_tower_log_count" enabled="True" level="tower">
-	    <title>CAL hit multiplicity trending per tower</title>
- 	    <dtime>10</dtime>
-            <expression>cal_tower_log_count</expression>
-	    <ymin>0</ymin>
-	    <ymax>100</ymax>
-       </StripChart>
-
-        <StripChart name="trending_cal_tower_count" enabled="True" level="lat">
-	    <title>CAL trending</title>
- 	    <dtime>10</dtime>
-            <expression>cal_tower_count</expression>
-	    <ymin>0</ymin>
-	    <ymax>16</ymax>
-       </StripChart>
-
-    </outputList>
-
 </monitoring>
