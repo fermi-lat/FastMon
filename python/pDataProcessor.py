@@ -123,7 +123,8 @@ class pDataProcessor:
         self.XmlParser       = pXmlParser(configFilePath)
         self.TreeMaker       = pFastMonTreeMaker(self)
         self.ErrorHandler    = pErrorHandler()
-        self.TreeProcessor   = pFastMonTreeProcessor(self.XmlParser, self.TreeMaker.OutputFilePath)
+        self.TreeProcessor   = pFastMonTreeProcessor(self.XmlParser,\
+                               self.TreeMaker.OutputFilePath)
         self.ReportGenerator = pFastMonReportGenerator(self)
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
 	self.EvtMetaContextProcessor = pEvtMetaContextProcessor(self.TreeMaker)
@@ -170,7 +171,7 @@ class pDataProcessor:
         if not os.path.exists(self.InputFilePath):
             sys.exit('Input data file not found. Abort.')
         fileType = self.InputFilePath.split('.')[-1]
-        logger.info('Start processing...')
+        logger.info('Processing started on %s.' % time.asctime())
         self.NumEvents = 0
         self.StartTime = time.time()
         if fileType   == 'lsf':
@@ -290,13 +291,16 @@ class pDataProcessor:
         self.ErrorHandler.setEventNumber(self.NumEvents)
 
     def __postEvent(self):
-	self.TreeMaker.VariablesDictionary['%sprocessor_event_number' % FAST_MON_PREFIX][0] =\
-                                                            self.NumEvents
+	self.TreeMaker.VariablesDictionary['%sprocessor_event_number' % \
+                                           FAST_MON_PREFIX][0] = self.NumEvents
         self.TreeMaker.fillTree()
 	self.NumEvents += 1
 	if not self.NumEvents % 100:
-            print '\r%s events processed...' % self.NumEvents,
-            sys.stdout.flush()    
+            elapsedTime = time.time() - self.StartTime
+            averageRate = self.NumEvents/elapsedTime
+            print '\r%s events processed in %.2f s (average rate %.2f Hz).' %\
+                  (self.NumEvents, elapsedTime, averageRate),
+            sys.stdout.flush()
       
     ## @brief Finalize the data processing.
     #
@@ -310,7 +314,9 @@ class pDataProcessor:
         elapsedTime   = self.StopTime - self.StartTime
         averageRate   = self.NumEvents/elapsedTime
         self.TreeMaker.close()
-        logger.info('Done. %d events processed in %.2f s (%.2f Hz).\n' %\
+        print
+        logger.info('Processing stopped on %s.' % time.asctime())
+        logger.info('%d events processed in %.2f s (%.2f Hz).\n' %\
                     (self.NumEvents, elapsedTime, averageRate))
         self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
                                                            '.errors.pickle'))
