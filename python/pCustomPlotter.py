@@ -26,7 +26,8 @@ class pCustomPlotter:
         self.TmpRootTree = None
         self.StartTime = None
         self.TmpFilePath = os.path.join(os.path.dirname(rootFilePath),\
-                                        'tmp_%s.root' % (random.randint(0,100000)))
+                                        'tmp_%s.root' %\
+                                        (random.randint(0,100000)))
         if os.path.exists(self.TmpFilePath):
             self.TmpFilePath = self.TmpFilePath.replace('.root', '_1.root')
         logger.debug('Using temp file %s.' % (self.TmpFilePath))
@@ -39,9 +40,10 @@ class pCustomPlotter:
     def __startTimer(self):
         self.StartTime = time.time()
 
-    def __stopTimer(self, plotRep):
+    def __stopTimer(self, plotRep, tower = None):
         logger.debug('%s created in %.2f s.' %\
-                     (plotRep.Name, time.time() - self.StartTime))
+                     (plotRep.getExpandedName(tower), time.time() -\
+                      self.StartTime))
 
     def __openTmpRootFile(self):
         self.TmpRootFile = ROOT.TFile(self.TmpFilePath, 'RECREATE')
@@ -80,11 +82,13 @@ class pCustomPlotter:
         tot1 = self.__createNumpyArray('ToT_con1_TowerPlane', (16, 36), 'int')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
-            for tower in xrange(16):
-                for layer in xrange(36):
-                    if nHits[tower][layer] > 0 and tot0[tower][layer] == 0\
-                           and tot1[tower][layer] == 0:
-                        histogram.Fill(tower, layer)
+            for tower in range(16):
+                # This is for optimizing speed---we gain a factor of 2.
+                if nHits[tower].sum():
+                    for layer in range(36):
+                        if nHits[tower][layer] > 0 and tot0[tower][layer] == 0\
+                               and tot1[tower][layer] == 0:
+                            histogram.Fill(tower, layer)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histogram
@@ -161,7 +165,7 @@ class pCustomPlotter:
                 if tkrHits[tower][layer]:
                     numHitLayers += 1
             histogram.Fill(numHitLayers)
-        self.__stopTimer(plotRep)
+        self.__stopTimer(plotRep, tower)
         self.__deleteTmpRootTree()
         return histogram
 
