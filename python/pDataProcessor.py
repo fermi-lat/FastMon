@@ -329,6 +329,7 @@ if __name__ == '__main__':
     optparser = pOptionParser('cnodrvLpfV')
     if optparser.Options.r and not optparser.Options.p:
         optparser.error('cannot use the -r option without -p')
+
     dataProcessor = pDataProcessor(optparser.Argument, optparser.Options.c,\
                                    optparser.Options.d, optparser.Options.o)
     dataProcessor.startProcessing(optparser.Options.n)
@@ -336,5 +337,6 @@ if __name__ == '__main__':
         dataProcessor.TreeProcessor.run()
     if optparser.Options.r:
         dataProcessor.ReportGenerator.run(optparser.Options.v,\
-                                          not optparser.Options.L)
+                                          optparser.Options.L)
+        
 
