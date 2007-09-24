@@ -87,7 +87,7 @@
     
 
     <outputList group="GEM" name="GEM base">
-        <TH1F name="CondSummaryWord_Histo1">
+        <TH1F name="CondSummaryWord_TH1">
 	    <expression><![CDATA[ condsummary ]]></expression>
 	    <cut><![CDATA[  ]]></cut>
 	    <xbins>51</xbins>
@@ -98,7 +98,7 @@
 	    <ylabel>N</ylabel>
 	    <caption>Distribution of CondSummary Word values</caption>
         </TH1F>
-        <TH1F name="DiscardedDelta_Histo1">
+        <TH1F name="DiscardedDelta_TH1">
 	    <expression><![CDATA[ DiscardedDelta[0] ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32)  ]]></cut>
 	    <xbins>31</xbins>
@@ -109,7 +109,7 @@
 	    <ylabel>N</ylabel>
 	    <caption>Number of GEM discarded events between two successive read out events. Periodic triggers have been taken out.</caption>
         </TH1F>
-        <TH1F name="DeadZoneDelta_Histo1">
+        <TH1F name="DeadZoneDelta_TH1">
 	    <expression><![CDATA[ DeadZoneDelta[0] ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
 	    <xbins>31</xbins>
@@ -134,7 +134,7 @@
     </outputList>
 						
     <outputList group="GEM" name="GEM arrival times" enabled="True">				
-        <TH1F name="CondArrTKRTrigger_Histo1">
+        <TH1F name="CondArrTKRTrigger_TH1">
 	    <expression><![CDATA[ condarrtkr ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
 	    <xbins>41</xbins>
@@ -145,7 +145,7 @@
 	    <ylabel>N</ylabel>
 	    <caption>Distribution of Condition arrival times for TKR triggers. Periodic triggers have been taken out.</caption>
         </TH1F>
-        <TH1F name="CondArrCalLowTrigger_Histo1">
+        <TH1F name="CondArrCalLowTrigger_TH1">
 	    <expression><![CDATA[ condarrcallo ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
 	    <xbins>41</xbins>
@@ -156,7 +156,7 @@
 	    <ylabel>N</ylabel>
 	    <caption>Distribution of Condition arrival times for Cal-Low triggers. Periodic triggers have been taken out.</caption>
         </TH1F>
-        <TH1F name="CondArrCalHiTrigger_Histo1">
+        <TH1F name="CondArrCalHiTrigger_TH1">
 	    <expression><![CDATA[ condarrcalhi ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
 	    <xbins>41</xbins>
@@ -167,7 +167,7 @@
 	    <ylabel>N</ylabel>
 	    <caption>Distribution of Condition arrival times for Cal-Hi triggers. Periodic triggers have been taken out.</caption>
         </TH1F>
-        <TH1F name="CondArrCNOTrigger_Histo1">
+        <TH1F name="CondArrCNOTrigger_TH1">
 	    <expression><![CDATA[ condarrcno ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
 	    <xbins>41</xbins>
@@ -178,7 +178,7 @@
 	    <ylabel>N</ylabel>
 	    <caption>Distribution of Condition arrival times for CNO triggers. Periodic triggers have been taken out.</caption>
         </TH1F>
-        <TH1F name="CondArrROITrigger_Histo1">
+        <TH1F name="CondArrROITrigger_TH1">
 	    <expression><![CDATA[ condarrroi ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
 	    <xbins>41</xbins>
@@ -192,28 +192,28 @@
     </outputList>				
 
     <outputList group="GEM" name="GEM trigger vectors" enabled="True">
-        <CUSTOM type="gem_vector_map" name="TkrTrigger_Tower_Histo1" enabled="True">
+        <CUSTOM type="gem_vector_map" name="TkrTrigger_Tower_TH1" enabled="True">
 	    <title>Number of tracker triggers per tower</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>N</ylabel>
 			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>TkrTriggerTower</expression>
         </CUSTOM>
-        <CUSTOM type="gem_vector_map" name="CalHiTrigger_Tower_Histo1" enabled="True">
+        <CUSTOM type="gem_vector_map" name="CalHiTrigger_Tower_TH1" enabled="True">
 	    <title>Number of Cal HI triggers per tower</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>N</ylabel>
 			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>CalHiTriggerTower</expression>
         </CUSTOM>
-        <CUSTOM type="gem_vector_map" name="CalLOWTrigger_Tower_Histo1" enabled="True">
+        <CUSTOM type="gem_vector_map" name="CalLOWTrigger_Tower_TH1" enabled="True">
 	    <title>Number of Cal LO triggers per tower</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>N</ylabel>
 			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>CalLoTriggerTower</expression>
         </CUSTOM>	
-        <CUSTOM type="gem_vector_map" name="AcdGemROI_Tower_Histo1" enabled="True">
+        <CUSTOM type="gem_vector_map" name="AcdGemROI_Tower_TH1" enabled="True">
 	    <title>Number of ACD ROI per tower</title>
 			<caption>This bit is set if any of the tile in the ROI fired a veto. This bit is independent of if the Tower bit is set.</caption>
 	    <xlabel>Tower number</xlabel>
@@ -221,7 +221,7 @@
 			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>AcdGemROI_Tower</expression>
         </CUSTOM>
-        <CUSTOM type="AcdGemVeto_AcdTile" name="Acd_GemVeto_AcdTile_Histo1" enabled="True">
+        <CUSTOM type="AcdGemVeto_AcdTile" name="Acd_GemVeto_AcdTile_TH1" enabled="True">
 	    <!--expression><![CDATA[ AcdGemVeto_AcdTile ]]></expression-->
 	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
 	    <title>Number of Acd Gem vetoes by tile</title>
@@ -229,7 +229,7 @@
 	    <ylabel>N</ylabel>
 	    <caption>Expect to see spikes at 15, 31, 47, 63. These are large tiles at the bottom of the sides of the ACD.</caption>
         </CUSTOM>
-        <CUSTOM type="gem_acd_cable_map" name="AcdGemCNO_GARC_Histo1" enabled="True">
+        <CUSTOM type="gem_acd_cable_map" name="AcdGemCNO_GARC_TH1" enabled="True">
 	    <expression><![CDATA[ AcdGemCNO_GARC ]]></expression>
 	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
 	    <title>Number of Acd CNO by board</title>
@@ -265,7 +265,7 @@
 	    
     <outputList group="CAL" name="CAL base" enabled="True">
 	
-        <CUSTOM type="CalXHit_NHit_Counter_TowerCalLayer" name="CalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
+        <CUSTOM type="CalXHit_NHit_Counter_TowerCalLayer" name="CalXHit_NHit_Counter_TowerCalLayer_TH2" enabled="True">
 	    <title>Number of hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>Cal-Layer</ylabel>
@@ -275,7 +275,7 @@
 	    <cut><![CDATA[ (condsummary&30)>0 && (condsummary&32)==0]]></cut>	    
         </CUSTOM>
 
-        <CUSTOM type="ZeroCalXHit_NHit_Counter_TowerCalLayer" name="ZeroCalXHit_NHit_Counter_TowerCalLayer_Histo2" enabled="True">
+        <CUSTOM type="ZeroCalXHit_NHit_Counter_TowerCalLayer" name="ZeroCalXHit_NHit_Counter_TowerCalLayer_TH2" enabled="True">
 	    <title>Number of times there is ZERO hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>Cal-Layer</ylabel>
@@ -285,7 +285,7 @@
 	    <cut><![CDATA[ (condsummary&30)>0 && (condsummary&32)==0]]></cut>	    
         </CUSTOM>
 
-        <TH1F name="CalX_Total_NHit_Histo1" enabled="True" level="lat">
+        <TH1F name="CalX_Total_NHit_TH1" enabled="True" level="lat">
 	    <title>Distribution of  Cal crystals hits  per event (all towers included)</title>
 	    <xbins>201</xbins>
 	    <xmin>-0.5</xmin>
@@ -295,22 +295,22 @@
 	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
         </TH1F>
 	
-        <TH1F name="CalX_NHit_Histo1" enabled="True" level="tower">
+        <TH1F name="CalX_NHit_TH1" enabled="True" level="tower">
 	    <title>Distribution of  Cal crystals hits per event in this tower</title>
-	    <xbins>151</xbins>
+	    <xbins>97</xbins>
 	    <xmin>-0.5</xmin>
-	    <xmax>150.5</xmax>
+	    <xmax>96.5</xmax>
 	    <ylog>True</ylog>
-	    <xlabel>Number of CalX_Hits in this tower</xlabel>
+	    <xlabel>Number of Cal crystals in this tower</xlabel>
             <expression>CalXHit_Tower</expression>
 	    <cut><![CDATA[ (condsummary&30)>0  ]]></cut>
         </TH1F>
 	
-        <TH1F name="CalTower_NHit_Histo1" enabled="True" level="lat">
+        <TH1F name="CalTower_NHit_TH1" enabled="True" level="lat">
 	    <title>Number of CAL modules hit</title>
-	    <xbins>16</xbins>
-	    <xmin>0</xmin>
-	    <xmax>16</xmax>
+	    <xbins>17</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>16.5</xmax>
 	    <xlabel>Number of Cal Towers Hit</xlabel>
             <expression>CalTowerCount</expression>
         </TH1F>
@@ -361,7 +361,7 @@
 		
     <outputList group="TKR" name="TKR base" enabled="True">
 		
-        <TH1F name="TkrTotalHits_Histo1" enabled="True">
+        <TH1F name="TkrTotalHits_TH1" enabled="True">
 	    <title>Distribution of strip hits per event (all towers included)</title>
 	    <xbins>300</xbins>
 	    <xmin>0</xmin>
@@ -372,7 +372,7 @@
       <expression>TkrHits</expression>
         </TH1F>
 				
-        <CUSTOM type="TkrTwrVsPlaneVariableCounter" name="ZeroTkrHitsCounter_TowerPlane_Histo2" enabled="False">
+        <CUSTOM type="TkrTwrVsPlaneVariableCounter" name="ZeroTkrHitsCounter_TowerPlane_TH2" enabled="False">
 	    <title>Counter of ZERO strip hits vs Tower and Tracker plane</title>
 			<caption>Number of times there are no strip hits in a Tracker plane</caption>
 	    <xlabel>Tracker plane</xlabel>
@@ -382,7 +382,7 @@
             <cut><![CDATA[ TkrHitsTowerPlane ==0 && (condsummary&30)>0]]></cut>
         </CUSTOM>					
 				
-        <CUSTOM type="TkrTwrVsPlaneVariableSumwx" name="TkrHitsCounter_TowerPlane_Histo2" enabled="False">
+        <CUSTOM type="TkrTwrVsPlaneVariableSumwx" name="TkrHitsCounter_TowerPlane_TH2" enabled="False">
 	    <title>Number of strip hits vs Tower and Tracker plane</title>
 			<caption>Test</caption>
 	    <xlabel>Tracker plane</xlabel>
@@ -395,7 +395,7 @@
     </outputList>
 		
     <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
-        <TH1F name="TkrHits_Histo1" enabled="True" level="tower">
+        <TH1F name="TkrHits_TH1" enabled="True" level="tower">
 	    <title>Distribution of strip hits per tower</title>
 	    <xbins>200</xbins>
 	    <xmin>0</xmin>
@@ -408,7 +408,7 @@
     </outputList>
 
     <outputList group="TKR" name="TKR Details - Planes hit in a tower" enabled="True">		
-        <CUSTOM type="TkrPlanesHit" name="TkrPlanesHit_Histo1" enabled="True" level="tower" >
+        <CUSTOM type="TkrPlanesHit" name="TkrPlanesHit_TH1" enabled="True" level="tower" >
 	    <title>Distribution of the number of planes hit in a tower</title>
 	    <xlabel>Layer number</xlabel>
 	    <caption></caption>
@@ -420,7 +420,7 @@
     </outputList>				
 
     <outputList group="TKR" name="TKR Details - ToT" enabled="True">		
-        <CUSTOM type="ToT_0_WhenTkrHitsExist_TowerPlane" name="ToT_0_WhenTkrHitsExist_TowerPlane_Histo2" enabled="True">
+        <CUSTOM type="ToT_0_WhenTkrHitsExist_TowerPlane" name="ToT_0_WhenTkrHitsExist_TowerPlane_TH2" enabled="True">
 	    <title>Number of times that, existing at least one hit, ToT==0 in both controllers</title>
 			<xlabel>Tower Number</xlabel>
 	    <ylabel>Tracker plane</ylabel>
@@ -457,9 +457,9 @@
 
         <TH1F name="AcdChannelsHits" enabled="True" level="lat">
 	    <title>Number of ACD PMT hit per event</title>
-	    <xbins>111</xbins>
+	    <xbins>195</xbins>
 	    <xmin>-0.5</xmin>
-	    <xmax>110.5</xmax>
+	    <xmax>194.5</xmax>
 	    <xlabel>N</xlabel>
 	    <ylabel>Number of ACD hits</ylabel>
       <expression>acd_tile_count</expression>

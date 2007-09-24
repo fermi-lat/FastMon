@@ -41,7 +41,16 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
     #  of the derived iterator (the one which is actually run).
         
     def log(self, tower, layer, calLog):
-        pass
+        column = calLog.column()
+        if tower < 0 or tower > 15:
+             self.ErrorHandler.fill('UNPHYSICAL_CAL_TWR_ID',\
+                                   [tower, layer, column])
+        if layer < 0 or layer > 8:
+             self.ErrorHandler.fill('UNPHYSICAL_CAL_LYR_ID',\
+                                   [tower, layer, column])  
+        if column < 0 or column > 12:
+            self.ErrorHandler.fill('UNPHYSICAL_CAL_COL_ID',\
+                                   [tower, layer, column])
     
     ## @brief Fill CalXHit tree branch
     ## Number of logs hit in the LAT

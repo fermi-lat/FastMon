@@ -18,7 +18,13 @@ DETAIL_LABELS = {
     'GTCC_WORD_COUNT_PARITY_ERROR': ['Tower', 'GTCC', 'Err'],
     'GTRC_SUMMARY_ERROR'          : ['Tower', 'GTCC', 'Err'],
     'GTCC_DATA_PARITY_ERROR'      : ['Tower', 'GTCC', 'Err'],
-    'UNPHYSICAL_STRIP_ID'         : ['Tower', 'LayerEnd', 'hit']
+    'UNPHYSICAL_TKR_TOT'          : ['Tower', 'LayerEnd', 'tot'],
+    'UNPHYSICAL_TKR_STRIP_ID'     : ['Tower', 'LayerEnd', 'hit'],
+    'UNPHYSICAL_TKR_LYR_ID'       : ['Tower', 'LayerEnd', 'hit'],
+    'UNPHYSICAL_TKR_TWR_ID'       : ['Tower', 'LayerEnd', 'hit'],
+    'UNPHYSICAL_CAL_COL_ID'       : ['Tower', 'Layer', 'Column'],
+    'UNPHYSICAL_CAL_LYR_ID'       : ['Tower', 'Layer', 'Column'],
+    'UNPHYSICAL_CAL_TWR_ID'       : ['Tower', 'Layer', 'Column']
     }
 
 
