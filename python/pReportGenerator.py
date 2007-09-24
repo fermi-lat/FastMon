@@ -98,6 +98,6 @@ if __name__ == '__main__':
     xmlParser = pXmlParser(optparser.Options.c)
     errorHandler    = pErrorHandler()
     reportGenerator = pReportGenerator(errorHandler, xmlParser, optparser.Argument)
-    reportGenerator.run(optparser.Options.v, not optparser.Options.L)
+    reportGenerator.run(optparser.Options.v, optparser.Options.L)
     if optparser.Options.V:
         reportGenerator.viewReport()
