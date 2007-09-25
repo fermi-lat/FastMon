@@ -320,7 +320,31 @@ class pDataProcessor:
                     (self.NumEvents, elapsedTime, averageRate))
         self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
                                                            '.errors.pickle'))
+        #self.writeXmlSummary(self.OutputFilePath.replace('.root', '.summary.xml'))
 
+    ## @brief Write an xml summary file with run statistics
+    #
+    ## @param self
+    #  The class instance.
+    ## @param xmlFilePath
+    #  The path to the xml summary file
+    
+    def writeXmlSummary(self, xmlFilePath):
+        from pXmlWriter import pXmlWriter
+        logger.info('Writing summary xml file: %s.' % xmlFilePath)
+        elapsedTime   = self.StopTime - self.StartTime
+        averageRate   = self.NumEvents/elapsedTime
+
+        writer = pXmlWriter(xmlFilePath)
+        writer.openTag('pDataProcessorSummary')
+        writer.indent()
+        writer.writeTag('num_events', {}, self.NumEvents)
+        writer.writeTag('elapsed_tile', {}, elapsedTime)
+        writer.writeTag('average_rate', {}, averageRate)
+        #writer.writeTag('current_time', {}, time.asctime())
+        writer.backup()
+        writer.closeTag('pDataProcessorSummary')
+        writer.closeFile()
 
 
     

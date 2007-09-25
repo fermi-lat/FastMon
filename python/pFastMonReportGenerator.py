@@ -24,7 +24,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
 
     def __init__(self, dataProcessor):
         self.DataProcessor = dataProcessor
-        reportDirPath = os.path.join(dataProcessor.OutputDirPath, 'report')
+        reportDirPath = dataProcessor.OutputFilePath.replace('.root','.report')
         pBaseReportGenerator.__init__(self, reportDirPath)
         self.RootFileManager = pRootFileManager()
 
