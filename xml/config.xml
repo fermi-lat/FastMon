@@ -345,7 +345,7 @@
 	    <type>int</type>
 	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
 	</variable>
-	<variable name="tkr_layer_end_tot" enabled="True">
+	<variable name="tkr_layer_end_tot" enabled="False">
 	    <type>int</type>
 	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
 	</variable>	

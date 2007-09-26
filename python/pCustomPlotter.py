@@ -262,49 +262,46 @@ class pCustomPlotter:
         self.__deleteTmpRootTree()
         return histogram 
 
-## @brief  Return a ROOT TH2F object: Tower number vs Plane
-# 
-#  
-## @param rootTree
-#  The ROOT tree containing the variables.
-## @param plotRep
-#  The custom plot representation from the pXmlParser object.
+    ## @brief  Return a ROOT TH2F object: Tower number vs Plane
+    # 
+    #  
+    ## @param plotRep
+    #  The custom plot representation from the pXmlParser object.
+    
+    def ZeroTkrHitsCounter_TowerPlane(self, plotRep):
+        self.__startTimer()
+        histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 16, -0.5, 15.5,
+                              36, -0.5, 35.5)
+        self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
+        tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            for tower in range(16):
+                for layer in range(36):
+                    if tkrHits[tower][layer] == 0:
+                        histogram.Fill(tower, layer)
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histogram
 
-def ZeroTkrHitsCounter_TowerPlane(rootTree, plotRep):
-    self.__startTimer()
-    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 16, -0.5, 15.5,
-                          36, -0.5, 35.5)
-    self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
-    tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
-    for i in xrange(self.TmpRootTree.GetEntriesFast()):
-        self.TmpRootTree.GetEntry(i)
-        for tower in range(16):
-            for layer in range(36):
-                if tkrHits[tower][layer] == 0:
-                    histogram.Fill(tower, layer)
-    self.__stopTimer(plotRep)
-    self.__deleteTmpRootTree()
-    return histogram
+    ## @brief  Return a ROOT TH2F object: Tower number vs Plane
+    # 
+    #  
+    ## @param plotRep
+    #  The custom plot representation from the pXmlParser object.
 
-## @brief  Return a ROOT TH2F object: Tower number vs Plane
-# 
-#  
-## @param rootTree
-#  The ROOT tree containing the variables.
-## @param plotRep
-#  The custom plot representation from the pXmlParser object.
-
-def TkrHitsCounter_TowerPlane(rootTree, plotRep):
-    self.__startTimer()
-    histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 16, -0.5, 15.5,
-                          36, -0.5, 35.5)
-    self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
-    tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
-    for i in xrange(self.TmpRootTree.GetEntriesFast()):
-        self.TmpRootTree.GetEntry(i)
-        for tower in range(16):
-            for layer in range(36):
-                histogram.Fill(tower, layer, tkrHits[tower][layer])
-    self.__stopTimer(plotRep)
-    self.__deleteTmpRootTree()
-    return histogram
+    def TkrHitsCounter_TowerPlane(self, plotRep):
+        self.__startTimer()
+        histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 16, -0.5, 15.5,
+                              36, -0.5, 35.5)
+        self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
+        tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            for tower in range(16):
+                if tkrHits[tower].sum() > 0 :
+                    for layer in range(36):
+                        histogram.Fill(tower, layer, tkrHits[tower][layer])
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histogram
