@@ -372,24 +372,22 @@
       <expression>TkrHits</expression>
         </TH1F>
 				
-        <CUSTOM type="TkrTwrVsPlaneVariableCounter" name="ZeroTkrHitsCounter_TowerPlane_TH2" enabled="True">
+        <CUSTOM type="ZeroTkrHitsCounter_TowerPlane" name="ZeroTkrHitsCounter_TowerPlane_TH2" enabled="True">
 	    <title>Counter of ZERO strip hits vs Tower and Tracker plane</title>
 			<caption>Number of times there are no strip hits in a Tracker plane</caption>
-	    <xlabel>Tracker plane</xlabel>
-	    <ylabel>Tower</ylabel>
+	    <xlabel>Tower</xlabel>
+	    <ylabel>Tracker plane</ylabel>
 	    <drawoptions>colz</drawoptions>
-	    <expression>TkrHitsTowerPlane</expression>
-            <cut><![CDATA[ TkrHitsTowerPlane ==0 && (condsummary&30)>0]]></cut>
+            <cut><![CDATA[(condsummary&30)>0]]></cut>
         </CUSTOM>					
 				
-        <CUSTOM type="TkrTwrVsPlaneVariableSumwx" name="TkrHitsCounter_TowerPlane_TH2" enabled="True">
+        <CUSTOM type="TkrHitsCounter_TowerPlane" name="TkrHitsCounter_TowerPlane_TH2" enabled="True">
 	    <title>Number of strip hits vs Tower and Tracker plane</title>
 			<caption>Test</caption>
-	    <xlabel>Tracker plane</xlabel>
-	    <ylabel>Tower</ylabel>
+	    <xlabel>Tower</xlabel>
+	    <ylabel>Tracker plane</ylabel>
 	    <drawoptions>colz</drawoptions>
-	    <expression>TkrHitsTowerPlane</expression>
-            <cut><![CDATA[ TkrHitsTowerPlane >0 && (condsummary&30)>0]]></cut>
+            <cut><![CDATA[(condsummary&30)>0]]></cut>
         </CUSTOM>		
 				
     </outputList>
