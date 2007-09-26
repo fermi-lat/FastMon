@@ -345,7 +345,7 @@
 	    <type>int</type>
 	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
 	</variable>
-	<variable name="tkr_layer_end_tot" enabled="False">
+	<variable name="tkr_layer_end_tot" enabled="True">
 	    <type>int</type>
 	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
 	</variable>	
@@ -372,7 +372,7 @@
       <expression>TkrHits</expression>
         </TH1F>
 				
-        <CUSTOM type="TkrTwrVsPlaneVariableCounter" name="ZeroTkrHitsCounter_TowerPlane_TH2" enabled="False">
+        <CUSTOM type="TkrTwrVsPlaneVariableCounter" name="ZeroTkrHitsCounter_TowerPlane_TH2" enabled="True">
 	    <title>Counter of ZERO strip hits vs Tower and Tracker plane</title>
 			<caption>Number of times there are no strip hits in a Tracker plane</caption>
 	    <xlabel>Tracker plane</xlabel>
@@ -382,7 +382,7 @@
             <cut><![CDATA[ TkrHitsTowerPlane ==0 && (condsummary&30)>0]]></cut>
         </CUSTOM>					
 				
-        <CUSTOM type="TkrTwrVsPlaneVariableSumwx" name="TkrHitsCounter_TowerPlane_TH2" enabled="False">
+        <CUSTOM type="TkrTwrVsPlaneVariableSumwx" name="TkrHitsCounter_TowerPlane_TH2" enabled="True">
 	    <title>Number of strip hits vs Tower and Tracker plane</title>
 			<caption>Test</caption>
 	    <xlabel>Tracker plane</xlabel>
@@ -483,5 +483,60 @@
             <expression>meta_context_open_crate</expression>
         </TH1F>
     </outputList>    
-		
+
+    <!--
+    Trending group.
+    -->
+
+    <outputList group="Trending" name="TkrTrending" enabled="True">
+
+        <StripChart name="trending_TkrHits" enabled="True" level="lat">
+	    <title>LAT TKR Trending</title>
+ 	    <dtime>10</dtime>
+            <expression>TkrHits</expression>
+	    <ymin>0</ymin>
+	    <ymax>1000</ymax>
+       </StripChart>
+
+       <StripChart name="trending_TkrHitsTower" enabled="True" level="tower">
+	    <title>Tkr Trending</title>
+ 	    <dtime>10</dtime>
+            <expression>TkrHitsTower</expression>
+	    <ymin>0</ymin>
+	    <ymax>300</ymax>
+	    <xlabel>Elapsed time (s)</xlabel>
+	    <ylabel>Average hit multiplicity</ylabel>
+            <cut><![CDATA[ TkrHitsTower > 0 ]]></cut>
+       </StripChart>
+
+    </outputList>
+
+    <outputList group="Trending" name="CalTrending" enabled="True">
+
+        <StripChart name="trending_CalXHit" enabled="True" level="lat">
+	    <title>CAL hit multiplicity trending</title>
+ 	    <dtime>10</dtime>
+            <expression>CalXHit</expression>
+	    <ymin>0</ymin>
+	    <ymax>1600</ymax>
+       </StripChart>
+
+        <StripChart name="trending_CalXHit_Tower" enabled="True" level="tower">
+	    <title>CAL hit multiplicity trending per tower</title>
+ 	    <dtime>10</dtime>
+            <expression>CalXHit_Tower</expression>
+	    <ymin>0</ymin>
+	    <ymax>100</ymax>
+       </StripChart>
+
+        <StripChart name="trending_CalTowerCount" enabled="True" level="lat">
+	    <title>CAL trending</title>
+ 	    <dtime>10</dtime>
+            <expression>CalTowerCount</expression>
+	    <ymin>0</ymin>
+	    <ymax>16</ymax>
+       </StripChart>
+
+    </outputList>
+				
 </monitoring>
