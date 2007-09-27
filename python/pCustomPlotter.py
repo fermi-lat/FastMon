@@ -305,3 +305,46 @@ class pCustomPlotter:
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histogram
+
+    ## @brief  Return a ROOT TH1F object with rates
+    # 
+    #  In the returned histogram each bin contains
+    #  the number of event that satisfies the cut condition
+    #  divided by time interval (the bin widht).
+    #  Note that the last bin is widee than the others.
+    ## @param plotRep
+    #  The custom plot representation from the pXmlParser object.
+    
+    def RatePlot(self, plotRep):
+        self.__startTimer()
+        
+        # Get Start, Stop, and Delta time
+        self.RootTree.GetEntry(0)
+        StartTime = self.RootTree.event_timestamp
+        
+        self.RootTree.GetEntry(self.RootTree.GetEntriesFast()-1)
+        StopTime = self.RootTree.event_timestamp
+        
+        DTime = float(plotRep.getTagValue('dtime'))
+
+        # Set binning, last bin set by hands
+        nBins = int((StopTime - StartTime)/DTime)
+        binning = numpy.arange(StartTime, StopTime, DTime)
+        binning[nBins] = StopTime
+                
+        histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, nBins, binning)
+        
+        # Fill histogram
+        self.RootTree.Project(histogram.GetName(), 'event_timestamp', \
+                                 plotRep.Cut )
+
+        # Scale histogram, last bin set by hands
+        LastBinCont  = histogram.GetBinContent(nBins)
+        LastBinWidth = histogram.GetBinWidth(nBins)
+        histogram.Scale(1./DTime)
+        histogram.SetBinContent(nBins, LastBinCont/LastBinWidth )
+        
+        self.__stopTimer(plotRep)
+        return histogram
+
+

@@ -145,7 +145,7 @@
 	    <ylabel>N</ylabel>
 	    <caption>Distribution of Condition arrival times for TKR triggers. Periodic triggers have been taken out.</caption>
         </TH1F>
-        <TH1F name="CondArrCalLowTrigger_TH1">
+        <TH1F name="CondArrCalLoTrigger_TH1">
 	    <expression><![CDATA[ condarrcallo ]]></expression>
 	    <cut><![CDATA[ !(condsummary&32) ]]></cut>
 	    <xbins>41</xbins>
@@ -206,7 +206,7 @@
 			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>	
 	    <expression>CalHiTriggerTower</expression>
         </CUSTOM>
-        <CUSTOM type="gem_vector_map" name="CalLOWTrigger_Tower_TH1" enabled="True">
+        <CUSTOM type="gem_vector_map" name="CalLoTrigger_Tower_TH1" enabled="True">
 	    <title>Number of Cal LO triggers per tower</title>
 	    <xlabel>Tower number</xlabel>
 	    <ylabel>N</ylabel>
@@ -325,6 +325,7 @@
         </CUSTOM-->
 
     </outputList>
+		
     <!--
     TKR group.
     -->		
@@ -359,7 +360,7 @@
 	</variable>	
     </inputList>
 		
-    <outputList group="TKR" name="TKR base" enabled="True">
+    <outputList group="TKR" name="TKR base" enabled="False">
 		
         <TH1F name="TkrTotalHits_TH1" enabled="True">
 	    <title>Distribution of strip hits per event (all towers included)</title>
@@ -432,6 +433,21 @@
 				
     </outputList>
 		
+    <outputList group="TKR" name="TKR Noise occupancy" enabled="False">	
+				
+        <TH1F name="TkrTotalHits_Periodic_TH1" enabled="True">
+	    <title>Distribution of strip hits per event (all towers included). Periodic triggers only</title>
+	    <xbins>300</xbins>
+	    <xmin>0</xmin>
+	    <xmax>3000</xmax>
+	    <xlabel>Number of strip hits</xlabel>
+	    <ylabel>N</ylabel>
+			<cut><![CDATA[ (condsummary&32)>0 ]]></cut>
+      <expression>TkrHits</expression>
+        </TH1F>
+				
+    </outputList>		
+		
 		<!--
     ACD group.
     -->		
@@ -495,7 +511,16 @@
 	    <ymin>0</ymin>
 	    <ymax>1000</ymax>
        </StripChart>
-
+			 
+        <StripChart name="trending_TkrHits_Periodic" enabled="True" level="lat">
+	    <title>LAT TKR Noise Hits Trending</title>
+ 	    <dtime>10</dtime>
+            <expression>TkrHits</expression>
+	    <ymin>0</ymin>
+	    <ymax>1000</ymax>
+			<cut><![CDATA[ (condsummary&32)>0 ]]></cut>
+       </StripChart>
+			 
        <StripChart name="trending_TkrHitsTower" enabled="True" level="tower">
 	    <title>Tkr Trending</title>
  	    <dtime>10</dtime>
@@ -517,8 +542,17 @@
             <expression>CalXHit</expression>
 	    <ymin>0</ymin>
 	    <ymax>1600</ymax>
-       </StripChart>
-
+        </StripChart>
+       
+			  <StripChart name="trending_CalXHit_Periodic" enabled="True" level="lat">
+	    <title>CAL hit multiplicity trending</title>
+ 	    <dtime>10</dtime>
+            <expression>CalXHit</expression>
+	    <ymin>0</ymin>
+	    <ymax>1600</ymax>
+			<cut><![CDATA[ (condsummary&32)>0 ]]></cut>
+        </StripChart>
+			 
         <StripChart name="trending_CalXHit_Tower" enabled="True" level="tower">
 	    <title>CAL hit multiplicity trending per tower</title>
  	    <dtime>10</dtime>
@@ -536,5 +570,43 @@
        </StripChart>
 
     </outputList>
-				
+		
+    <!--
+    Rates group.
+    -->
+    <outputList group="Rates" name="Trigger Rates">
+        <CUSTOM type="RatePlot" name="rate_TkrTrigger" enabled="True">
+	    <title>Tkr Triggers Rate</title>
+	    <xlabel>Time (s)</xlabel>
+	    <ylabel>Rate (Hz)</ylabel>
+ 	    <dtime>10</dtime>
+			<drawoptions>E</drawoptions>
+			<cut><![CDATA[ (condsummary&2)>0 ]]></cut>	
+        </CUSTOM>
+        <CUSTOM type="RatePlot" name="rate_CalLoTrigger" enabled="True">
+	    <title>Cal Low Triggers Rate</title>
+	    <xlabel>Time (s)</xlabel>
+	    <ylabel>Rate (Hz)</ylabel>
+ 	    <dtime>10</dtime>
+			<drawoptions>E</drawoptions>
+			<cut><![CDATA[ (condsummary&4)>0 ]]></cut>	
+        </CUSTOM>
+        <CUSTOM type="RatePlot" name="rate_CalHiTrigger" enabled="True">
+	    <title>Cal Hi Triggers Rate</title>
+	    <xlabel>Time (s)</xlabel>
+	    <ylabel>Rate (Hz)</ylabel>
+ 	    <dtime>10</dtime>
+			<drawoptions>E</drawoptions>
+			<cut><![CDATA[ (condsummary&8)>0 ]]></cut>	
+        </CUSTOM>				
+        <CUSTOM type="RatePlot" name="rate_PeriodicTrigger" enabled="True">
+	    <title>Periodic Triggers Rate</title>
+	    <xlabel>Time (s)</xlabel>
+	    <ylabel>Rate (Hz)</ylabel>
+ 	    <dtime>10</dtime>
+			<drawoptions>E</drawoptions>
+			<cut><![CDATA[ (condsummary&32)>0 ]]></cut>	
+        </CUSTOM>												
+    </outputList>
+
 </monitoring>
