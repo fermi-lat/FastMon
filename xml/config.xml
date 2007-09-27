@@ -360,7 +360,7 @@
 	</variable>	
     </inputList>
 		
-    <outputList group="TKR" name="TKR base" enabled="False">
+    <outputList group="TKR" name="TKR base" enabled="True">
 		
         <TH1F name="TkrTotalHits_TH1" enabled="True">
 	    <title>Distribution of strip hits per event (all towers included)</title>
