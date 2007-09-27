@@ -141,9 +141,7 @@ class pCustomPlotter:
     ## @brief Return a ROOT TH1F object: the distribution of the number of
     #  planes hit in a tower.
     #
-    #  This function uses the tkr_layer_end_strip_count variable;
-    #  if it is not present in the TTree the histogram will be empty
-    #  and a warning message will be sent.
+    #  This function uses the TkrHitsTowerPlane variable;
     ## @param self
     #  The class instance.
     ## @param plotRep

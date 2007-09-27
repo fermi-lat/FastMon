@@ -342,7 +342,7 @@
 	    <type>int</type>
 	    <shape>(NUM_TOWERS)</shape>
 	</variable>
-	<variable name="TkrHitsTowerPlaneEnd" enabled="True">
+	<variable name="TkrHitsTowerPlaneEnd" enabled="False">
 	    <type>int</type>
 	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
 	</variable>
