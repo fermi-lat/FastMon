@@ -341,8 +341,11 @@ class pCustomPlotter:
         # Scale histogram, last bin set by hands
         LastBinCont  = histogram.GetBinContent(nBins)
         LastBinWidth = histogram.GetBinWidth(nBins)
+        LastBinError = histogram.GetBinError(nBins)
+        histogram.Sumw2()
         histogram.Scale(1./DTime)
         histogram.SetBinContent(nBins, LastBinCont/LastBinWidth )
+        histogram.SetBinError(nBins, LastBinError/LastBinWidth )
         
         self.__stopTimer(plotRep)
         return histogram
