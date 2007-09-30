@@ -576,7 +576,8 @@
     -->
     <outputList group="Rates" name="Trigger Rates">
         <CUSTOM type="RatePlot" name="rate_TkrTrigger" enabled="True">
-	    <title>Tkr Triggers Rate</title>
+	    <title>Tkr triggers rate on-ground</title>
+			<caption>This is the rate of events (with Tkr trigger) passing the onboard filters</caption>
 	    <xlabel>Time (s)</xlabel>
 	    <ylabel>Rate (Hz)</ylabel>
  	    <dtime>10</dtime>
@@ -584,7 +585,8 @@
 			<cut><![CDATA[ (condsummary&2)>0 ]]></cut>	
         </CUSTOM>
         <CUSTOM type="RatePlot" name="rate_CalLoTrigger" enabled="True">
-	    <title>Cal Low Triggers Rate</title>
+	    <title>Cal Lo triggers rate on-ground</title>
+			<caption>This is the rate of events (with Cal Lo trigger) passing the onboard filters</caption>
 	    <xlabel>Time (s)</xlabel>
 	    <ylabel>Rate (Hz)</ylabel>
  	    <dtime>10</dtime>
@@ -592,7 +594,8 @@
 			<cut><![CDATA[ (condsummary&4)>0 ]]></cut>	
         </CUSTOM>
         <CUSTOM type="RatePlot" name="rate_CalHiTrigger" enabled="True">
-	    <title>Cal Hi Triggers Rate</title>
+	    <title>Cal Hi triggers rate on-ground</title>
+			<caption>This is the rate of events (with Cal Hi trigger) passing the onboard filters</caption>
 	    <xlabel>Time (s)</xlabel>
 	    <ylabel>Rate (Hz)</ylabel>
  	    <dtime>10</dtime>
@@ -600,13 +603,30 @@
 			<cut><![CDATA[ (condsummary&8)>0 ]]></cut>	
         </CUSTOM>				
         <CUSTOM type="RatePlot" name="rate_PeriodicTrigger" enabled="True">
-	    <title>Periodic Triggers Rate</title>
+	    <title>Periodic triggers rate on-ground</title>
+			<caption>This is the rate of events (with Periodic trigger) passing the onboard filters</caption>
 	    <xlabel>Time (s)</xlabel>
 	    <ylabel>Rate (Hz)</ylabel>
  	    <dtime>10</dtime>
 			<drawoptions>E</drawoptions>
 			<cut><![CDATA[ (condsummary&32)>0 ]]></cut>	
-        </CUSTOM>												
+        </CUSTOM>	
+				
+        <CUSTOM type="GemIDRatePlot" name="rate_GemTrigger10sec" enabled="True">
+	    <title>GEM trigger rate (10 sec. average)</title>
+			<caption>This is an estimation of the total trigger rate on-orbit using the GEM sequence number</caption>
+	    <xlabel>Time (s)</xlabel>
+	    <ylabel>Rate (kHz)</ylabel>
+ 	    <dtime>10</dtime>	
+			<drawoptions>P</drawoptions>
+        </CUSTOM>	
+        <CUSTOM type="GemIDOneSecRatePlot" name="rate_GemTrigger" enabled="True">
+	    <title>GEM trigger rate</title>
+			<caption>This is an estimation of the total trigger rate on-orbit using the GEM sequence number</caption>
+	    <xlabel>Time (s)</xlabel>
+	    <ylabel>Rate (kHz)</ylabel>
+			<drawoptions>P</drawoptions>
+        </CUSTOM>													
     </outputList>
 
 </monitoring>
