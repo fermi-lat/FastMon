@@ -229,7 +229,7 @@
 	    <expression><![CDATA[ AcdGemCNO_GARC ]]></expression>
 	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
 	    <title>Number of Acd CNO by board</title>
-	    <xlabel>Acd CARC Number</xlabel>
+	    <xlabel>Acd GARC Number</xlabel>
 	    <ylabel>N</ylabel>
 	    <caption>This bit is the OR of the CNO signal on a single board. 
 			Because of the tile to boad mapping, a factor two variation 
