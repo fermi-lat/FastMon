@@ -31,10 +31,6 @@
 	    <type>int</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="ElapsedLast">
-	    <type>int</type>
-            <shape>(1)</shape>
-	</variable>
 	<variable name="DeadZoneLast">
 	    <type>int</type>
             <shape>(1)</shape>
@@ -576,7 +572,7 @@
     -->
     <outputList group="Rates" name="Trigger Rates">
         <CUSTOM type="RatePlot" name="rate_TkrTrigger" enabled="True">
-	    <title>Tkr triggers rate on-ground</title>
+	    <title>Tkr event rate on-ground</title>
 			<caption>This is the rate of events (with Tkr trigger) passing the onboard filters</caption>
 	    <xlabel>Time (s)</xlabel>
 	    <ylabel>Rate (Hz)</ylabel>
@@ -585,7 +581,7 @@
 			<cut><![CDATA[ (condsummary&2)>0 ]]></cut>	
         </CUSTOM>
         <CUSTOM type="RatePlot" name="rate_CalLoTrigger" enabled="True">
-	    <title>Cal Lo triggers rate on-ground</title>
+	    <title>Cal Lo event rate on-ground</title>
 			<caption>This is the rate of events (with Cal Lo trigger) passing the onboard filters</caption>
 	    <xlabel>Time (s)</xlabel>
 	    <ylabel>Rate (Hz)</ylabel>
@@ -594,7 +590,7 @@
 			<cut><![CDATA[ (condsummary&4)>0 ]]></cut>	
         </CUSTOM>
         <CUSTOM type="RatePlot" name="rate_CalHiTrigger" enabled="True">
-	    <title>Cal Hi triggers rate on-ground</title>
+	    <title>Cal Hi event rate on-ground</title>
 			<caption>This is the rate of events (with Cal Hi trigger) passing the onboard filters</caption>
 	    <xlabel>Time (s)</xlabel>
 	    <ylabel>Rate (Hz)</ylabel>
@@ -603,7 +599,7 @@
 			<cut><![CDATA[ (condsummary&8)>0 ]]></cut>	
         </CUSTOM>				
         <CUSTOM type="RatePlot" name="rate_PeriodicTrigger" enabled="True">
-	    <title>Periodic triggers rate on-ground</title>
+	    <title>Periodic event rate on-ground</title>
 			<caption>This is the rate of events (with Periodic trigger) passing the onboard filters</caption>
 	    <xlabel>Time (s)</xlabel>
 	    <ylabel>Rate (Hz)</ylabel>
