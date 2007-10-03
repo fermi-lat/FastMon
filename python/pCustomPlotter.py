@@ -328,8 +328,12 @@ class pCustomPlotter:
 
         # Set binning, last bin set by hands
         nBins = int((StopTime - StartTime)/DTime)
-        binning = numpy.arange(StartTime, StopTime, DTime)
-        binning[nBins] = StopTime
+        if nBins == 0:
+            nBins = 1
+            binning = numpy.array([StartTime, StopTime ])
+        else:        
+            binning = numpy.arange(StartTime, StopTime, DTime)
+            binning[nBins] = StopTime
                 
         histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, nBins, binning)
         
@@ -374,8 +378,12 @@ class pCustomPlotter:
             
         # Gen the number of bins and set the histogram binning
         nBins = int((StopTime - StartTime)/DTime)
-        TimeBins = numpy.arange(StartTime, StopTime, DTime)
-        TimeBins[nBins] = StopTime
+        if nBins == 0:
+            nBins =1
+            TimeBins = numpy.array([StartTime, StopTime ])
+        else:        
+            TimeBins = numpy.arange(StartTime, StopTime, DTime)
+            TimeBins[nBins] = StopTime
         histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, nBins, TimeBins)
         
         # Looping on the RootTree
@@ -436,8 +444,13 @@ class pCustomPlotter:
 
         # Get the number of True bins
         nBins = int((StopTime - StartTime)/DTime)
-        TimeBins = numpy.arange(StartTime, StopTime, DTime)
-        TimeBins[nBins] = StopTime
+        if nBins == 0:
+            nBins =1
+            TimeBins = numpy.array([StartTime, StopTime ])
+        else:
+            TimeBins = numpy.arange(StartTime, StopTime, DTime)
+            TimeBins[nBins] = StopTime
+            
         histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, nBins, TimeBins)
         
         #print "GemIDRatePlot - DTime:", DTime, nBins
