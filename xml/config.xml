@@ -498,7 +498,7 @@
     Trending group.
     -->
 
-    <outputList group="Trending" name="TkrTrending" enabled="True">
+    <outputList group="Trending" name="TkrTrending" enabled="False">
 
         <StripChart name="trending_TkrHits" enabled="True" level="lat">
 	    <title>LAT TKR Trending</title>
@@ -530,7 +530,7 @@
 
     </outputList>
 
-    <outputList group="Trending" name="CalTrending" enabled="True">
+    <outputList group="Trending" name="CalTrending" enabled="False">
 
         <StripChart name="trending_CalXHit" enabled="True" level="lat">
 	    <title>CAL hit multiplicity trending</title>
@@ -570,7 +570,7 @@
     <!--
     Rates group.
     -->
-    <outputList group="Rates" name="Trigger Rates">
+    <outputList group="Rates" name="Trigger Rates" enabled="False">
         <CUSTOM type="RatePlot" name="rate_TkrTrigger" enabled="True">
 	    <title>Tkr event rate on-ground</title>
 			<caption>This is the rate of events (with Tkr trigger) passing the onboard filters</caption>
