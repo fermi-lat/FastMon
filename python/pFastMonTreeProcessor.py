@@ -14,9 +14,9 @@ import time
 
 class pFastMonTreeProcessor(pBaseTreeProcessor):
 
-    def __init__(self, xmlParser, inputFilePath):
+    def __init__(self, xmlParser, inputFilePath, outputFilePath = None):
         pBaseTreeProcessor.__init__(self, xmlParser, inputFilePath,\
-                                    FAST_MON_TREE_NAME, None)
+                                    FAST_MON_TREE_NAME, outputFilePath)
 
     def run(self):
         logger.info('Processing the root tree and writing histograms...')

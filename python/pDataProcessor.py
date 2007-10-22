@@ -54,8 +54,8 @@ class pDataProcessor:
     ## @param verbose
     #  Print additional informations.
 
-    def __init__(self, inputFilePath, configFilePath=None, outputDir=None,
-                 outputFileName=None):
+    def __init__(self, inputFilePath, configFilePath=None,
+                 outputFilePath=None, outputProcessedFilePath=None):
 
         ## @var XmlParser
         ## @brief The xml parser object (pXmlParser instance).
@@ -111,20 +111,26 @@ class pDataProcessor:
         ## @brief The data processor stop time.
 
         self.InputFilePath = inputFilePath
-        if outputDir is None:
-            outputDir = os.path.split(self.InputFilePath)[0]
-        fileName = os.path.split(self.InputFilePath)[1]
-        self.OutputDirPath  = os.path.join(outputDir, fileName.split('.')[0])
-        if not os.path.exists(self.OutputDirPath):
-            os.makedirs(self.OutputDirPath)
-        if outputFileName is None:
-            outputFileName   = '%s.root' % fileName.split('.')[0]
-        self.OutputFilePath  = os.path.join(self.OutputDirPath, outputFileName)
+        if outputFilePath is None:
+            logger.info('The output file path was not specified. '+\
+                        'All output files will be saved in the same dir of the input file. ')
+            self.OutputDirPath  = os.path.split(self.InputFilePath)[0]
+            self.OutputFilePath = '%s.root' % self.InputFilePath.split('.')[0]
+        else:
+            outputDirPath  = os.path.split(outputFilePath)[0]
+            self.OutputFilePath = outputFilePath
+
+        if not os.path.exists(outputDirPath):
+            os.makedirs(outputDirPath)
+            logger.debug('Creating new directory to store output files: %s' % outputDirPath )
+
+        self.OutputProcessedFilePath = outputProcessedFilePath
+
         self.XmlParser       = pXmlParser(configFilePath)
         self.TreeMaker       = pFastMonTreeMaker(self)
         self.ErrorHandler    = pErrorHandler()
         self.TreeProcessor   = pFastMonTreeProcessor(self.XmlParser,\
-                               self.TreeMaker.OutputFilePath)
+                               self.TreeMaker.OutputFilePath, self.OutputProcessedFilePath)
         self.ReportGenerator = pFastMonReportGenerator(self)
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
 	self.EvtMetaContextProcessor = pEvtMetaContextProcessor(self.TreeMaker)
@@ -350,14 +356,17 @@ class pDataProcessor:
     
 if __name__ == '__main__':
     from pOptionParser import pOptionParser
-    optparser = pOptionParser('cnodrvLpfV')
-    if optparser.Options.r and not optparser.Options.p:
+    optparser = pOptionParser('cnorvLpfV')
+    
+    if optparser.Options.o == None:
+        optparser.error('the -o option is mandatory. Exiting...')
+    if optparser.Options.r and optparser.Options.p == None:
         optparser.error('cannot use the -r option without -p')
 
     dataProcessor = pDataProcessor(optparser.Argument, optparser.Options.c,\
-                                   optparser.Options.d, optparser.Options.o)
+                                   optparser.Options.o, optparser.Options.p)
     dataProcessor.startProcessing(optparser.Options.n)
-    if optparser.Options.p:
+    if optparser.Options.p != None:
         dataProcessor.TreeProcessor.run()
     if optparser.Options.r:
         dataProcessor.ReportGenerator.run(optparser.Options.v,\

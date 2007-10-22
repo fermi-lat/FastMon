@@ -24,7 +24,8 @@ class pFastMonReportGenerator(pBaseReportGenerator):
 
     def __init__(self, dataProcessor):
         self.DataProcessor = dataProcessor
-        reportDirPath = dataProcessor.OutputFilePath.replace('.root','.report')
+        reportDirPath = dataProcessor.OutputProcessedFilePath.replace('.root','.report')
+        
         pBaseReportGenerator.__init__(self, reportDirPath)
         self.RootFileManager = pRootFileManager()
 
@@ -102,8 +103,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
             self.write('No error(s) found in this run.', pageLabel)
 
 
-        
-
+    
 if __name__ == '__main__':
     sys.exit('Not implemented, yet. Try using pReportGenerator.py')
 
