@@ -4,6 +4,9 @@
 from copy      import copy
 from pGlobals  import *
 
+#To run locally, needs the appropriate setup
+from ISOC.ProductUtils import ProductSpan
+
 ## @brief Class to handle the evt meta context event.
 #
 #  The meta event contains some usefull information about the context
@@ -33,10 +36,10 @@ class pEvtMetaContextProcessor:
         ## @var TimeHackHasJustRolledOver
         ## @brief Flag set after a rollover.
 
-        self.TreeMaker                 = treeMaker
-	self.EvtReader		       = None
-	self.TimeHackRollOverNum       = 0
-	self.TimeHackHasJustRolledOver = False
+        self.TreeMaker    = treeMaker
+	self.EvtReader	  = None
+	self.__localCounter = 0
+
 
     def getVariable(self, varName):
         return self.TreeMaker.getVariable('%s%s' % (FAST_MON_PREFIX, varName))
@@ -50,29 +53,35 @@ class pEvtMetaContextProcessor:
     def setEvtReader(self, evtReader):
 	self.EvtReader = evtReader
 
-    ## @brief Calculate the timestamp.
+    ## @brief Calculate the absolute timestamp.
     ## @param self
     #  The class instance.
     ## @param context
     #  The event context information.
+    ## @brief The absolute timestamp is calculated here the same way as it is in the DfiDump.py script.
+    #  Absolute time is contained in a datetime.datetime object
+    #  Need to understand how to create a ROOT Tree branch with the absolute time stamp.
+    def calculateTimeStamp(self, meta, context):
+	self.__localCounter += 1
+        dtics = context.current.timeHack.tics - context.previous.timeHack.tics
+        dhacks = ( context.current.timeHack.hacks - context.previous.timeHack.hacks )
+        dtics = ( dtics + (dhacks-1) * 0x2000000 ) & 0x01FFFFFF
+        dsecs = context.current.timeSecs - context.previous.timeSecs
+        if dsecs <= 0: dsecs = 1
+        freq  = float(dtics) / float(dsecs)
+        elapsed = ( meta.timeTics - context.current.timeHack.tics ) & 0x01FFFFFF
+        abstics = long(context.current.timeSecs) * long(20000000) + long(elapsed)
+        elapsed = int( (float( elapsed ) / freq * 1000000.0) + 0.5 )
+        metaPPS = (meta.timeHack.hacks << 25) | meta.timeHack.tics
+        currPPS = (context.current.timeHack.hacks << 25) | context.current.timeHack.tics
+        prevPPS = (context.previous.timeHack.hacks << 25) | context.previous.timeHack.tics
+        secs    = context.current.timeSecs 
+        #tevt is a datetime.datetime object containing the absolute timestamp
+	tevt = ProductSpan.utcfromtimestamp( secs, elapsed )
+	if self.__localCounter%100 == 0:
+	    print 'seconds\t%d\telapsed %d\t tevt %s' % (secs, elapsed, tevt)
+        return secs + elapsed/1000000.
 
-    def calculateTimeStamp(self, meta, context):	
-	timeTics = meta.timeTics
-	timeHack_tics = meta.timeHack.tics
-	timeHack_hacks = meta.timeHack.hacks	
-	clockTicksEvt1PPS = timeTics - timeHack_tics	
-	if(clockTicksEvt1PPS <0):
-	    clockTicksEvt1PPS += CLOCK_ROLLOVER
-	hPrevious = context.previous.timeHack.hacks
-	hCurrent  = context.current.timeHack.hacks
-	if (hCurrent - hPrevious < 0) and not self.TimeHackHasJustRolledOver :
-	    self.TimeHackRollOverNum += 1
-	    self.TimeHackHasJustRolledOver = True
-	if hCurrent - hPrevious > 0:
-	   self.TimeHackHasJustRolledOver = False
-	timestamp = 128*self.TimeHackRollOverNum + timeHack_hacks +\
-                    clockTicksEvt1PPS*CLOCK_TIC
-	return timestamp
 
     ## @brief Process the lsf meta event.
     ## @param self
