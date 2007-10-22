@@ -360,6 +360,9 @@ if __name__ == '__main__':
     
     if optparser.Options.o == None:
         optparser.error('the -o option is mandatory. Exiting...')
+    if optparser.Options.p == optparser.Options.o:
+        optparser.error("The output file and the processed (histogram) file"+\
+                        " can't be the same file. Exiting...")
     if optparser.Options.r and optparser.Options.p == None:
         optparser.error('cannot use the -r option without -p')
 
