@@ -78,8 +78,8 @@ class pEvtMetaContextProcessor:
         secs    = context.current.timeSecs 
         #tevt is a datetime.datetime object containing the absolute timestamp
 	tevt = ProductSpan.utcfromtimestamp( secs, elapsed )
-	if self.__localCounter%100 == 0:
-	    print 'seconds\t%d\telapsed %d\t tevt %s' % (secs, elapsed, tevt)
+	#if self.__localCounter%100 == 0:
+	#    print 'seconds\t%d\telapsed %d\t tevt %s' % (secs, elapsed, tevt)
         return secs + elapsed/1000000.
 
 
