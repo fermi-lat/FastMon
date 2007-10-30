@@ -226,12 +226,6 @@ class pDataProcessor:
                 break
             if evt.infotype() == LSE_Info.LPA:
                 meta = evt.pinfo()
-            elif evt.infotype() == LSE_Info.ACD:
-                meta = evt.ainfo()
-            elif evt.infotype() == LSE_Info.CAL:
-                meta = evt.cinfo()
-            elif evt.infotype() == LSE_Info.TKR:
-                meta = evt.tinfo()
             elif evt.infotype() == LSE_Info.LCI_ACD:
             	meta = evt.ainfo()
             elif evt.infotype() == LSE_Info.LCI_CAL:
