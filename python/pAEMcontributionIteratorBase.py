@@ -40,7 +40,8 @@ class pAEMcontributionIteratorBase(LDF.AEMcontributionIterator):
     #  of the derived iterator (the one which is actually run).
     
     def header(self, cable, header):
-        pass
+        if header.parityError():
+            self.ErrorHandler.fill('ACD_HEADER_PARITY_ERROR', [cable])
     
     ## @brief Function included by default by the corresponding method
     #  of the derived iterator (the one which is actually run).
