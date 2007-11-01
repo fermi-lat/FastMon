@@ -74,7 +74,28 @@ class pErrorHandler:
                 sys.exit()
         logger.info('There are no more errors.\n')
 
-        
+    def writeXmlOutput(self, filename):
+        try:
+            from pXmlWriter import pXmlWriter
+        except:
+            logger.error("Can not find pXmlWriter module. Exit.")
+            return None
+        xmlWriter  = pXmlWriter(filename)
+        xmlWriter.openTag('errorContribution')
+        xmlWriter.indent()
+        xmlWriter.writeComment('Summary by error code')
+        xmlWriter.openTag('errorSummary')
+        xmlWriter.indent()
+        for (code, number) in self.ErrorCountsDict.items():
+            xmlWriter.writeTag('errorType', {'code':code, 'quantity': number })
+        # write stuff here
+        xmlWriter.backup()
+        xmlWriter.closeTag('errorSummary')
+        xmlWriter.backup()
+        xmlWriter.closeTag('errorContribution')
+        xmlWriter.closeFile()
+
+
         
 
 if __name__ == '__main__':

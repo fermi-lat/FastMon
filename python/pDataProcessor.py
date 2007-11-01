@@ -320,6 +320,8 @@ class pDataProcessor:
                     (self.NumEvents, elapsedTime, averageRate))
         self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
                                                            '.errors.pickle'))
+        self.ErrorHandler.writeXmlOutput(self.OutputFilePath.replace('.root',\
+                                                           '.errors.xml'))
         #self.writeXmlSummary(self.OutputFilePath.replace('.root', '.summary.xml'))
 
     ## @brief Write an xml summary file with run statistics
