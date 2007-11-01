@@ -47,7 +47,8 @@ class pAEMcontributionIteratorBase(LDF.AEMcontributionIterator):
     #  of the derived iterator (the one which is actually run).
     
     def pha(self, cable, channel, pha):
-        pass
+        if pha.parityError():
+            self.ErrorHandler.fill('ACD_PHA_PARITY_ERROR', [cable, channel])
 
     ## @brief Fill acd_tile_count tree branch.
     ## @param self
