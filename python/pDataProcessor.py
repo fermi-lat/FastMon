@@ -55,7 +55,8 @@ class pDataProcessor:
     #  Print additional informations.
 
     def __init__(self, inputFilePath, configFilePath=None,
-                 outputFilePath=None, outputProcessedFilePath=None):
+                 outputFilePath=None, outputProcessedFilePath=None,
+                 outputErrorFilePath=None):
 
         ## @var XmlParser
         ## @brief The xml parser object (pXmlParser instance).
@@ -125,6 +126,10 @@ class pDataProcessor:
             logger.debug('Creating new directory to store output files: %s' % outputDirPath )
 
         self.OutputProcessedFilePath = outputProcessedFilePath
+
+        self.OutputErrorFilePath = outputErrorFilePath
+        if self.OutputErrorFilePath is None:
+            self.OutputErrorFilePath = self.OutputFilePath.replace('.root', '.errors.xml')
 
         self.XmlParser       = pXmlParser(configFilePath)
         self.TreeMaker       = pFastMonTreeMaker(self)
@@ -320,8 +325,7 @@ class pDataProcessor:
                     (self.NumEvents, elapsedTime, averageRate))
         self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
                                                            '.errors.pickle'))
-        self.ErrorHandler.writeXmlOutput(self.OutputFilePath.replace('.root',\
-                                                           '.errors.xml'))
+        self.ErrorHandler.writeXmlOutput(self.OutputErrorFilePath)
         #self.writeXmlSummary(self.OutputFilePath.replace('.root', '.summary.xml'))
 
     ## @brief Write an xml summary file with run statistics
@@ -352,7 +356,7 @@ class pDataProcessor:
     
 if __name__ == '__main__':
     from pOptionParser import pOptionParser
-    optparser = pOptionParser('cnorvLpfV')
+    optparser = pOptionParser('cnorvLpe', 1, 1, False)
     
     if optparser.Options.o == None:
         optparser.error('the -o option is mandatory. Exiting...')
@@ -363,7 +367,8 @@ if __name__ == '__main__':
         optparser.error('cannot use the -r option without -p')
 
     dataProcessor = pDataProcessor(optparser.Argument, optparser.Options.c,\
-                                   optparser.Options.o, optparser.Options.p)
+                                   optparser.Options.o, optparser.Options.p,\
+                                   optparser.Options.e)
     dataProcessor.startProcessing(optparser.Options.n)
     if optparser.Options.p != None:
         dataProcessor.TreeProcessor.run()
