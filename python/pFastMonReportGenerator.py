@@ -33,7 +33,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
     ## @param self
     #  The class instance.
 
-    def run(self, verbose = False, compileLaTeX = True):
+    def run(self, verbose = False):
         logger.info('Writing doxygen report files...')
         startTime = time.time()
         rootFilePath = self.DataProcessor.TreeProcessor.OutputFilePath
@@ -48,7 +48,7 @@ class pFastMonReportGenerator(pBaseReportGenerator):
         self.closeReport()
         self.RootFileManager.closeFile()
         logger.info('Done in %.2f s.\n' % (time.time() - startTime))
-        self.compileReport(verbose, compileLaTeX)
+        self.compileReport(verbose)
 
     def fillMainPage(self):
         self.addSection('main_summary', 'Summary')
