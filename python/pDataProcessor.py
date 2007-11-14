@@ -373,7 +373,6 @@ if __name__ == '__main__':
     if optparser.Options.p != None:
         dataProcessor.TreeProcessor.run()
     if optparser.Options.r:
-        dataProcessor.ReportGenerator.run(optparser.Options.v,\
-                                          optparser.Options.L)
+        dataProcessor.ReportGenerator.run(optparser.Options.v)
         
 
