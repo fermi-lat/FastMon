@@ -16,9 +16,10 @@ MAX_DETAILED_LIST_LENGTH  = 100
 class pErrorHandler:
 
     def __init__(self, pickleFilePath=None):
-        self.EventNumber     = None
+        #self.EventNumber     = None
         self.ErrorCountsDict = {}
         self.ErrorEventsDict = {}
+        self.ErrorsBuffer = []
         if pickleFilePath is not None:
             self.load(pickleFilePath)
             
@@ -36,21 +37,37 @@ class pErrorHandler:
                      file(outputFilePath, 'w'))
         logger.info('Done in %.4f s.\n' % (time.time() - startTime))
 
-    def setEventNumber(self, eventNumber):
-        self.EventNumber = eventNumber
+    #def setEventNumber(self, eventNumber):
+    #    self.EventNumber = eventNumber
 
     def fill(self, errorCode, parameters=[]):
         error = pError(errorCode, parameters)
+        # fill the summary by error code
         try:
             self.ErrorCountsDict[errorCode] += 1
         except KeyError:
             self.ErrorCountsDict[errorCode] = 1
-        try:
-            self.ErrorEventsDict[self.EventNumber].addError(error)
-        except KeyError:
-            self.ErrorEventsDict[self.EventNumber] =\
-                                      pErrorEvent(self.EventNumber)
-            self.ErrorEventsDict[self.EventNumber].addError(error)
+        # fill a buffer of errors for this event.
+        self.ErrorsBuffer.append(error)
+        
+        ## try:
+##             self.ErrorEventsDict[self.EventNumber].addError(error)
+##         except KeyError:
+##             self.ErrorEventsDict[self.EventNumber] =\
+##                                       pErrorEvent(self.EventNumber)
+##             self.ErrorEventsDict[self.EventNumber].addError(error)
+
+    def flushErrorsBuffer(self, eventNumber):
+        # fill the ErrorEventsDict, in case the event has errors,
+        # using the correct event ID
+        # to be called at the end of event processing
+        if self.ErrorsBuffer != []:
+            self.ErrorEventsDict[eventNumber] =\
+                                 pErrorEvent(eventNumber)
+            for error in self.ErrorsBuffer:
+                self.ErrorEventsDict[eventNumber].addError(error)
+
+            self.ErrorsBuffer = []
 
     def getNumErrors(self):
         return sum(self.ErrorCountsDict.values())

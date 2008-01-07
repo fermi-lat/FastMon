@@ -293,11 +293,12 @@ class pDataProcessor:
 
     def __preEvent(self):
         self.TreeMaker.resetVariables()
-        self.ErrorHandler.setEventNumber(self.NumEvents)
-
-    def __postEvent(self):
 	self.TreeMaker.VariablesDictionary['%sprocessor_event_number' % \
                                            FAST_MON_PREFIX][0] = self.NumEvents
+
+    def __postEvent(self):
+        self.ErrorHandler.flushErrorsBuffer(\
+            self.TreeMaker.getVariable('meta_context_gem_scalers_sequence')[0])
         self.TreeMaker.fillTree()
 	self.NumEvents += 1
 	if not self.NumEvents % 100:

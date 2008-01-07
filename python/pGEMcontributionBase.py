@@ -72,7 +72,7 @@ class pGEMcontributionBase:
 
     def DiscardedDelta(self):
         tmpDisc = copy(self.discarded())
-        if self.ErrorHandler.EventNumber == 0:
+        if self.TreeMaker.getVariable('processor_event_number')[0] == 0:
             self.TreeMaker.getVariable('DiscardedDelta')[0] = 0
         else:
             if self.TreeMaker.getVariable('DiscardedDelta')[1] > tmpDisc:
@@ -101,7 +101,7 @@ class pGEMcontributionBase:
 	
     def DeadZoneDelta(self):
         tmpDZone = copy(self.deadZone())
-        if self.ErrorHandler.EventNumber == 0:
+        if self.TreeMaker.getVariable('processor_event_number')[0] == 0:
             self.TreeMaker.getVariable('DeadZoneDelta')[0] = 0
         else:
             if self.TreeMaker.getVariable('DeadZoneDelta')[1] > tmpDZone:
