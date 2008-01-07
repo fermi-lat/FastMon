@@ -55,6 +55,23 @@ class pError:
         self.ErrorCode   = errorCode
         self.Details     = details
 
+    ## @brief Return a dict formatted for writing the xml output
+    #  for the error summary event by event.
+    def getXmlDict(self):
+        XmlDict = {}
+        XmlDict['code'] = self.ErrorCode
+        for i in range(len(self.Details)):
+            try:
+                label = DETAIL_LABELS[self.ErrorCode][i]
+            except KeyError:
+                label = 'Parameter %d' % i
+            XmlDict[label] = self.Details[i]
+
+        print "DEBUG*************"
+        print XmlDict
+        
+        return XmlDict
+        
     ## @brief Return the error details formatted in such a way that they can be
     #  printed on the screen or put into the report.
     ## @param self

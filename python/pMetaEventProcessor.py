@@ -34,7 +34,7 @@ class pMetaEventProcessor:
 	self.TimeHackHasJustRolledOver = False
 
     def getVariable(self, varName):
-        return self.TreeMaker.getVariable('%s%s' % (FAST_MON_PREFIX, varName))
+        return self.TreeMaker.getVariable(varName)
 
     ## @brief Calculate the timestamp.
     ## @param self

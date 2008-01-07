@@ -293,8 +293,7 @@ class pDataProcessor:
 
     def __preEvent(self):
         self.TreeMaker.resetVariables()
-	self.TreeMaker.VariablesDictionary['%sprocessor_event_number' % \
-                                           FAST_MON_PREFIX][0] = self.NumEvents
+	self.TreeMaker.VariablesDictionary['processor_event_number'][0] = self.NumEvents
 
     def __postEvent(self):
         self.ErrorHandler.flushErrorsBuffer(\

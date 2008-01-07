@@ -16,7 +16,6 @@ MAX_DETAILED_LIST_LENGTH  = 100
 class pErrorHandler:
 
     def __init__(self, pickleFilePath=None):
-        #self.EventNumber     = None
         self.ErrorCountsDict = {}
         self.ErrorEventsDict = {}
         self.ErrorsBuffer = []
@@ -37,8 +36,6 @@ class pErrorHandler:
                      file(outputFilePath, 'w'))
         logger.info('Done in %.4f s.\n' % (time.time() - startTime))
 
-    #def setEventNumber(self, eventNumber):
-    #    self.EventNumber = eventNumber
 
     def fill(self, errorCode, parameters=[]):
         error = pError(errorCode, parameters)
@@ -50,12 +47,6 @@ class pErrorHandler:
         # fill a buffer of errors for this event.
         self.ErrorsBuffer.append(error)
         
-        ## try:
-##             self.ErrorEventsDict[self.EventNumber].addError(error)
-##         except KeyError:
-##             self.ErrorEventsDict[self.EventNumber] =\
-##                                       pErrorEvent(self.EventNumber)
-##             self.ErrorEventsDict[self.EventNumber].addError(error)
 
     def flushErrorsBuffer(self, eventNumber):
         # fill the ErrorEventsDict, in case the event has errors,
@@ -100,16 +91,30 @@ class pErrorHandler:
         xmlWriter  = pXmlWriter(filename)
         xmlWriter.openTag('errorContribution')
         xmlWriter.indent()
+        
         xmlWriter.writeComment('Summary by error code')
         xmlWriter.openTag('errorSummary')
         xmlWriter.indent()
         for (code, number) in self.ErrorCountsDict.items():
             xmlWriter.writeTag('errorType', {'code':code, 'quantity': number })
-        # write stuff here
         xmlWriter.backup()
         xmlWriter.closeTag('errorSummary')
+        
+        xmlWriter.writeComment('Summary by event number')
+        xmlWriter.openTag('eventSummary')
+        xmlWriter.indent()
+        for (EvtId, errorEvent) in self.ErrorEventsDict.items():
+            xmlWriter.openTag('errorEvent', {'eventNumber':EvtId})
+            xmlWriter.indent()
+            
+            for error in errorEvent.ErrorsList:
+                xmlWriter.writeTag('error', error.getXmlDict())
+            xmlWriter.backup()
+            xmlWriter.closeTag('errorEvent')
+            xmlWriter.backup()
+        xmlWriter.closeTag('eventSummary')
+        
         xmlWriter.backup()
-        xmlWriter.closeTag('errorContribution')
         xmlWriter.closeFile()
 
 

@@ -42,7 +42,7 @@ class pEvtMetaContextProcessor:
 
 
     def getVariable(self, varName):
-        return self.TreeMaker.getVariable('%s%s' % (FAST_MON_PREFIX, varName))
+        return self.TreeMaker.getVariable(varName)
 
     ## @brief Set the EvtReader variable to have access to high level quantities
     ## @param self
