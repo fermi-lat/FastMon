@@ -356,7 +356,7 @@ class pDataProcessor:
     
 if __name__ == '__main__':
     from pOptionParser import pOptionParser
-    optparser = pOptionParser('cnorvpe', 1, 1, False)
+    optparser = pOptionParser('cnorvVpe', 1, 1, False)
     
     if optparser.Options.o == None:
         optparser.error('the -o option is mandatory. Exiting...')
@@ -374,5 +374,7 @@ if __name__ == '__main__':
         dataProcessor.TreeProcessor.run()
     if optparser.Options.r:
         dataProcessor.ReportGenerator.run(optparser.Options.v)
+    if optparser.Options.V:
+            dataProcessor.ReportGenerator.viewReport()
         
 
