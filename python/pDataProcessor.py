@@ -113,8 +113,8 @@ class pDataProcessor:
 
         self.InputFilePath = inputFilePath
         if outputFilePath is None:
-            logger.info('The output file path was not specified. '+\
-                        'All output files will be saved in the same dir of the input file. ')
+            logger.info('Output file path not specified.')
+            logger.info('All output files will be saved in the input folder.')
             self.OutputDirPath  = os.path.split(self.InputFilePath)[0]
             self.OutputFilePath = '%s.root' % self.InputFilePath.split('.')[0]
         else:
@@ -122,16 +122,19 @@ class pDataProcessor:
             self.OutputFilePath = outputFilePath
         if not os.path.exists(outputDirPath):
             os.makedirs(outputDirPath)
-            logger.debug('Creating new directory to store output files: %s' % outputDirPath )
+            logger.debug('Creating new directory to store output files: %s' %\
+                         outputDirPath )
         self.OutputProcessedFilePath = outputProcessedFilePath
         self.OutputErrorFilePath = outputErrorFilePath
         if self.OutputErrorFilePath is None:
-            self.OutputErrorFilePath = self.OutputFilePath.replace('.root', '.errors.xml')
+            self.OutputErrorFilePath = self.OutputFilePath.replace('.root',\
+                                       '.errors.xml')
         self.XmlParser       = pXmlParser(configFilePath)
         self.TreeMaker       = pFastMonTreeMaker(self)
         self.ErrorHandler    = pErrorHandler()
         self.TreeProcessor   = pFastMonTreeProcessor(self.XmlParser,\
-                               self.TreeMaker.OutputFilePath, self.OutputProcessedFilePath)
+                               self.TreeMaker.OutputFilePath,\
+                               self.OutputProcessedFilePath)
         if self.OutputProcessedFilePath is not None:
             self.ReportGenerator = pFastMonReportGenerator(self)
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
@@ -290,7 +293,8 @@ class pDataProcessor:
 
     def __preEvent(self):
         self.TreeMaker.resetVariables()
-	self.TreeMaker.VariablesDictionary['processor_event_number'][0] = self.NumEvents
+	self.TreeMaker.VariablesDictionary['processor_event_number'][0] =\
+                       self.NumEvents
 
     def __postEvent(self):
         self.ErrorHandler.flushErrorsBuffer(\
@@ -323,7 +327,7 @@ class pDataProcessor:
         self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
                                                            '.errors.pickle'))
         self.ErrorHandler.writeXmlOutput(self.OutputErrorFilePath)
-        #self.writeXmlSummary(self.OutputFilePath.replace('.root', '.summary.xml'))
+
 
     ## @brief Write an xml summary file with run statistics
     #
