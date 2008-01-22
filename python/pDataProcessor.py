@@ -120,23 +120,20 @@ class pDataProcessor:
         else:
             outputDirPath  = os.path.split(outputFilePath)[0]
             self.OutputFilePath = outputFilePath
-
         if not os.path.exists(outputDirPath):
             os.makedirs(outputDirPath)
             logger.debug('Creating new directory to store output files: %s' % outputDirPath )
-
         self.OutputProcessedFilePath = outputProcessedFilePath
-
         self.OutputErrorFilePath = outputErrorFilePath
         if self.OutputErrorFilePath is None:
             self.OutputErrorFilePath = self.OutputFilePath.replace('.root', '.errors.xml')
-
         self.XmlParser       = pXmlParser(configFilePath)
         self.TreeMaker       = pFastMonTreeMaker(self)
         self.ErrorHandler    = pErrorHandler()
         self.TreeProcessor   = pFastMonTreeProcessor(self.XmlParser,\
                                self.TreeMaker.OutputFilePath, self.OutputProcessedFilePath)
-        self.ReportGenerator = pFastMonReportGenerator(self)
+        if self.OutputProcessedFilePath is not None:
+            self.ReportGenerator = pFastMonReportGenerator(self)
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
 	self.EvtMetaContextProcessor = pEvtMetaContextProcessor(self.TreeMaker)
         self.__updateContributionIterators()
