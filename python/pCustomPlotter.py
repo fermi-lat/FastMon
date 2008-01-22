@@ -15,10 +15,6 @@ from pSafeROOT import ROOT
 import random
 from math import sqrt
 
-
-
-
-
 class pCustomPlotter:
 
     def __init__(self, rootFilePath, rootTree):
@@ -353,10 +349,11 @@ class pCustomPlotter:
         self.__stopTimer(plotRep)
         return histogram
     
-    ## @brief  Return a ROOT TH1F object with total rate calculated using GEM scaler
+    ## @brief  Return a ROOT TH1F object with total rate calculated using GEM
+    #  scaler
     #
-    #  This function has a fix for MC production: the time interval is set to 1 second
-    #  and the bins with rate > 100 kH are artificially removed.
+    #  This function has a fix for MC production: the time interval is set to
+    #  1 second and the bins with rate > 100 kH are artificially removed.
     ## @param plotRep
     #  The custom plot representation from the pXmlParser object.    
 
@@ -405,25 +402,25 @@ class pCustomPlotter:
                 # To temporary fix this feature we do not plots rates > 100kHz
                 # it works only with DTime <2 sec.
                 if Rate<100:
-                    histogram.Fill((TimeBins[TimeBinId+1]+TimeBins[TimeBinId])/2., Rate)
-                          
+                    histogram.Fill((TimeBins[TimeBinId+1]+TimeBins[TimeBinId])/2., Rate)         
                 TimeBinId +=1
                 PrevGemId = CurrGemId
                  
         self.__stopTimer(plotRep)
         return histogram
 
-    ## @brief  Return a ROOT TH1F object with total rate calculated using GEM scaler
+    ## @brief  Return a ROOT TH1F object with total rate calculated using GEM
+    #  scaler
     #
-    #  This function has is similar to GemIDOneSecRatePlot: it calculate the rate every 1 second,
-    #  artificially remove rates >100 kHz (a fix for MC production), and fill an histogram
-    #  with arbitrary time bin width (that can't be lower that 10 seconds anyway)
+    #  This function has is similar to GemIDOneSecRatePlot: it calculates the
+    #  rate every 1 second, artificially remove rates >100 kHz (a fix for MC
+    #  production), and fill an histogram with arbitrary time bin width (that
+    #  can't be lower that 10 seconds anyway)
     ## @param plotRep
     #  The custom plot representation from the pXmlParser object. 
 
     def GemIDRatePlot(self, plotRep):
         self.__startTimer()
-        
         # Get Start, Stop, and Delta time
         nEvents = self.RootTree.GetEntriesFast()
         self.RootTree.GetEntry(0)
@@ -438,10 +435,8 @@ class pCustomPlotter:
                or float(plotRep.getTagValue('dtime')) <10:
             DTime = 10.0
             logger.warning("The time interval must be at least 10 second wide for GemIDRatePlot")
-            
         else:
              DTime = float(plotRep.getTagValue('dtime'))
-
         # Get the number of True bins
         nBins = int((StopTime - StartTime)/DTime)
         if nBins == 0:
@@ -450,15 +445,12 @@ class pCustomPlotter:
         else:
             TimeBins = numpy.arange(StartTime, StopTime, DTime)
             TimeBins[nBins] = StopTime
-            
         histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, nBins, TimeBins)
-        
         #print "GemIDRatePlot - DTime:", DTime, nBins
         # Looping on the RootTree
         self.RootTree.GetEntry(0)
         PrevGemId = self.RootTree.meta_context_gem_scalers_sequence
         PrevTime  = self.RootTree.event_timestamp
-
         AverageRate = 0
         AverageRateCounts = 0
         TimeBinId = 0
@@ -469,10 +461,8 @@ class pCustomPlotter:
             if (EvtTime - PrevTime) >=1:
                 CurrGemId = self.RootTree.meta_context_gem_scalers_sequence
                 Rate      = (CurrGemId - PrevGemId)/(1000.)
-                                
                 PrevGemId = CurrGemId
                 PrevTime  = EvtTime
-
                 # There is a bug in the MC production
                 # that makes a jump of ~ 128k gem counts
                 # every 2 seconds (corresponding to a MC job)
@@ -487,8 +477,8 @@ class pCustomPlotter:
                 
                 histogram.SetBinContent(TimeBinId+1,AverageRate )
                 # Do not set bin error for now.
-                #histogram.SetBinError(TimeBinId+1,  AverageRate/sqrt(AverageRateCounts) )
-                
+                #histogram.SetBinError(TimeBinId+1,
+                #AverageRate/sqrt(AverageRateCounts) )
                 AverageRate       = 0
                 AverageRateCounts = 0         
                 TimeBinId        +=1
