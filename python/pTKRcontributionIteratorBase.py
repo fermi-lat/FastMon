@@ -120,7 +120,7 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     
     def TkrHitsGTFE__strip__(self, tower, layerEnd, hit):
         self.TreeMaker.getVariable("TkrHitsGTFE")\
-                        [self.TemId][layerEnd/2][hit%24] += 1
+                        [self.TemId][layerEnd/2][hit/64] += 1
 
     ## @brief Function filling the ToT_con0_TowerPlane variable in the
     #  TOT() iterator method.
