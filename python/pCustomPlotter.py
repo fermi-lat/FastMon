@@ -37,10 +37,9 @@ class pCustomPlotter:
     def __startTimer(self):
         self.StartTime = time.time()
 
-    def __stopTimer(self, plotRep, tower = None):
+    def __stopTimer(self, plotRep):
         logger.debug('%s done in %.2f s.' %\
-                     (plotRep.getExpandedName(tower), time.time() -\
-                      self.StartTime))
+                     (plotRep.getName(), time.time() - self.StartTime))
 
     def __openTmpRootFile(self):
         self.TmpRootFile = ROOT.TFile(self.TmpFilePath, 'RECREATE')
@@ -91,7 +90,7 @@ class pCustomPlotter:
                             histogram.Fill(tower, layer)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram
+        return [histogram]
 
     ## @brief Create an acd tile map.
     #
@@ -115,7 +114,7 @@ class pCustomPlotter:
                     histogram.Fill(tile)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram
+        return [histogram]
     
     ## @brief Method mapping the content of a gem 16 bit register to the
     #  corresponding tower and returning a TH1F object.
@@ -136,7 +135,7 @@ class pCustomPlotter:
                     histogram.Fill(tower)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram
+        return [histogram]
 
     ## @brief Return a ROOT TH1F object: the distribution of the number of
     #  planes hit in a tower.
@@ -149,41 +148,45 @@ class pCustomPlotter:
     ## @param tower
     #  The Tracker tower under analysis
 
-    def TkrPlanesHit(self, plotRep, tower):
+    def TkrPlanesHit(self, plotRep):
         self.__startTimer()
-        histogram = ROOT.TH1F(plotRep.getExpandedName(tower),\
-                              plotRep.getExpandedTitle(tower),
-                              38, -0.5, 38 - 0.5)
+        histograms = []
+        for tower in range(16):
+            histograms.append(ROOT.TH1F(plotRep.getExpandedName(tower),\
+                                        plotRep.getExpandedTitle(tower),
+                                        38, -0.5, 38 - 0.5))
         self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
         tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
+        allHits = numpy.ones((36), 'int')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
-            numHitLayers = 0
-            for layer in range(36):
-                if tkrHits[tower][layer]:
-                    numHitLayers += 1
-            histogram.Fill(numHitLayers)
-        self.__stopTimer(plotRep, tower)
+            for tower in range(16):
+                histograms[tower].Fill((tkrHits[tower] == allHits).sum())
+        self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram
+        return histograms
 
-    def TkrHitsCounter_PlaneGTFE(self, plotRep, tower):
+    def TkrHitsCounter_PlaneGTFE(self, plotRep):
         self.__startTimer()
-        histogram = ROOT.TH2F(plotRep.getExpandedName(tower),\
-                              plotRep.getExpandedTitle(tower),
-                              24, -0.5, 23.5, 36, -0.5, 35.5)
+        histograms = []
+        for tower in range(16):
+            histograms.append(ROOT.TH2F(plotRep.getExpandedName(tower),\
+                                        plotRep.getExpandedTitle(tower),
+                                        24, -0.5, 23.5, 36, -0.5, 35.5))
         self.__createTmpRootTree(['TkrHitsGTFE'], plotRep.Cut)
         tkrHits = self.__createNumpyArray('TkrHitsGTFE', (16, 36, 24), 'int')
-        tkrIntegralHits = numpy.zeros((36, 24), 'int')
+        tkrIntegralHits = numpy.zeros((16, 36, 24), 'int')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
-            tkrIntegralHits += tkrHits[tower]
-        for layer in range(36):
-            for gtfe in range(24):
-                histogram.Fill(gtfe, layer, tkrIntegralHits[layer][gtfe])
-        self.__stopTimer(plotRep, tower)
+            tkrIntegralHits += tkrHits
+        for tower in range(16):
+            for layer in range(36):
+                for gtfe in range(24):
+                    histograms[tower].Fill(gtfe, layer,\
+                                           tkrIntegralHits[tower][layer][gtfe])
+        self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram
+        return histograms
         
 
     ## @brief 
@@ -205,7 +208,7 @@ class pCustomPlotter:
                     histogram.Fill(board)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram      
+        return [histogram]      
 
     ## @brief Return a summed hit map of the calorimeter.
     #
@@ -239,7 +242,7 @@ class pCustomPlotter:
                         histogram.Fill(tower,layer,calHits[tower][layer].sum())
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram
+        return [histogram]
     
     ## @brief Return a map of the number of time there was no hit in a layer.
     #
@@ -277,7 +280,7 @@ class pCustomPlotter:
                             histogram.Fill(tower, layer)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram 
+        return [histogram] 
 
     ## @brief  Return a ROOT TH2F object: Tower number vs Plane
     # 
@@ -299,7 +302,7 @@ class pCustomPlotter:
                         histogram.Fill(tower, layer)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram
+        return [histogram]
 
     ## @brief  Return a ROOT TH2F object: Tower number vs Plane
     # 
@@ -321,7 +324,7 @@ class pCustomPlotter:
                         histogram.Fill(tower, layer, tkrHits[tower][layer])
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return histogram
+        return [histogram]
 
     ## @brief  Return a ROOT TH1F object with rates
     # 
@@ -369,7 +372,7 @@ class pCustomPlotter:
         histogram.SetBinError(nBins, LastBinError/LastBinWidth )
         
         self.__stopTimer(plotRep)
-        return histogram
+        return [histogram]
     
     ## @brief  Return a ROOT TH1F object with total rate calculated using GEM
     #  scaler
@@ -429,7 +432,7 @@ class pCustomPlotter:
                 PrevGemId = CurrGemId
                  
         self.__stopTimer(plotRep)
-        return histogram
+        return [histogram]
 
     ## @brief  Return a ROOT TH1F object with total rate calculated using GEM
     #  scaler
@@ -507,6 +510,6 @@ class pCustomPlotter:
                 
 
         self.__stopTimer(plotRep)
-        return histogram
+        return [histogram]
 
 

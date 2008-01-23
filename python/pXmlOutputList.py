@@ -525,24 +525,35 @@ class pCUSTOMXmlRep(pPlotXmlRep):
     ## @param rootTree
     #  The ROOT tree.
 
-    def getRootObject(self, rootTree, tower=None, layer=None):
-        if tower == None:
-            try:
-                histogram = eval('self.Plotter.%s(self)' % self.Type)
-            except AttributeError:
-                logger.warn('Using old style custom plot implementation.')
-                histogram = eval('pCUSTOMplots.%s(rootTree, self)' % self.Type)
-        else:
-            try:
-                histogram = eval('self.Plotter.%s(self, %d)' %\
-                                 (self.Type, tower))
-            except:
-                logger.warn('Using old style custom plot implementation.')
-                histogram = eval('pCUSTOMplots.%s(rootTree, self, %d)' %\
-                                 (self.Type, tower))
-        histogram.GetXaxis().SetTitle(self.XLabel)
-        histogram.GetYaxis().SetTitle(self.YLabel)
-        return histogram
+    def getRootObjects(self, rootTree, tower=None, layer=None):
+        try:
+            histograms = eval('self.Plotter.%s(self)' % self.Type)
+        except AttributeError:
+            logger.error('Type %s not defined in pCustomPlotter.' % self.Type)
+            logger.info('Returning an empty histogram list.')
+            return []
+        for histogram in histograms:
+            histogram.GetXaxis().SetTitle(self.XLabel)
+            histogram.GetYaxis().SetTitle(self.YLabel)
+        return histograms
+
+    ## @brief Overloaded method.
+    # 
+    #  The intention would be to get rid of the "level" concept for
+    #  the custom plots. In this case the code has to be written from
+    #  scratch anyway so that it is probably worth to code the loop over
+    #  towers, layers, front end etc. explicitely. Following this approach we
+    #  need to modify the pCustomPlotter methods in order to return lists
+    #  of histograms rather than single histograms; this method takes care of
+    #  appending the list properly to the global dictionary of ROOT objects.
+    #
+    #  Note that the level must be defined in the xml file anyway, in order
+    #  for the output lists to be properly populated.
+
+    def createRootObjects(self, rootTree):
+        objects = self.getRootObjects(rootTree)
+        for object in objects:
+            self.RootObjects[object.GetName()] = object
 
 
 ## @brief Class describing an output list for the data monitor (i.e. a
