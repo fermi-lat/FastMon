@@ -145,7 +145,7 @@ class pFastMonReportGenerator(pFastMonBaseReportGenerator):
 
 if __name__ == '__main__':
     from pOptionParser import pOptionParser
-    optparser = pOptionParser('cvLVe',1,1,False)
+    optparser = pOptionParser('cvVe',1,1,False)
     reportGenerator = pStandaloneFastMonReportGenerator(optparser.Options.e,\
                                                         optparser.Options.c,\
                                                         optparser.Argument)
