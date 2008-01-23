@@ -324,8 +324,8 @@ class pDataProcessor:
         logger.info('Processing stopped on %s.' % time.asctime())
         logger.info('%d events processed in %.2f s (%.2f Hz).\n' %\
                     (self.NumEvents, elapsedTime, averageRate))
-        self.ErrorHandler.dump(self.OutputFilePath.replace('.root',\
-                                                           '.errors.pickle'))
+        self.ErrorHandler.dump(self.OutputErrorFilePath.replace('.xml',\
+                                                                '.pickle'))
         self.ErrorHandler.writeXmlOutput(self.OutputErrorFilePath)
 
 
@@ -358,7 +358,6 @@ class pDataProcessor:
 if __name__ == '__main__':
     from pOptionParser import pOptionParser
     optparser = pOptionParser('cnorvVpe', 1, 1, False)
-    
     if optparser.Options.o == None:
         optparser.error('the -o option is mandatory. Exiting...')
     if optparser.Options.p == optparser.Options.o:
@@ -366,7 +365,6 @@ if __name__ == '__main__':
                         " can't be the same file. Exiting...")
     if optparser.Options.r and optparser.Options.p == None:
         optparser.error('cannot use the -r option without -p')
-
     dataProcessor = pDataProcessor(optparser.Argument, optparser.Options.c,\
                                    optparser.Options.o, optparser.Options.p,\
                                    optparser.Options.e)
