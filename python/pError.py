@@ -65,11 +65,7 @@ class pError:
                 label = DETAIL_LABELS[self.ErrorCode][i]
             except KeyError:
                 label = 'Parameter %d' % i
-            XmlDict[label] = self.Details[i]
-
-        print "DEBUG*************"
-        print XmlDict
-        
+            XmlDict[label] = self.Details[i]        
         return XmlDict
         
     ## @brief Return the error details formatted in such a way that they can be
