@@ -157,11 +157,11 @@ class pCustomPlotter:
                                         38, -0.5, 38 - 0.5))
         self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
         tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
-        allHits = numpy.ones((36), 'int')
+        noHits = numpy.zeros((36), 'int')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(16):
-                histograms[tower].Fill((tkrHits[tower] == allHits).sum())
+                histograms[tower].Fill((tkrHits[tower] != noHits).sum())
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histograms
