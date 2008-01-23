@@ -38,7 +38,7 @@ class pCustomPlotter:
         self.StartTime = time.time()
 
     def __stopTimer(self, plotRep, tower = None):
-        logger.debug('%s created in %.2f s.' %\
+        logger.debug('%s done in %.2f s.' %\
                      (plotRep.getExpandedName(tower), time.time() -\
                       self.StartTime))
 
@@ -56,8 +56,11 @@ class pCustomPlotter:
             if self.RootTree.GetLeaf(varName) is None:
                 logger.error('Could not find %s.' % varName)
             self.RootTree.SetBranchStatus(varName, 1)
-        self.TmpRootTree = self.RootTree.CopyTree(cut)
-
+        if cut != '':
+            self.TmpRootTree = self.RootTree.CopyTree(cut)
+        else:
+            self.TmpRootTree = self.RootTree
+        
     def __createNumpyArray(self, varName, shape, type):
         numpyArray = numpy.zeros(shape, type)
         self.TmpRootTree.SetBranchAddress(varName, numpyArray)
@@ -163,6 +166,25 @@ class pCustomPlotter:
         self.__stopTimer(plotRep, tower)
         self.__deleteTmpRootTree()
         return histogram
+
+    def TkrHitsCounter_PlaneGTFE(self, plotRep, tower):
+        self.__startTimer()
+        histogram = ROOT.TH2F(plotRep.getExpandedName(tower),\
+                              plotRep.getExpandedTitle(tower),
+                              24, -0.5, 23.5, 36, -0.5, 35.5)
+        self.__createTmpRootTree(['TkrHitsGTFE'], plotRep.Cut)
+        tkrHits = self.__createNumpyArray('TkrHitsGTFE', (16, 36, 24), 'int')
+        tkrIntegralHits = numpy.zeros((36, 24), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            tkrIntegralHits += tkrHits[tower]
+        for layer in range(36):
+            for gtfe in range(24):
+                histogram.Fill(gtfe, layer, tkrIntegralHits[layer][gtfe])
+        self.__stopTimer(plotRep, tower)
+        self.__deleteTmpRootTree()
+        return histogram
+        
 
     ## @brief 
     ## @param self

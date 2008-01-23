@@ -373,7 +373,7 @@
         </TH1F>		
         <CUSTOM type="ZeroTkrHitsCounter_TowerPlane" name="ZeroTkrHitsCounter_TowerPlane_TH2" enabled="True">
 	    <title>Counter of ZERO strip hits vs Tower and Tracker plane</title>
-			<caption>Number of times there are no strip hits in a Tracker plane</caption>
+	    <caption>Number of times there are no strip hits in a Tracker plane</caption>
 	    <xlabel>Tower</xlabel>
 	    <ylabel>Tracker plane</ylabel>
 	    <drawoptions>colz</drawoptions>
@@ -381,12 +381,23 @@
         </CUSTOM>							
         <CUSTOM type="TkrHitsCounter_TowerPlane" name="TkrHitsCounter_TowerPlane_TH2" enabled="True">
 	    <title>Number of strip hits vs Tower and Tracker plane</title>
-			<caption>Test</caption>
+	    <caption>Test</caption>
 	    <xlabel>Tower</xlabel>
 	    <ylabel>Tracker plane</ylabel>
 	    <drawoptions>colz</drawoptions>
             <cut><![CDATA[(condsummary&30)>0]]></cut>
         </CUSTOM>
+    </outputList>
+		
+    <outputList group="TKR" name="TKR in electronics space" enabled="True">
+        <CUSTOM type="TkrHitsCounter_PlaneGTFE" name="TkrHitsCounter_PlaneGTFE_TH2" level="tower" enabled="True">
+	    <title>Tracker hit multiplicity per GTFE</title>
+	    <caption>Put caption here</caption>
+	    <xlabel>GTFE</xlabel>
+	    <ylabel>Tracker plane</ylabel>
+	    <drawoptions>colz</drawoptions>
+            <!--cut><![CDATA[(condsummary&30)>0]]></cut-->
+        </CUSTOM>    	
     </outputList>
 		
     <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
@@ -403,13 +414,11 @@
     </outputList>
 
     <outputList group="TKR" name="TKR Details - Planes hit in a tower" enabled="True">		
-        <CUSTOM type="TkrPlanesHit" name="TkrPlanesHit_TH1" enabled="True" level="tower" >
+        <CUSTOM type="TkrPlanesHit" name="TkrPlanesHit_TH1" level="tower" enabled="True">
 	    <title>Distribution of the number of planes hit in a tower</title>
 	    <xlabel>Layer number</xlabel>
 	    <caption></caption>
-	    <!-- this tag is useless for this CUSTOM plot 
-		since it is dedicated to a specific task
-		<expression></expression> -->
+	    <!-- this tag is useless for this CUSTOM plot since it is dedicated to a specific task<expression></expression> -->
 	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
         </CUSTOM>			
     </outputList>				
@@ -421,9 +430,7 @@
 	    <ylabel>Tracker plane</ylabel>
             <drawoptions>colz</drawoptions>
 	    <!--caption>Number of times that the TOT is 0 while there are 1 or more strips hit in the same controller</caption-->
-	    <!-- this tag is useless for this CUSTOM plot 
-	         since it is dedicated to a specific task
-		 expression></expression> -->
+	    <!-- this tag is useless for this CUSTOM plot since it is dedicated to a specific task expression></expression> -->
 	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
         </CUSTOM>		
     </outputList>
@@ -441,7 +448,7 @@
       </TH1F>		
     </outputList>		
 		
-		<!--
+    <!--
     ACD group.
     -->		
 		
