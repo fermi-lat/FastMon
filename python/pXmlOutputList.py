@@ -14,9 +14,6 @@ from pGlobals       import *
 from pSafeROOT      import ROOT
 from pCustomPlotter import pCustomPlotter
 
-import pCUSTOMplots
-
-
 SUPPORTED_PLOT_TYPES = ['TH1F', 'TH2F', 'StripChart', 'RateStripChart',\
                         'CUSTOM']
 LAT_LEVEL            = 'lat'
@@ -504,7 +501,7 @@ class pCUSTOMXmlRep(pPlotXmlRep):
         #
         #  The type is defined in the xml configuration file and a
         #  corresponding function, whose name must match the type exactly,
-        #  must be defined in the @ref pCUSTOMplots package.
+        #  must be defined in the @ref pCustomPlotter package.
 
         ## @var ExcludedValues
         ## @brief Relevant for the tkr_2d_map custom plot type.
