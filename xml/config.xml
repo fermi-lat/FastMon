@@ -379,34 +379,32 @@
 	    <drawoptions>colz</drawoptions>
             <cut><![CDATA[(condsummary&30)>0]]></cut>
         </CUSTOM>							
-        <CUSTOM type="TkrHitsCounter_TowerPlane" name="TkrHitsCounter_TowerPlane_TH2" enabled="True">
-	    <title>Number of strip hits vs Tower and Tracker plane</title>
+    </outputList>
+		
+    <outputList group="TKR" name="TKR in electronics space" enabled="True">
+      <CUSTOM type="TkrHitsCounter_TowerPlane" name="TkrHitsCounter_TowerPlane_TH2" enabled="True">
+	    <title>Overall number of hits vs. TKR tower and plane</title>
 	    <caption>Test</caption>
 	    <xlabel>Tower</xlabel>
 	    <ylabel>Tracker plane</ylabel>
 	    <drawoptions>colz</drawoptions>
             <cut><![CDATA[(condsummary&30)>0]]></cut>
         </CUSTOM>
-    </outputList>
-		
-    <outputList group="TKR" name="TKR in electronics space---front-end level" enabled="True">
+        <CUSTOM type="TkrHitsCounter_Plane" name="TkrHitsCounter_Plane_TH1" level="tower" enabled="True">
+	    <title>Overall number of hits vs. TKR plane (one per tower)</title>
+	    <caption>Whatch out for spikes (but don't get too excited, most likely it's just a noisy strip) and dips</caption>
+	    <xlabel>Tracker plane</xlabel>
+	    <ylabel>N</ylabel>
+	    <cut><![CDATA[]]></cut>
+        </CUSTOM>    
         <CUSTOM type="TkrHitsCounter_PlaneGTFE" name="TkrHitsCounter_PlaneGTFE_TH2" level="tower" enabled="True">
-	    <title>Number of hits vs. TKR plane and front-end chip (one per tower)</title>
+	    <title>Overall number of hits vs. TKR plane and front-end chip (one per tower)</title>
 	    <caption>Watch out for white spots---front end chips with no hits---if the statistics is enough</caption>
 	    <xlabel>GTFE</xlabel>
 	    <ylabel>Tracker plane</ylabel>
 	    <drawoptions>colz</drawoptions>
 	    <cut><![CDATA[]]></cut>
         </CUSTOM>
-    </outputList>		
-    <outputList group="TKR" name="TKR in electronics space---plane level" enabled="True">
-        <CUSTOM type="TkrHitsCounter_Plane" name="TkrHitsCounter_Plane_TH1" level="tower" enabled="True">
-	    <title>Number of hits vs. TKR plane (one per tower)</title>
-	    <caption>Whatch out for spikes (but don't get too excited, most likely it's just a noisy strip) and dips</caption>
-	    <xlabel>Tracker plane</xlabel>
-	    <ylabel>N</ylabel>
-	    <cut><![CDATA[]]></cut>
-        </CUSTOM> 
     </outputList>
 		
     <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
