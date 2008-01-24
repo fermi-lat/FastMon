@@ -115,6 +115,7 @@ class pErrorHandler:
         xmlWriter.closeTag('eventSummary')
         
         xmlWriter.backup()
+        xmlWriter.closeTag('errorContribution')
         xmlWriter.closeFile()
 
 
