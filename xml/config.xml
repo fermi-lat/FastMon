@@ -391,12 +391,12 @@
 		
     <outputList group="TKR" name="TKR in electronics space" enabled="True">
         <CUSTOM type="TkrHitsCounter_PlaneGTFE" name="TkrHitsCounter_PlaneGTFE_TH2" level="tower" enabled="True">
-	    <title>Tracker hit multiplicity per GTFE</title>
-	    <caption>Put caption here</caption>
+	    <title>Number of hits per TKR tower, plane, front-end chip</title>
+	    <caption>Watch out for white spots---front end chips with no hits---if the statistics is enough</caption>
 	    <xlabel>GTFE</xlabel>
 	    <ylabel>Tracker plane</ylabel>
 	    <drawoptions>colz</drawoptions>
-            <!--cut><![CDATA[(condsummary&30)>0]]></cut-->
+	    <!--cut><![CDATA[(condsummary&30)>0]]></cut-->
         </CUSTOM>    	
     </outputList>
 		
