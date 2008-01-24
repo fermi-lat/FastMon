@@ -18,6 +18,7 @@ from math import sqrt
 class pCustomPlotter:
 
     def __init__(self, rootFilePath, rootTree):
+        self.ObjectsPool = {}
         self.RootFilePath = rootFilePath
         self.RootTree = rootTree
         self.TmpRootTree = None
@@ -166,6 +167,16 @@ class pCustomPlotter:
         self.__deleteTmpRootTree()
         return histograms
 
+    def __getTkrIntegralHits(self, tkrHits):
+        if 'tkrIntegralHits' in self.ObjectsPool.keys():
+            return self.ObjectsPool['tkrIntegralHits']
+        tkrIntegralHits = numpy.zeros((16, 36, 24), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            tkrIntegralHits += tkrHits
+        self.ObjectsPool['tkrIntegralHits'] = tkrIntegralHits
+        return self.ObjectsPool['tkrIntegralHits']
+
     def TkrHitsCounter_PlaneGTFE(self, plotRep):
         self.__startTimer()
         histograms = []
@@ -175,10 +186,7 @@ class pCustomPlotter:
                                         24, -0.5, 23.5, 36, -0.5, 35.5))
         self.__createTmpRootTree(['TkrHitsGTFE'], plotRep.Cut)
         tkrHits = self.__createNumpyArray('TkrHitsGTFE', (16, 36, 24), 'int')
-        tkrIntegralHits = numpy.zeros((16, 36, 24), 'int')
-        for i in xrange(self.TmpRootTree.GetEntriesFast()):
-            self.TmpRootTree.GetEntry(i)
-            tkrIntegralHits += tkrHits
+        tkrIntegralHits = self.__getTkrIntegralHits(tkrHits)
         for tower in range(16):
             for layer in range(36):
                 for gtfe in range(24):
@@ -187,8 +195,25 @@ class pCustomPlotter:
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histograms
-        
 
+    def TkrHitsCounter_Plane(self, plotRep):
+        self.__startTimer()
+        histograms = []
+        for tower in range(16):
+            histograms.append(ROOT.TH1F(plotRep.getExpandedName(tower),\
+                                        plotRep.getExpandedTitle(tower),
+                                        36, -0.5, 35.5))
+        self.__createTmpRootTree(['TkrHitsGTFE'], plotRep.Cut)
+        tkrHits = self.__createNumpyArray('TkrHitsGTFE', (16, 36, 24), 'int')
+        tkrIntegralHits = self.__getTkrIntegralHits(tkrHits)
+        for tower in range(16):
+            for layer in range(36):   
+                histograms[tower].Fill(layer,\
+                                       tkrIntegralHits[tower][layer].sum())
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histograms
+                                       
     ## @brief 
     ## @param self
     #  The class instance.
