@@ -19,15 +19,18 @@ SECONDS_PER_DAY = 24*60*60
 
 class pSCPosition:
     
-    def __init__(self, yearfloat, time, position=None):
+    def __init__(self, time,yearfloat = None, position=None):
        self.YearFloat  = yearfloat
        self.MetInSeconds    = int(time[0])
        self.MetMicroSeconds = int(time[1])
        self.Position   = position
-       self.EarthCoordinates = None
+       self.EarthCoordinates = (None, None, None)
        self.Latitude  = None
        self.Longitude = None
        self.Altitude  = None
+       self.JulianDate = None
+       self.GMSTime = None
+       self.processCoordinates()
        
     def __cmp__(self, other):
         return self.MetInSeconds - other.MetInSeconds
@@ -37,10 +40,10 @@ class pSCPosition:
 	"""
         return '\nSpace Craft Position parameters:\n'                          \
 	      +'MetInSeconds                 = %d\n' % self.MetInSeconds       \
-	      +'MetMicroSeconds              = %f\n' % self.MetMicroSeconds    \
+	      +'MetMicroSeconds              = %s\n' % self.MetMicroSeconds    \
 	      +'Position (x, y, z) in meters = (%s, %s, %s)\n' % self.Position \
-	      +'JulianDate                   = %f\n' % self.JulianDate         \
-	      +'GMSTime                      = %f\n' % self.GMSTime            \
+	      +'JulianDate                   = %s\n' % self.JulianDate         \
+	      +'GMSTime                      = %s\n' % self.GMSTime            \
 	      +'Earth Coords (lat, long, alt)= (%s, %s, %s)\n' % self.EarthCoordinates 
 
     def getYearFloat(self):
@@ -69,6 +72,13 @@ class pSCPosition:
 	if self.Altitude is None:
 	    self.processCoordinates()
 	return self.Altitude 
+
+    def getRelativeAltitude(self):
+        """ Dumb getter methode
+	"""
+	if self.Altitude is None:
+	    self.processCoordinates()
+	return self.Altitude - EARTH_RADIUS
 
 
     def getPosition(self):

@@ -27,6 +27,7 @@ from pContributionIteratorWriter      import pAEMcontributionIteratorWriter
 from pContributionWriter              import pGEMcontributionWriter
 from pMetaEventProcessor	      import pMetaEventProcessor
 from pEvtMetaContextProcessor	      import pEvtMetaContextProcessor
+from pGeomagProcessor	              import pGeomagProcessor
 from pErrorHandler                    import pErrorHandler
 from pFastMonTreeProcessor            import pFastMonTreeProcessor
 from pFastMonReportGenerator          import pFastMonReportGenerator
@@ -54,9 +55,9 @@ class pDataProcessor:
     ## @param verbose
     #  Print additional informations.
 
-    def __init__(self, inputFilePath, configFilePath=None,
-                 outputFilePath=None, outputProcessedFilePath=None,
-                 outputErrorFilePath=None):
+    def __init__(self, inputFilePath, configFilePath = None,
+                 outputFilePath = None, outputProcessedFilePath = None,
+                 outputErrorFilePath = None, inputMagic7FilePath = None):
 
         ## @var XmlParser
         ## @brief The xml parser object (pXmlParser instance).
@@ -129,12 +130,21 @@ class pDataProcessor:
         if self.OutputErrorFilePath is None:
             self.OutputErrorFilePath = self.OutputFilePath.replace('.root',\
                                        '.errors.xml')
+        self.InputMagic7FilePath = inputMagic7FilePath
         self.XmlParser       = pXmlParser(configFilePath)
         self.TreeMaker       = pFastMonTreeMaker(self)
         self.ErrorHandler    = pErrorHandler()
         self.TreeProcessor   = pFastMonTreeProcessor(self.XmlParser,\
                                self.TreeMaker.OutputFilePath,\
                                self.OutputProcessedFilePath)
+        if self.InputMagic7FilePath is None:
+            logger.warn('pDataProcessor started without magic7 information.')
+            logger.warn('Are you sure?')
+        else:
+            from pM7Parser import pM7Parser
+            from igrf      import IGRF
+            self.M7Parser = pM7Parser(self.InputMagic7FilePath)
+            self.GeomagProcessor = pGeomagProcessor(self.TreeMaker)
         if self.OutputProcessedFilePath is not None:
             self.ReportGenerator = pFastMonReportGenerator(self)
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
@@ -288,7 +298,10 @@ class pDataProcessor:
     def processEvt(self, meta, context, buff):
         self.__preEvent()
         self.EvtMetaContextProcessor.process(meta, context)
-	self.EbfEventIter.iterate(buff, len(buff), False)	
+	self.EbfEventIter.iterate(buff, len(buff), False)
+        timestamp = self.TreeMaker.getVariable('event_timestamp') + 35719925
+        position = self.M7Parser.getSCPosition((timestamp, 0))
+        self.GeomagProcessor.process(position)
         self.__postEvent()
 
     def __preEvent(self):
@@ -357,7 +370,7 @@ class pDataProcessor:
     
 if __name__ == '__main__':
     from pOptionParser import pOptionParser
-    optparser = pOptionParser('cnorvVpe', 1, 1, False)
+    optparser = pOptionParser('cnorvVpem', 1, 1, False)
     if optparser.Options.o == None:
         optparser.error('the -o option is mandatory. Exiting...')
     if optparser.Options.p == optparser.Options.o:
@@ -367,7 +380,7 @@ if __name__ == '__main__':
         optparser.error('cannot use the -r option without -p')
     dataProcessor = pDataProcessor(optparser.Argument, optparser.Options.c,\
                                    optparser.Options.o, optparser.Options.p,\
-                                   optparser.Options.e)
+                                   optparser.Options.e, optparser.Options.m)
     dataProcessor.startProcessing(optparser.Options.n)
     if optparser.Options.p != None:
         dataProcessor.TreeProcessor.run()

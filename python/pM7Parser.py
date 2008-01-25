@@ -16,6 +16,8 @@ class pM7Parser:
         self.m7FilePath = inputFilePath
 	self.m7FileContent = file(self.m7FilePath ,'r').readlines()
 	self.SCPositionTable = []
+        self.TimePoints = []
+        self.parseIt()
 
     def getSCPositionTable(self):
         """ Dumb getter method
@@ -54,7 +56,8 @@ class pM7Parser:
                 #ORB 	13 	Flag indicating whether or not the observatory is within the LAT SAA boundary 1==IN, 0==OUT
 		OrbInSAA = dataList[12]
 
-		self.SCPositionTable.append(pSCPosition(yearfloat, SCTime, OrbPosition))
+		self.SCPositionTable.append(pSCPosition(SCTime, yearfloat, OrbPosition))
+                self.TimePoints.append(SCTime)
 	    
 	    i+=1
 	    #if i%10000 == 0:
@@ -64,7 +67,8 @@ class pM7Parser:
 	    #    break
 
     def getSCPosition(self, SCTime):
-        index = bisect.bisect(self.SCPositionTable, pSCPosition(yearfloat, SCTime))
+        #index = bisect.bisect(self.SCPositionTable, pSCPosition(SCTime))
+        index = bisect.bisect(self.TimePoints, SCTime)
         return self.SCPositionTable[index]
 
     def getTimeMicroSeconds(self, dataList):

@@ -9,12 +9,18 @@
     l : a 64 bit unsigned integer (ULong64_t)
     -->
     <inputList group="GLOBAL" name="GLOBAL" enabled="True">
-
 	<variable name="processor_event_number" enabled="True">
 	    <type>uint64</type>
             <shape>(1)</shape>
 	</variable>
 	
+    </inputList>
+    
+    <inputList group="GEOMAG" name="GEOMAG" enabled="True">
+	<variable name="geomagnetic_cutoff" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
     </inputList>
 
     <inputList group="META" name="META" enabled="True">
