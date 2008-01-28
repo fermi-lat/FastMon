@@ -299,7 +299,7 @@ class pDataProcessor:
         self.__preEvent()
         self.EvtMetaContextProcessor.process(meta, context)
 	self.EbfEventIter.iterate(buff, len(buff), False)
-        timestamp = self.TreeMaker.getVariable('event_timestamp') + 35719925
+        timestamp = self.TreeMaker.getVariable('event_timestamp')# + 35719925
         position = self.M7Parser.getSCPosition((timestamp, 0))
         self.GeomagProcessor.process(position)
         self.__postEvent()
