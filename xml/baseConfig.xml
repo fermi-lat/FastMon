@@ -17,7 +17,31 @@
     </inputList>
     
     <inputList group="GEOMAG" name="GEOMAG" enabled="True">
+	<variable name="spacecraft_altitude" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
 	<variable name="geomagnetic_cutoff" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="geomagnetic_bb0" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="geomagnetic_InvariantLambda" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="geomagnetic_InvariantLatitude" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="geomagnetic_InvariantRadius" enabled="True">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="geomagnetic_McIlwainL" enabled="True">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
