@@ -57,7 +57,7 @@ class pM7Parser:
 		OrbInSAA = dataList[12]
 
 		self.SCPositionTable.append(pSCPosition(SCTime, yearfloat, OrbPosition))
-                self.TimePoints.append(SCTime)
+                self.TimePoints.append(int(SCTime[0]))
 	    
 	    i+=1
 	    #if i%10000 == 0:
@@ -68,7 +68,10 @@ class pM7Parser:
 
     def getSCPosition(self, SCTime):
         #index = bisect.bisect(self.SCPositionTable, pSCPosition(SCTime))
-        index = bisect.bisect(self.TimePoints, SCTime)
+        index = bisect.bisect(self.TimePoints, SCTime[0])
+        #print self.TimePoints
+        #print SCTime[0]
+        #print index
         return self.SCPositionTable[index]
 
     def getTimeMicroSeconds(self, dataList):
@@ -92,9 +95,10 @@ class pM7Parser:
 
 
 if __name__ == '__main__':
-    p = pM7Parser('magic7_071009001.txt')
+    m7FilePath = '/data37/users/ISOCdata/071009001/magic7_071009001.txt'
+    p = pM7Parser(m7FilePath)
     p.parseIt()
-    for met in [252672978, 252675504, 252674880, 252675925]: 
+    for met in [252672900, 252674520, 252675925]: 
         sc = p.getSCPosition((met,0))
         sc.processCoordinates()
         print sc
