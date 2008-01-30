@@ -194,6 +194,8 @@ class pCustomPlotter:
                                            tkrIntegralHits[tower][layer][gtfe])
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
+        for tower in range(16):
+            histograms[tower].SetEntries(tkrIntegralHits[tower].sum())
         return histograms
 
     def TkrHitsCounter_Plane(self, plotRep):
