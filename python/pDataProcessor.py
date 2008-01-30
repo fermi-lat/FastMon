@@ -27,7 +27,6 @@ from pContributionIteratorWriter      import pAEMcontributionIteratorWriter
 from pContributionWriter              import pGEMcontributionWriter
 from pMetaEventProcessor	      import pMetaEventProcessor
 from pEvtMetaContextProcessor	      import pEvtMetaContextProcessor
-from pGeomagProcessor	              import pGeomagProcessor
 from pErrorHandler                    import pErrorHandler
 from pFastMonTreeProcessor            import pFastMonTreeProcessor
 from pFastMonReportGenerator          import pFastMonReportGenerator
@@ -141,8 +140,9 @@ class pDataProcessor:
             logger.warn('pDataProcessor started without magic7 information.')
             logger.warn('Are you sure?')
         else:
-            from pM7Parser import pM7Parser
-            from igrf      import IGRF
+            from pGeomagProcessor   import pGeomagProcessor
+            from pM7Parser          import pM7Parser
+            from igrf               import IGRF
             self.M7Parser = pM7Parser(self.InputMagic7FilePath)
             self.GeomagProcessor = pGeomagProcessor(self.TreeMaker)
         if self.OutputProcessedFilePath is not None:
@@ -300,8 +300,9 @@ class pDataProcessor:
         self.EvtMetaContextProcessor.process(meta, context)
 	self.EbfEventIter.iterate(buff, len(buff), False)
         timestamp = self.TreeMaker.getVariable('event_timestamp')
-        position = self.M7Parser.getSCPosition((timestamp, 0))
-        self.GeomagProcessor.process(position)
+        if self.InputMagic7FilePath != None:
+            position = self.M7Parser.getSCPosition((timestamp, 0))
+            self.GeomagProcessor.process(position)
         self.__postEvent()
 
     def __preEvent(self):
