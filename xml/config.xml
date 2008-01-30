@@ -392,7 +392,7 @@
         </CUSTOM>
         <CUSTOM type="TkrHitsCounter_Plane" name="TkrHitsCounter_Plane_TH1" level="tower" enabled="True">
 	    <title>Overall number of hits vs. TKR plane (one per tower)</title>
-	    <caption>Whatch out for spikes (but don't get too excited, most likely it's just a noisy strip) and dips</caption>
+	    <caption>Watch out for spikes (but don't get too excited, most likely it's just a noisy strip) and dips</caption>
 	    <xlabel>Tracker plane</xlabel>
 	    <ylabel>N</ylabel>
 	    <cut><![CDATA[]]></cut>
