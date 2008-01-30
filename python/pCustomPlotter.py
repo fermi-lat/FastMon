@@ -72,6 +72,7 @@ class pCustomPlotter:
         self.RootTree.SetBranchStatus('*', 1)
         
     def ToT_0_WhenTkrHitsExist_TowerPlane(self, plotRep):
+        # Note: Histogram Entries seems correct
         self.__startTimer()
         histogram = ROOT.TH2F(plotRep.Name, plotRep.Title,16, -0.5, 15.5,\
                               36, -0.5, 35.5)
@@ -102,6 +103,7 @@ class pCustomPlotter:
     #  The custom plot representation from the pXmlParser object.
 
     def AcdGemVeto_AcdTile(self, plotRep):
+        # Note: Histogram Entries seems correct
         self.__startTimer()
         histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, NUM_ACD_VETOES,\
                               -0.5, NUM_ACD_VETOES -0.5)
@@ -125,6 +127,7 @@ class pCustomPlotter:
     #  The custom plot representation from the pXmlParser object.
 
     def gem_vector_map(self, plotRep):
+        # Note: Histogram Entries seems correct
         self.__startTimer()
         histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, 16, -0.5, 16-0.5)
         self.__createTmpRootTree([plotRep.Expression], plotRep.Cut)
@@ -150,6 +153,7 @@ class pCustomPlotter:
     #  The Tracker tower under analysis
 
     def TkrPlanesHit(self, plotRep):
+        # Note: Histogram Entries seems correct
         self.__startTimer()
         histograms = []
         for tower in range(16):
@@ -194,6 +198,7 @@ class pCustomPlotter:
                                            tkrIntegralHits[tower][layer][gtfe])
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
+        # Note: Histogram Entries need to be set by hand
         for tower in range(16):
             histograms[tower].SetEntries(tkrIntegralHits[tower].sum())
         return histograms
@@ -214,6 +219,9 @@ class pCustomPlotter:
                                        tkrIntegralHits[tower][layer].sum())
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
+        # Note: Histogram Entries need to be set by hand
+        for tower in range(16):
+            histograms[tower].SetEntries(tkrIntegralHits[tower].sum())
         return histograms
                                        
     ## @brief 
@@ -223,6 +231,7 @@ class pCustomPlotter:
     #  The custom plot representation from the pXmlParser object.
 
     def gem_acd_cable_map(self, plotRep):
+        # Note: Histogram Entries seems correct
         self.__startTimer()
         histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, NUM_ACD_CABLES,\
                               -0.5 , NUM_ACD_CABLES -0.5)
