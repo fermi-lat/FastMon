@@ -109,4 +109,13 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
 	    self.TreeMaker.getVariable("CalTowerCount")[0] += 1
 
 
+    def CalLogEndRangeHit__log__(self, tower, layer, calLog):
+        calLogEnd = calLog.negative()
+        if calLogEnd.value() > 0:
+            self.TreeMaker.getVariable('CalLogEndRangeHit')\
+                 [tower][layer][calLog.column()][0][calLogEnd.range()] = 1
+        calLogEnd = calLog.positive()
+        if calLogEnd.value() > 0:
+            self.TreeMaker.getVariable('CalLogEndRangeHit')\
+                 [tower][layer][calLog.column()][1][calLogEnd.range()] = 1   
 

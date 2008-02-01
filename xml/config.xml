@@ -241,6 +241,10 @@
     CAL group.
     -->
     <inputList group="CAL" name="CAL base" enabled="True">
+    	<variable name="CalLogEndRangeHit" enabled="True">
+	    <type>bool_</type>
+	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER, NUM_CAL_COLUMNS_PER_TOWER, 2, 4)</shape>
+	</variable>
 	<variable name="CalXHit_TowerCalLayerCalColumn" enabled="True">
 	    <type>int</type>
 	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER, NUM_CAL_COLUMNS_PER_TOWER)</shape>
@@ -259,8 +263,16 @@
 	</variable>
     </inputList>
 	    
+    <outputList group="CAL" name="CAL in electronics space" enabled="True">
+        <CUSTOM type="CalLogEndRangeHitCounter" name="CalLogEndRangeHitCounter_TH2" enabled="True" level="tower">
+	    <title>To be discussed with Eric Grove</title>
+	    <xlabel>CAL column</xlabel>
+	    <ylabel>CAL layer</ylabel>
+	    <drawoptions>colz</drawoptions>	    
+        </CUSTOM>
+    </outputList>
+    
     <outputList group="CAL" name="CAL base" enabled="True">
-	
         <CUSTOM type="CalXHit_NHit_Counter_TowerCalLayer" name="CalXHit_NHit_Counter_TowerCalLayer_TH2" enabled="True">
 	    <title>Number of hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
 	    <xlabel>Tower number</xlabel>

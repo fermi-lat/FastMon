@@ -244,7 +244,33 @@ class pCustomPlotter:
                     histogram.Fill(board)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
-        return [histogram]      
+        return [histogram]
+
+    def CalLogEndRangeHitCounter(self, plotRep):
+        self.__startTimer()
+        histograms = []
+        for tower in range(16):
+            histograms.append(ROOT.TH2F(plotRep.getExpandedName(tower),\
+                                        plotRep.getExpandedTitle(tower),
+                                        24, -0.5, 11.5, 8, -0.5, 7.5))
+        self.__createTmpRootTree(['CalLogEndRangeHit'], plotRep.Cut)
+        calHits = self.__createNumpyArray('CalLogEndRangeHit',\
+                                          (16, 8, 12, 2, 4), 'bool_')
+        calIntegralHits = numpy.zeros((16, 8, 12, 2, 4), 'int')
+        for i in xrange(self.TmpRootTree.GetEntriesFast()):
+            self.TmpRootTree.GetEntry(i)
+            calIntegralHits += calHits
+        for tower in range(16):
+            for layer in range(8):
+                for column in range(12):
+                    for side in range(2):
+                        x = column + side/2. - 0.5
+                        y = layer
+                        n = calIntegralHits[tower][layer][column][side][0]
+                        histograms[tower].Fill(x, y, n)
+        self.__stopTimer(plotRep)
+        self.__deleteTmpRootTree()
+        return histograms
 
     ## @brief Return a summed hit map of the calorimeter.
     #
