@@ -44,7 +44,8 @@ class pEvtMetaContextProcessor:
     def getVariable(self, varName):
         return self.TreeMaker.getVariable(varName)
 
-    ## @brief Set the EvtReader variable to have access to high level quantities
+    ## @brief Set the EvtReader variable to have access to high level
+    #  quantities
     ## @param self
     #  The class instance.
     ## @param evtReader
@@ -54,32 +55,34 @@ class pEvtMetaContextProcessor:
 	self.EvtReader = evtReader
 
     ## @brief Calculate the absolute timestamp.
+    #  The absolute timestamp is calculated here the same way as it is in
+    #  the DfiDump.py script.
+    #  Absolute time is contained in a datetime.datetime object. Need to
+    #  understand how to create a ROOT Tree branch with the absolute timestamp.
     ## @param self
     #  The class instance.
     ## @param context
     #  The event context information.
-    ## @brief The absolute timestamp is calculated here the same way as it is in the DfiDump.py script.
-    #  Absolute time is contained in a datetime.datetime object
-    #  Need to understand how to create a ROOT Tree branch with the absolute time stamp.
+
     def calculateTimeStamp(self, meta, context):
 	self.__localCounter += 1
         dtics = context.current.timeHack.tics - context.previous.timeHack.tics
-        dhacks = ( context.current.timeHack.hacks - context.previous.timeHack.hacks )
-        dtics = ( dtics + (dhacks-1) * 0x2000000 ) & 0x01FFFFFF
+        dhacks = (context.current.timeHack.hacks -\
+                  context.previous.timeHack.hacks)
+        dtics = (dtics + (dhacks-1) * 0x2000000) & 0x01FFFFFF
         dsecs = context.current.timeSecs - context.previous.timeSecs
         if dsecs <= 0: dsecs = 1
         freq  = float(dtics) / float(dsecs)
-        elapsed = ( meta.timeTics - context.current.timeHack.tics ) & 0x01FFFFFF
-        abstics = long(context.current.timeSecs) * long(20000000) + long(elapsed)
+        elapsed = (meta.timeTics - context.current.timeHack.tics ) & 0x01FFFFFF
+        abstics = long(context.current.timeSecs)*long(20000000) + long(elapsed)
         elapsed = int( (float( elapsed ) / freq * 1000000.0) + 0.5 )
         metaPPS = (meta.timeHack.hacks << 25) | meta.timeHack.tics
-        currPPS = (context.current.timeHack.hacks << 25) | context.current.timeHack.tics
-        prevPPS = (context.previous.timeHack.hacks << 25) | context.previous.timeHack.tics
+        currPPS = (context.current.timeHack.hacks << 25) |\
+                  context.current.timeHack.tics
+        prevPPS = (context.previous.timeHack.hacks << 25) |\
+                  context.previous.timeHack.tics
         secs    = context.current.timeSecs 
-        #tevt is a datetime.datetime object containing the absolute timestamp
 	tevt = ProductSpan.utcfromtimestamp( secs, elapsed )
-	#if self.__localCounter%100 == 0:
-	#    print 'seconds\t%d\telapsed %d\t tevt %s' % (secs, elapsed, tevt)
         return secs + elapsed/1000000.
 
 
