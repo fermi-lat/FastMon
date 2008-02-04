@@ -17,31 +17,31 @@
     </inputList>
     
     <inputList group="GEOMAG" name="GEOMAG" enabled="True">
-	<variable name="spacecraft_altitude" enabled="True">
+	<variable name="spacecraft_altitude" enabled="True" reset="False">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="geomagnetic_cutoff" enabled="True">
+	<variable name="geomagnetic_cutoff" enabled="True" reset="False">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="geomagnetic_bb0" enabled="True">
+	<variable name="geomagnetic_bb0" enabled="True" reset="False">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="geomagnetic_InvariantLambda" enabled="True">
+	<variable name="geomagnetic_InvariantLambda" enabled="True" reset="False">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="geomagnetic_InvariantLatitude" enabled="True">
+	<variable name="geomagnetic_InvariantLatitude" enabled="True" reset="False">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="geomagnetic_InvariantRadius" enabled="True">
+	<variable name="geomagnetic_InvariantRadius" enabled="True" reset="False">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>
-	<variable name="geomagnetic_McIlwainL" enabled="True">
+	<variable name="geomagnetic_McIlwainL" enabled="True" reset="False">
 	    <type>double</type>
             <shape>(1)</shape>
 	</variable>

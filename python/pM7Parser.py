@@ -2,6 +2,28 @@
 
 ## @package pM7Parser
 ## @brief Basic module to parse the Magic 7 text file
+#
+# The constructor takes a path to a magic7 text file and builds a list of spacecraft
+# position in ECI coordinate, each position is associated to the timestamp in MET(s).
+#
+# ECI (Earth-Centered Inertial) (X,Y,Z) rectangular coordinates
+#
+# The Magic 7 file contains information about the spacecraft attitude and position.
+# Each line represents one "Magic-7" message. The fields of each line are as follows:
+#
+##  Record 	Fields 	Definition
+# @li All 	1-2 	Human-readable timestamp
+# @li All 	3 	Record type, either ATT for attitude messages or ORB for orbit-position messages
+# @li All 	4 	Spacecraft message timestamp, seconds since 2001-01-01 00:00:00
+# @li All 	5 	Spacecraft message timestamp, microseconds of the current second
+# @li ATT 	6-9 	The x, y, z, and w components of the attitude quaternion in the ECI J2000 frame
+# @li ATT 	10-12 	The body-axis x, y, and z components of the spacecraft angular velocity, in rad/sec
+# @li ORB 	6-8 	The ECI J2000 orbit position, in meters
+# @li ORB 	9-11 	The ECI J2000 orbit velocity, in meters/sec
+# @li ORB 	12 	The spacecraft attitude-control mode 3==inertially pointed, 5==sky survey (TBR)
+# @li ORB 	13 	Flag indicating whether or not the observatory is within the LAT SAA boundary 1==IN, 0==OUT
+
+
 
 import time
 import math
@@ -9,29 +31,70 @@ import bisect
 from pSCPosition import pSCPosition 
 
 ## @brief The Magic7 parser implementation
+#
+#  The constructor needs a full path to a magic7 text file
 
 class pM7Parser:
 
+    ## @brief Constructor
+    ## @param self
+    #  The class instance.
+    ## @param inputFilePath
+    #  The full path to the magic7 text file.
+
     def __init__(self, inputFilePath):
+        ## @var m7FilePath
+        ## @brief The magic7 file path
+	
+        ## @var m7FileContent
+        ## @brief The Magic7 file content is read in the constructor
+	
+	## @var SCPositionTable
+	## @brief The list of Space Craft Position is filled in when the file is parsed.
+	
+	## @var TimePoints
+	## @brief The list of time stamps corresponding to each space craft position.
+	#
+	# This list is used to retreive the nearest space craft position corresponding to a time stamp.
+	
+	
         self.m7FilePath = inputFilePath
 	self.m7FileContent = file(self.m7FilePath ,'r').readlines()
 	self.SCPositionTable = []
         self.TimePoints = []
         self.parseIt()
 
+    ## @brief Get the list of Space Craft Position
+    #  
+    ## @param self
+    #  The class instance.
+
     def getSCPositionTable(self):
-        """ Dumb getter method
-	"""
+        if self.SCPositionTable == []:
+	    print 'Warning : SCPositionTable has not been filled in yet.'
         return self.SCPositionTable
 	
+    ## @brief Parse the magic7 file content as stored in m7FileContent.
+    #  
+    ## @param self
+    #  The class instance.
+    #
+    # The magic7 text file structure is detailed in the class description.
+    #
+    # We're interested in 3 quantities to build the space craft position table
+    #
+    # yearfloat is a float quantity calculated using the year and month read in the magic7 text file.
+    #
+    # SCTime is a pair containing the time stamp in MET (seconds, microseconds)
+    #
+    # OrbPosition is a 3D vector (X, Y, Z) giving the space craft orbit position in J2000 coordinates, in meters.
+    
     def parseIt(self):
         i = 0
         OrbInSAA = 0
 	for aline in self.m7FileContent:
 	    #Useless to parse this human readable timestamp - SCTime is what we need
 	    dataList = aline.strip('\n').split(' ')	    
-	    # useless
-	    #timestamp = self.getTimeMicroSeconds(dataList)
 	    yearfloat = self.getYearFloat(dataList)
 
 	    #Spacecraft message timestamp, seconds since 2001-01-01 00:00:00
@@ -57,38 +120,36 @@ class pM7Parser:
 		OrbInSAA = dataList[12]
 
 		self.SCPositionTable.append(pSCPosition(SCTime, yearfloat, OrbPosition))
-                self.TimePoints.append(int(SCTime[0]))
-	    
+                self.TimePoints.append(int(SCTime[0]))	    
 	    i+=1
-	    #if i%10000 == 0:
-	    #    Radius = OrbPosition[0]*OrbPosition[0] + OrbPosition[1]*OrbPosition[1] + OrbPosition[2]*OrbPosition[2]
-	    #    print timestamp, math.sqrt(Radius)
-	    #if i == 100000:
-	    #    break
 
+    ## @brief Get the space craft position nearest to the corresponding timestamp.
+    #
+    # Using the bisect module on the TimePoints list to get the correct index in the space craft position list.
+    #
+    ## @param self
+    #  The class instance.
+    ## @param SCTime
+    #  A space craft timestamp is a pair containing the MET : (seconds, microseconds).
+    # Only the seconds are used though to get the space craft position.
+    
     def getSCPosition(self, SCTime):
-        #index = bisect.bisect(self.SCPositionTable, pSCPosition(SCTime))
         index = bisect.bisect(self.TimePoints, SCTime[0])
-        #print self.TimePoints
-        #print SCTime[0]
-        #print index
         return self.SCPositionTable[index]
 
-    def getTimeMicroSeconds(self, dataList):
-        #I do not know a way to handle the microseconds properly
-	#useless - use SCTime instead
-	microseconds = 0
-        timeString = dataList[0] +'T'+ dataList[1]
-	if len(dataList[1].split('.')) > 1:
-	    microseconds = float(dataList[1].split('.')[1])
-	    timeString = dataList[0] +'T'+ dataList[1].split('.')[0]
-	sTime = time.strptime(timeString, "%Y-%m-%dT%H:%M:%S")
-	timeinseconds = time.mktime(sTime)
-	return int(timeinseconds*1000000+microseconds)
+    ## @brief Parse any magic7 line having a human readable time stamp and returns a float corresponding to
+    # the year and month of the data.
+    #
+    ## @param self
+    #  The class instance.
+    ## @param dataList
+    #  Any line of the magic7 file contains a human readable time stamp, that we parse here when needed.
+    #
+    # This yearfloat is usefull for the igrf plugin.
+    # We consider month level for now, as this is used to initialize the Earth geomagnetic model,
+    # it should be sufficient.
 
     def getYearFloat(self, dataList):
-	#usefull for igrf plugin
-	# consider month level for now
         dayList = dataList[0].split('-')
 	yearfloat = float(dayList[0]) + 0.1*float(dayList[1])*10/12.
 	return float(yearfloat)

@@ -111,6 +111,9 @@ class pDataProcessor:
         ## @var StopTime
         ## @brief The data processor stop time.
 
+        ## @var PrevTimestamp
+        ## @brief The time stamp of the previous event, initialized to 0.
+
         self.InputFilePath = inputFilePath
         if outputFilePath is None:
             logger.info('Output file path not specified.')
@@ -164,6 +167,7 @@ class pDataProcessor:
         self.LdfFile        = None
         self.StartTime      = None
         self.StopTime       = None
+	self.PrevTimestamp  = 0
 
     ## @brief Update the event contribution iterators, based on the xml
     #  configuration file.
@@ -294,6 +298,9 @@ class pDataProcessor:
     #  The meta context info object 
     ## @param buff
     #  The buff object of type LDF.EBFeventIterator
+    #
+    # If a magic7 file is provided, the space craft position and the corresponding geomagnetic
+    # quantities are updated every 5 seconds
     
     def processEvt(self, meta, context, buff):
         self.__preEvent()
@@ -301,8 +308,13 @@ class pDataProcessor:
 	self.EbfEventIter.iterate(buff, len(buff), False)
         timestamp = self.TreeMaker.getVariable('event_timestamp')
         if self.InputMagic7FilePath != None:
-            position = self.M7Parser.getSCPosition((timestamp, 0))
-            self.GeomagProcessor.process(position)
+	    if (timestamp - self.PrevTimestamp) > 5:
+	        #logger.debug('\nTime stamp changed by more than 5s : new = %d \ old = %d\n' %\
+		#             (timestamp , self.PrevTimestamp))
+                position = self.M7Parser.getSCPosition((timestamp, 0))
+                self.GeomagProcessor.process(position)
+	        # Need to copy the value, not to let python use a reference !
+		self.PrevTimestamp = copy(timestamp)
         self.__postEvent()
 
     def __preEvent(self):
