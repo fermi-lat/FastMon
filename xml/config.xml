@@ -563,7 +563,7 @@
 	    <ymax>1600</ymax>
         </StripChart>
        
-			  <StripChart name="trending_CalXHit_Periodic" enabled="True" level="lat">
+	<StripChart name="trending_CalXHit_Periodic" enabled="True" level="lat">
 	    <title>CAL hit multiplicity trending</title>
  	    <dtime>10</dtime>
             <expression>CalXHit</expression>
