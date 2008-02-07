@@ -1,0 +1,318 @@
+<?xml version="1.0" ?>
+<!-- Simplified configuration file for LCI run processing -->
+<monitoring>
+
+    <inputList group="GEM" name="GEM base">
+	<variable name="condsummary">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="LivetimeLast">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="TkrTriggerTower" >
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="CalHiTriggerTower" >
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="CalLoTriggerTower" >
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>	
+	<variable name="AcdGemROI_Tower" > <!-- This name is inconsistent with the others: require a change!-->
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>	
+	<variable name="AcdGemVeto_AcdTile" > 
+	    <type>int</type>
+            <shape>(NUM_ACD_VETOES)</shape>
+	</variable>	
+	<variable name="AcdGemCNO_GARC" > 
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>				
+    </inputList>
+    
+
+    <outputList group="GEM" name="GEM base">
+        <TH1F name="CondSummaryWord_TH1">
+	    <expression><![CDATA[ condsummary ]]></expression>
+	    <cut><![CDATA[  ]]></cut>
+	    <xbins>51</xbins>
+	    <xmin>-10.5</xmin>
+	    <xmax>40.5</xmax>
+	    <title>Distribution of CondSummary Word values</title>
+	    <xlabel>consummary value</xlabel>
+	    <ylabel>N</ylabel>
+	    <caption>Distribution of CondSummary Word values</caption>
+        </TH1F>
+    </outputList>
+								
+    <!--
+    CAL group.
+    -->
+    <inputList group="CAL" name="CAL base" enabled="True">
+    	<variable name="CalLogEndRangeHit" enabled="True">
+	    <type>bool_</type>
+	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER, NUM_CAL_COLUMNS_PER_TOWER, 2, 4)</shape>
+	</variable>
+	<variable name="CalXHit_TowerCalLayerCalColumn" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_CAL_LAYERS_PER_TOWER, NUM_CAL_COLUMNS_PER_TOWER)</shape>
+	</variable>
+	<variable name="CalXHit_Tower" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS)</shape>
+	</variable>
+	<variable name="CalXHit" enabled="True">
+	    <type>int</type>
+	    <shape>(1)</shape>
+	</variable>
+	<variable name="CalTowerCount" enabled="True">
+	    <type>int</type>
+	    <shape>(1)</shape>
+	</variable>
+    </inputList>
+	    
+    <outputList group="CAL" name="CAL in electronics space" enabled="True">
+        <CUSTOM type="CalLogEndRangeHitCounter" name="CalLogEndRangeHitCounter_TH2" enabled="True" level="tower">
+	    <title>To be discussed with Eric Grove</title>
+	    <xlabel>CAL column</xlabel>
+	    <ylabel>CAL layer</ylabel>
+	    <drawoptions>colz</drawoptions>	    
+        </CUSTOM>
+    </outputList>
+    
+    <outputList group="CAL" name="CAL base" enabled="True">
+        <CUSTOM type="CalXHit_NHit_Counter_TowerCalLayer" name="CalXHit_NHit_Counter_TowerCalLayer_TH2" enabled="True">
+	    <title>Number of hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>Cal-Layer</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <!--expression>CalXHit_TowerCalLayerCalColumn</expression-->
+	    <!--exclude>[0]</exclude-->
+        </CUSTOM>
+
+        <CUSTOM type="ZeroCalXHit_NHit_Counter_TowerCalLayer" name="ZeroCalXHit_NHit_Counter_TowerCalLayer_TH2" enabled="True">
+	    <title>Number of times there is ZERO hits in a calorimeter layer defined by the coordinates tower,callayer. Periodic triggers are NOT taken into account</title>
+	    <xlabel>Tower number</xlabel>
+	    <ylabel>Cal-Layer</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <!--expression>CalXHit_TowerCalLayerCalColumn</expression-->
+	    <!--exclude>[0]</exclude-->
+        </CUSTOM>
+
+        <TH1F name="CalX_Total_NHit_TH1" enabled="True" level="lat">
+	    <title>Distribution of  Cal crystals hits  per event (all towers included)</title>
+	    <xbins>1600</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>1600.5</xmax>
+	    <xlabel>Number of CalX_Hits</xlabel>
+            <expression>CalXHit</expression>
+        </TH1F>
+	
+        <TH1F name="CalX_NHit_TH1" enabled="True" level="tower">
+	    <title>Distribution of  Cal crystals hits per event in this tower</title>
+	    <xbins>97</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>96.5</xmax>
+	    <ylog>True</ylog>
+	    <xlabel>Number of Cal crystals in this tower</xlabel>
+            <expression>CalXHit_Tower</expression>
+        </TH1F>
+	
+        <TH1F name="CalTower_NHit_TH1" enabled="True" level="lat">
+	    <title>Number of CAL modules hit</title>
+	    <xbins>17</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>16.5</xmax>
+	    <xlabel>Number of Cal Towers Hit</xlabel>
+            <expression>CalTowerCount</expression>
+        </TH1F>
+	
+        <!--CUSTOM type="cal_2d_map" name="cal_hitmap" enabled="True">
+	    <title>Average number of logs hit per layer</title>
+	    <xlabel>Layer</xlabel>
+	    <ylabel>Tower</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <expression>cal_layer_log_count</expression>
+	    <exclude>[0]</exclude>
+        </CUSTOM-->
+
+    </outputList>
+		
+    <!--
+    TKR group.
+    -->		
+    <inputList group="TKR" name="TKR base" enabled="True">
+	<variable name="TkrHitsTowerPlane" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>
+	<variable name="TkrHits" enabled="True">
+	    <type>int</type>
+	    <shape>(1)</shape>
+	</variable>
+	<variable name="TkrHitsTower" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS)</shape>
+	</variable>
+	<variable name="TkrHitsTowerPlaneEnd" enabled="False">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
+	</variable>
+	<variable name="TkrHitsGTFE" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, NUM_GTFE_PER_LAYER)</shape>
+	</variable>
+	<variable name="tkr_layer_end_tot" enabled="False">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER, 2)</shape>
+	</variable>	
+	<variable name="ToT_con0_TowerPlane" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>		
+	<variable name="ToT_con1_TowerPlane" enabled="True">
+	    <type>int</type>
+	    <shape>(NUM_TOWERS, NUM_TKR_LAYERS_PER_TOWER)</shape>
+	</variable>	
+    </inputList>
+		
+    <outputList group="TKR" name="TKR base" enabled="True">
+        <TH1F name="TkrTotalHits_TH1" enabled="True">
+	    <title>Distribution of strip hits per event (all towers included)</title>
+	    <xbins>300</xbins>
+	    <xmin>0</xmin>
+	    <xmax>3000</xmax>
+	    <xlabel>Number of strip hits</xlabel>
+	    <ylabel>N</ylabel>
+            <expression>TkrHits</expression>
+        </TH1F>		
+        <CUSTOM type="ZeroTkrHitsCounter_TowerPlane" name="ZeroTkrHitsCounter_TowerPlane_TH2" enabled="True">
+	    <title>Counter of ZERO strip hits vs Tower and Tracker plane</title>
+	    <caption>Number of times there are no strip hits in a Tracker plane</caption>
+	    <xlabel>Tower</xlabel>
+	    <ylabel>Tracker plane</ylabel>
+	    <drawoptions>colz</drawoptions>
+        </CUSTOM>							
+    </outputList>
+		
+    <outputList group="TKR" name="TKR in electronics space" enabled="True">
+      <CUSTOM type="TkrHitsCounter_TowerPlane" name="TkrHitsCounter_TowerPlane_TH2" enabled="True">
+	    <title>Overall number of hits vs. TKR tower and plane</title>
+	    <caption>Test</caption>
+	    <xlabel>Tower</xlabel>
+	    <ylabel>Tracker plane</ylabel>
+	    <drawoptions>colz</drawoptions>
+        </CUSTOM>
+        <CUSTOM type="TkrHitsCounter_PlaneGTFE" name="TkrHitsCounter_PlaneGTFE_TH2" level="tower" enabled="True">
+	    <title>Overall number of hits vs. TKR plane and front-end chip (one per tower)</title>
+	    <caption>Watch out for white spots---front end chips with no hits---if the statistics is enough</caption>
+	    <xlabel>GTFE</xlabel>
+	    <ylabel>Tracker plane</ylabel>
+	    <drawoptions>colz</drawoptions>
+	    <cut><![CDATA[]]></cut>
+        </CUSTOM>
+    </outputList>
+		
+    <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
+        <TH1F name="TkrHits_TH1" enabled="True" level="tower">
+	    <title>Distribution of strip hits per tower</title>
+	    <xbins>200</xbins>
+	    <xmin>0</xmin>
+	    <xmax>1000</xmax>
+	    <xlabel>Number of strip hits</xlabel>
+	    <ylabel>N</ylabel>
+            <expression>TkrHitsTower</expression>
+        </TH1F>				
+    </outputList>
+
+    <outputList group="TKR" name="TKR Details - Planes hit in a tower" enabled="True">		
+        <CUSTOM type="TkrPlanesHit" name="TkrPlanesHit_TH1" level="tower" enabled="True">
+	    <title>Distribution of the number of planes hit in a tower</title>
+	    <xlabel>Layer number</xlabel>
+	    <caption></caption>
+	    <!-- this tag is useless for this CUSTOM plot since it is dedicated to a specific task<expression></expression> -->
+        </CUSTOM>			
+    </outputList>				
+
+    <outputList group="TKR" name="TKR Details - ToT" enabled="True">		
+        <CUSTOM type="ToT_0_WhenTkrHitsExist_TowerPlane" name="ToT_0_WhenTkrHitsExist_TowerPlane_TH2" enabled="True">
+	    <title>Number of times that, existing at least one hit, ToT==0 in both controllers</title>
+	    <xlabel>Tower Number</xlabel>
+	    <ylabel>Tracker plane</ylabel>
+            <drawoptions>colz</drawoptions>
+	    <!--caption>Number of times that the TOT is 0 while there are 1 or more strips hit in the same controller</caption-->
+	    <!-- this tag is useless for this CUSTOM plot since it is dedicated to a specific task expression></expression> -->
+        </CUSTOM>		
+    </outputList>
+		
+    <outputList group="TKR" name="TKR Noise occupancy" enabled="False">		
+        <TH1F name="TkrTotalHits_Periodic_TH1" enabled="True">
+	    <title>Distribution of strip hits per event (all towers included). Periodic triggers only</title>
+	    <xbins>300</xbins>
+	    <xmin>0</xmin>
+	    <xmax>3000</xmax>
+	    <xlabel>Number of strip hits</xlabel>
+	    <ylabel>N</ylabel>
+	    <cut><![CDATA[ (condsummary&32)>0 ]]></cut>
+            <expression>TkrHits</expression>
+      </TH1F>		
+    </outputList>		
+		
+    <!--
+    ACD group.
+    -->		
+		
+    <inputList group="ACD" name="ACD1" enabled="True">
+	<variable name="acd_tile_count" enabled="True">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="acd_tile_hitmap" enabled="False">
+	    <type>int</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="acd_cable_tile_count" enabled="False">
+	    <type>int</type>
+            <shape>(NUM_ACD_CABLES)</shape>
+	</variable>
+    </inputList>		
+		
+    <outputList group="ACD" name="ACD base" enabled="True">
+
+        <TH1F name="AcdChannelsHits" enabled="True" level="lat">
+	    <title>Number of ACD PMT hit per event</title>
+	    <xbins>195</xbins>
+	    <xmin>-0.5</xmin>
+	    <xmax>194.5</xmax>
+	    <xlabel>N</xlabel>
+	    <ylabel>Number of ACD hits</ylabel>
+      <expression>acd_tile_count</expression>
+			<caption>This is the number of PHA values per event</caption>
+        </TH1F>
+
+    </outputList>
+		
+    <!--
+    Meta event group.
+    -->
+    <outputList group="META" name="Meta event base" enabled="True">
+        <TH1F name="meta_context_open_crate" enabled="True">
+	    <title>Crate number</title>
+	    <xbins>10</xbins>
+	    <xmin>0</xmin>
+	    <xmax>10</xmax>
+	    <xlabel>Crate number (EPU0, EPU1, EPU2, SIU0, SIU1, AUX)</xlabel>
+	    <ylabel>Number of events</ylabel>
+            <expression>meta_context_open_crate</expression>
+        </TH1F>
+    </outputList>    
+
+
+</monitoring>
