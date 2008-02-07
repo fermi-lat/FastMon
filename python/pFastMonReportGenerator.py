@@ -100,7 +100,7 @@ class pStandaloneFastMonReportGenerator(pFastMonBaseReportGenerator):
         self.XmlParser = pXmlParser(xmlConfigFilePath)
         self.RootFilePath  = rootProcessedFilePath
         if reportDirPath is None:
-            reportDirPath = self.RootFilePath.replace('.root', '.report')
+            reportDirPath = self.RootFilePath.replace('.root', '_report')
         pFastMonBaseReportGenerator.__init__(self, reportDirPath)
         self.RootFileManager = pRootFileManager()
         
@@ -125,7 +125,7 @@ class pFastMonReportGenerator(pFastMonBaseReportGenerator):
         self.XmlParser = self.DataProcessor.XmlParser
         self.RootFilePath = self.DataProcessor.TreeProcessor.OutputFilePath
         if reportDirPath is None:
-            reportDirPath = self.RootFilePath.replace('.root', '.report')
+            reportDirPath = self.RootFilePath.replace('.root', '_report')
         pBaseReportGenerator.__init__(self, reportDirPath)
         self.RootFileManager = pRootFileManager()
 
