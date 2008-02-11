@@ -1,12 +1,10 @@
 
 all:	
-	echo "Targets are: doc, clean, cleandoc, cleanall, view"
+	echo "Targets are: builddoc, clean, cleandoc, cleanall, viewdoc"
 
-doc:
+builddoc:
+	python updateDoxCfg.py
 	doxygen doxygen.cfg
-
-cleandoc:
-	rm -rf doc
 
 clean:
 	rm -rf *~ .*~ *.pyc *.pyo	
@@ -14,9 +12,12 @@ clean:
 	rm -rf pCALcontributionIterator.py pAEMcontributionIterator.py
 	rm -rf *_test.* 
 
+cleandoc:
+	rm -rf doc
+
 cleanall:
 	make clean
 	make cleandoc
 
-view:
+viewdoc:
 	htmlview ./doc/html/index.html &
