@@ -1,7 +1,7 @@
 ## @package pGeomagProcessor
 ## @brief Basic module to handle the processing of geomagnetic quantities using the IGRF package
 
-from Igrf import IGRF
+from IGRF import IGRF
 
 ## @brief The data processor implementation.
 #

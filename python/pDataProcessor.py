@@ -145,7 +145,7 @@ class pDataProcessor:
         else:
             from pGeomagProcessor   import pGeomagProcessor
             from pM7Parser          import pM7Parser
-            from Igrf               import IGRF
+            from IGRF               import IGRF
             logger.info('Using magic7 file : %s' % self.InputMagic7FilePath)
             self.M7Parser = pM7Parser(self.InputMagic7FilePath)
             self.GeomagProcessor = pGeomagProcessor(self.TreeMaker)
