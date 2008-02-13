@@ -17,6 +17,14 @@
     </inputList>
     
     <inputList group="GEOMAG" name="GEOMAG" enabled="True">
+	<variable name="spacecraft_latitude" enabled="True" reset="False">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
+	<variable name="spacecraft_longitude" enabled="True" reset="False">
+	    <type>double</type>
+            <shape>(1)</shape>
+	</variable>
 	<variable name="spacecraft_altitude" enabled="True" reset="False">
 	    <type>double</type>
             <shape>(1)</shape>

@@ -61,7 +61,9 @@ class pGeomagProcessor:
         lon        = sc.getLongitude()
         alt        = sc.getRelativeAltitude()/1000.
 	
-        self.getVariable('spacecraft_altitude')[0] = alt
+        self.getVariable('spacecraft_latitude')[0]  = lat
+        self.getVariable('spacecraft_longitude')[0] = lon
+        self.getVariable('spacecraft_altitude')[0]  = alt
 	
         self.FieldModel.compute(lat,lon,alt,yearfloat)
         self.getVariable('geomagnetic_cutoff')[0] = self.FieldModel.RigidityCutoff
