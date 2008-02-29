@@ -250,9 +250,8 @@ class pCustomPlotter:
         self.__startTimer()
         histograms = []
         for tower in range(16):
-            histograms.append(ROOT.TH2F(plotRep.getExpandedName(tower),\
-                                        plotRep.getExpandedTitle(tower),
-                                        24, -0.5, 11.5, 8, -0.5, 7.5))
+            histograms.append(ROOT.TH2F(plotRep.getExpandedName(tower), plotRep.getExpandedTitle(tower),\
+	                                24, -0.5, 11.5, 8, -0.5, 7.5))
         self.__createTmpRootTree(['CalLogEndRangeHit'], plotRep.Cut)
         calHits = self.__createNumpyArray('CalLogEndRangeHit',\
                                           (16, 8, 12, 2, 4), 'bool_')
@@ -260,14 +259,18 @@ class pCustomPlotter:
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             calIntegralHits += calHits
+	calRange = int(plotRep.Expression[-1])
         for tower in range(16):
+	    numEntries = 0
             for layer in range(8):
                 for column in range(12):
                     for side in range(2):
                         x = column + side/2. - 0.5
                         y = layer
-                        n = calIntegralHits[tower][layer][column][side][0]
+			n = calIntegralHits[tower][layer][column][side][calRange]
                         histograms[tower].Fill(x, y, n)
+			numEntries += n
+            histograms[tower].SetEntries(numEntries)
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
         return histograms
