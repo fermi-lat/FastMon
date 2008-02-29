@@ -264,9 +264,31 @@
     </inputList>
 	    
     <outputList group="CAL" name="CAL in electronics space" enabled="True">
-        <CUSTOM type="CalLogEndRangeHitCounter" name="CalLogEndRangeHitCounter_TH2" enabled="True" level="tower">
-	    <title>To be discussed with Eric Grove</title>
-	    <xlabel>CAL column</xlabel>
+        <CUSTOM type="CalLogEndRangeHitCounter" name="CalLogEndRangeHitCounter_Range0_TH2" enabled="True" level="tower">
+	    <expression>Range0</expression>
+	    <title>Number of hits in each Cal log end for range 0 (LEX8)</title>
+	    <xlabel>CAL column/side</xlabel>
+	    <ylabel>CAL layer</ylabel>
+	    <drawoptions>colz</drawoptions>	    
+        </CUSTOM>
+        <CUSTOM type="CalLogEndRangeHitCounter" name="CalLogEndRangeHitCounter_Range1_TH2" enabled="True" level="tower">
+	    <expression>Range1</expression>
+	    <title>Number of hits in each Cal log end for range 1 (LEX1)</title>
+	    <xlabel>CAL column/side</xlabel>
+	    <ylabel>CAL layer</ylabel>
+	    <drawoptions>colz</drawoptions>	    
+        </CUSTOM>
+        <CUSTOM type="CalLogEndRangeHitCounter" name="CalLogEndRangeHitCounter_Range2_TH2" enabled="True" level="tower">
+	    <expression>Range2</expression>
+	    <title>Number of hits in each Cal log end for range 2 (HEX8)</title>
+	    <xlabel>CAL column/side</xlabel>
+	    <ylabel>CAL layer</ylabel>
+	    <drawoptions>colz</drawoptions>	    
+        </CUSTOM>
+        <CUSTOM type="CalLogEndRangeHitCounter" name="CalLogEndRangeHitCounter_Range3_TH2" enabled="True" level="tower">
+	    <expression>Range3</expression>
+	    <title>Number of hits in each Cal log end for range 3 (HEX1)</title>
+	    <xlabel>CAL column/side</xlabel>
 	    <ylabel>CAL layer</ylabel>
 	    <drawoptions>colz</drawoptions>	    
         </CUSTOM>
