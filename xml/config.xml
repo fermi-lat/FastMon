@@ -418,7 +418,7 @@
 	    <cut><![CDATA[]]></cut>
         </CUSTOM>
     </outputList>
-		
+
     <outputList group="TKR" name="TKR Details - Strip hits per tower" enabled="True">						
         <TH1F name="TkrHits_TH1" enabled="True" level="tower">
 	    <title>Distribution of strip hits per tower</title>
@@ -495,9 +495,9 @@
 	    <xmax>194.5</xmax>
 	    <xlabel>N</xlabel>
 	    <ylabel>Number of ACD hits</ylabel>
-      <expression>acd_tile_count</expression>
-			<caption>This is the number of PHA values per event</caption>
-			<cut><![CDATA[ (condsummary&30)>0 ]]></cut>
+            <expression>acd_tile_count</expression>
+	    <caption>This is the number of PHA values per event</caption>
+	    <cut><![CDATA[ (condsummary&30)>0 ]]></cut>
         </TH1F>
 
     </outputList>
