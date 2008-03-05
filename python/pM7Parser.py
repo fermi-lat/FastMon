@@ -131,12 +131,27 @@ class pM7Parser:
     #  The class instance.
     ## @param SCTime
     #  A space craft timestamp is a pair containing the MET : (seconds, microseconds).
-    # Only the seconds are used though to get the space craft position.
+    #  Only the seconds are used though to get the space craft position.
+    #  Note that bisect return the length of the array when requiring a point which is
+    #  larger than the maximum value of the array so that in that case we decrement the returned
+    #   index by one in order to avoid an IndexError.
     
     def getSCPosition(self, SCTime):
         index = bisect.bisect(self.TimePoints, SCTime[0])
-        return self.SCPositionTable[index]
-
+        if index == len(self.TimePoints):
+            logger.info('Required index exceeds the length of TimePoints by one.')
+            logger.info('Decreasing it by one.')
+            index -= 1
+        try:
+            return self.SCPositionTable[index]
+        except IndexError:
+            logger.error('Invalid index in pM7Parser.getSCPosition().')
+            logger.info('Required spacecraft time is %s.' % SCTime)
+            logger.info('Index returned by bisect is %s (the SC table has %s rows).' %\
+                        (index, len(self.SCPositionTable)))
+            logger.info('Returning the last SC position table element...')
+            return self.SCPositionTable[-1]
+       
     ## @brief Parse any magic7 line having a human readable time stamp and returns a float corresponding to
     # the year and month of the data.
     #
