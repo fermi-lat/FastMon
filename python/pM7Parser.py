@@ -1,5 +1,8 @@
 #!/bin/env python
 
+import pSafeLogger
+logger = pSafeLogger.getLogger('pM7Parser')
+
 ## @package pM7Parser
 ## @brief Basic module to parse the Magic 7 text file
 #
