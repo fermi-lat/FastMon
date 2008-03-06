@@ -86,9 +86,9 @@
         <TH1F name="CondSummaryWord_TH1">
 	    <expression><![CDATA[ condsummary ]]></expression>
 	    <cut><![CDATA[  ]]></cut>
-	    <xbins>33</xbins>
+	    <xbins>65</xbins>
 	    <xmin>-0.5</xmin>
-	    <xmax>32.5</xmax>
+	    <xmax>64.5</xmax>
 	    <title>Distribution of CondSummary Word values</title>
 	    <xlabel>consummary value</xlabel>
 	    <ylabel>N</ylabel>
