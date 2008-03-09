@@ -107,9 +107,10 @@ class pStandaloneFastMonReportGenerator(pFastMonBaseReportGenerator):
         
     def fillMainPage(self):
         self.addSection('main_summary', 'Summary')
-        self.write('There are %d error(s) in %d error event(s).' %\
-                   (self.ErrorHandler.getNumErrors(),
-                    self.ErrorHandler.getNumErrorEvents()))
+        if self.ErrorHandler is not None:
+            self.write('There are %d error(s) in %d error event(s).' %\
+                           (self.ErrorHandler.getNumErrors(),
+                            self.ErrorHandler.getNumErrorEvents()))
         self.newline()
         self.write('@n Look at the related pages for details.')
 
