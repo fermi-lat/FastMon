@@ -137,9 +137,10 @@ class pFastMonReportGenerator(pFastMonBaseReportGenerator):
                     self.DataProcessor.StopTime -\
                     self.DataProcessor.StartTime))
         self.newline()
-        self.write('There are %d error(s) in %d error event(s).' %\
-                   (self.ErrorHandler.getNumErrors(),
-                    self.ErrorHandler.getNumErrorEvents()))
+        if self.ErrorHandler is not None:
+            self.write('There are %d error(s) in %d error event(s).' %\
+                           (self.ErrorHandler.getNumErrors(),
+                            self.ErrorHandler.getNumErrorEvents()))
         self.newline()
         self.write('@n Look at the related pages for details.')
 
