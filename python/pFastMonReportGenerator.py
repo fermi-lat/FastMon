@@ -89,9 +89,9 @@ class pStandaloneFastMonReportGenerator(pFastMonBaseReportGenerator):
                  rootProcessedFilePath, reportDirPath = None):
         from pErrorHandler import pErrorHandler
         from pXmlParser    import pXmlParser
-        pickleErrorFilePath = errorFilePath.replace('.xml', '.pickle')
         self.ErrorHandler = pErrorHandler()
         try:
+            pickleErrorFilePath = errorFilePath.replace('.xml', '.pickle')
             self.ErrorHandler.load(pickleErrorFilePath)
         except:
             logger.error('Could not unpickle %s.'% pickleErrorFilePath)
