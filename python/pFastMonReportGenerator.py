@@ -90,6 +90,7 @@ class pStandaloneFastMonReportGenerator(pFastMonBaseReportGenerator):
         from pErrorHandler import pErrorHandler
         from pXmlParser    import pXmlParser
         self.ErrorHandler = pErrorHandler()
+        pickleErrorFilePath = errorFilePath
         try:
             pickleErrorFilePath = errorFilePath.replace('.xml', '.pickle')
             self.ErrorHandler.load(pickleErrorFilePath)
