@@ -351,8 +351,7 @@ class pDataProcessor:
         logger.info('Processing stopped on %s.' % time.asctime())
         logger.info('%d events processed in %.2f s (%.2f Hz).\n' %\
                     (self.NumEvents, elapsedTime, averageRate))
-        self.ErrorHandler.dump(self.OutputErrorFilePath.replace('.xml',\
-                                                                '.pickle'))
+        self.ErrorHandler.NumProcessedEvents = self.NumEvents
         self.ErrorHandler.writeXmlOutput(self.OutputErrorFilePath)
 
 
