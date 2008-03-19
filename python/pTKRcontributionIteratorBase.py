@@ -104,8 +104,11 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     #  The TKR strip id.
     
     def TkrHitsTowerPlaneEnd__strip__(self, tower, layerEnd, hit):
-        self.TreeMaker.getVariable("TkrHitsTowerPlaneEnd")\
-                        [self.TemId][layerEnd/2][layerEnd%2] += 1
+        try:
+            self.TreeMaker.getVariable("TkrHitsTowerPlaneEnd")\
+                 [self.TemId][layerEnd/2][layerEnd%2] += 1
+        except IndexError:
+            pass
 
     ## @brief Function filling the TkrHitsGTFE variable in the
     #  strip() iterator method.
@@ -119,8 +122,11 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     #  The TKR strip id.
     
     def TkrHitsGTFE__strip__(self, tower, layerEnd, hit):
-        self.TreeMaker.getVariable("TkrHitsGTFE")\
+        try:
+            self.TreeMaker.getVariable("TkrHitsGTFE")\
                         [self.TemId][layerEnd/2][hit/64] += 1
+        except IndexError:
+            pass
 
     ## @brief Function filling the ToT_con0_TowerPlane variable in the
     #  TOT() iterator method.
@@ -135,8 +141,11 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
 
     def ToT_con0_TowerPlane__TOT__(self, tower, layerEnd, tot):
         if layerEnd%2 == 0:
-            self.TreeMaker.getVariable("ToT_con0_TowerPlane")\
+            try:
+                self.TreeMaker.getVariable("ToT_con0_TowerPlane")\
                         [self.TemId][layerEnd/2]= copy(tot)
+            except IndexError:
+                pass
 
     ## @brief Function filling the ToT_con1_TowerPlane variable in the
     #  TOT() iterator method.
@@ -151,9 +160,12 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
 
     def ToT_con1_TowerPlane__TOT__(self, tower, layerEnd, tot):
         if layerEnd%2 == 1:
-            self.TreeMaker.getVariable("ToT_con1_TowerPlane")\
+            try:
+                self.TreeMaker.getVariable("ToT_con1_TowerPlane")\
                         [self.TemId][layerEnd/2]= copy(tot)
-
+            except IndexError:
+                pass
+        
     ## @brief Function filling the tkr_layer_end_tot variable in the
     #  TOT() iterator method.
     ## @param self
@@ -166,9 +178,11 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     #  The value of the TOT for the specified layer.
 
     def tkr_layer_end_tot__TOT__(self, tower, layerEnd, tot):
-        self.TreeMaker.getVariable("tkr_layer_end_tot")\
+        try:
+            self.TreeMaker.getVariable("tkr_layer_end_tot")\
                         [self.TemId][layerEnd/2][layerEnd%2] = copy(tot)
-
+        except IndexError:
+            pass
         
     ## @brief Function filling the TkrHitsTowerPlane variable in the
     #  strip() iterator method.
@@ -181,5 +195,8 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     ## @param hit
     #  The TKR strip id.
     def TkrHitsTowerPlane__strip__(self, tower, layerEnd, hit):
-        self.TreeMaker.getVariable("TkrHitsTowerPlane")\
+        try:
+            self.TreeMaker.getVariable("TkrHitsTowerPlane")\
                         [self.TemId][layerEnd/2] += 1
+        except IndexError:
+            pass

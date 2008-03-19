@@ -96,9 +96,12 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
     #  The CAL log object.
 
     def CalXHit_TowerCalLayerCalColumn__log__(self, tower, layer, calLog):
-        self.TreeMaker.getVariable("CalXHit_TowerCalLayerCalColumn")\
+        try:
+            self.TreeMaker.getVariable("CalXHit_TowerCalLayerCalColumn")\
              [tower][layer][calLog.column()] = 1
-
+        except IndexError:
+            pass
+        
     ## @brief Fill CalTowerCount tree branch
     ## Number of calorimeters with at least one log hit
     ## @param self
@@ -112,10 +115,15 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
     def CalLogEndRangeHit__log__(self, tower, layer, calLog):
         calLogEnd = calLog.negative()
         if calLogEnd.value() > 0:
-            self.TreeMaker.getVariable('CalLogEndRangeHit')\
+            try:
+                self.TreeMaker.getVariable('CalLogEndRangeHit')\
                  [tower][layer][calLog.column()][0][calLogEnd.range()] = 1
+            except IndexError:
+                pass
         calLogEnd = calLog.positive()
         if calLogEnd.value() > 0:
-            self.TreeMaker.getVariable('CalLogEndRangeHit')\
+            try:
+                self.TreeMaker.getVariable('CalLogEndRangeHit')\
                  [tower][layer][calLog.column()][1][calLogEnd.range()] = 1   
-
+            except IndexError:
+                pass
