@@ -52,9 +52,6 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     #  of the derived iterator (the one which is actually run).
 
     def strip(self, tower, layerEnd, hit):        
-        if tower < 0 or tower > 15:
-             self.ErrorHandler.fill('UNPHYSICAL_TKR_TWR_ID',\
-                                   [tower, layerEnd, hit])
         if layerEnd < 0 or layerEnd > 72:
              self.ErrorHandler.fill('UNPHYSICAL_TKR_LYR_ID',\
                                    [tower, layerEnd, hit])  
@@ -66,15 +63,9 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     #  of the derived iterator (the one which is actually run).
         
     def TOT(self, tower, layerEnd, tot):
-        if tower < 0 or tower > 15:
-             self.ErrorHandler.fill('UNPHYSICAL_TKR_TWR_ID',\
-                                   [tower, layerEnd, hit])
         if layerEnd < 0 or layerEnd > 72:
              self.ErrorHandler.fill('UNPHYSICAL_TKR_LYR_ID',\
-                                   [tower, layerEnd, hit])  
-        if tot < 0 or tot > 255:
-            self.ErrorHandler.fill('UNPHYSICAL_TKR_TOT',\
-                                   [tower, layerEnd, tot])
+                                   [tower, layerEnd, hit])
 
     ## @brief Function filling the TkrHits variable.
     ## @param self

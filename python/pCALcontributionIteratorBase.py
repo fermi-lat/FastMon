@@ -42,12 +42,6 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
         
     def log(self, tower, layer, calLog):
         column = calLog.column()
-        if tower < 0 or tower > 15:
-             self.ErrorHandler.fill('UNPHYSICAL_CAL_TWR_ID',\
-                                   [tower, layer, column])
-        if layer < 0 or layer > 8:
-             self.ErrorHandler.fill('UNPHYSICAL_CAL_LYR_ID',\
-                                   [tower, layer, column])  
         if column < 0 or column > 12:
             self.ErrorHandler.fill('UNPHYSICAL_CAL_COL_ID',\
                                    [tower, layer, column])
