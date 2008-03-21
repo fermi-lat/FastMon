@@ -19,9 +19,10 @@ DETAIL_LABELS = {
     'GTRC_SUMMARY_ERROR'          : ['Tower', 'GTCC', 'Err'],
     'GTCC_DATA_PARITY_ERROR'      : ['Tower', 'GTCC', 'Err'],
     'ACD_HEADER_PARITY_ERROR'     : ['Cable'],
-    'ACD_PHA_PARITY_ERROR'        : ['Cable', 'Channel'], 
-    'UNPHYSICAL_TKR_STRIP_ID'     : ['Tower', 'LayerEnd', 'hit'],
-    'UNPHYSICAL_TKR_LYR_ID'       : ['Tower', 'LayerEnd', 'hit'],
+    'ACD_PHA_PARITY_ERROR'        : ['Cable', 'Channel'],
+    'ACD_PHA_INCONSISTENCY'       : ['Cable', 'Channel', 'Accept list'],
+    'UNPHYSICAL_TKR_STRIP_ID'     : ['Tower', 'LayerEnd', 'Hit'],
+    'UNPHYSICAL_TKR_LYR_ID'       : ['Tower', 'LayerEnd', 'Hit'],
     'UNPHYSICAL_CAL_COL_ID'       : ['Tower', 'Layer', 'Column']
     }
 
