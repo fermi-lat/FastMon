@@ -36,17 +36,28 @@ class pAEMcontributionIteratorBase(LDF.AEMcontributionIterator):
         self.TreeMaker    = treeMaker
         self.ErrorHandler = errorHandler
 
+    def populateAcceptList(self, header):
+        self.AcceptList = []
+        acceptMap = header.acceptMap()
+        for i in range(18):
+            if (acceptMap >> i) & 0x1:
+                self.AcceptList.append(17 - i)
+
     ## @brief Function included by default by the corresponding method
-    #  of the derived iterator (the one which is actually run).
+    #  of the derived iterator (the one which is actually run). 
     
     def header(self, cable, header):
         if header.parityError():
             self.ErrorHandler.fill('ACD_HEADER_PARITY_ERROR', [cable])
+        self.populateAcceptList(header)
     
     ## @brief Function included by default by the corresponding method
     #  of the derived iterator (the one which is actually run).
     
     def pha(self, cable, channel, pha):
+        if channel not in self.AcceptList:
+            self.ErrorHandler.fill('ACD_PHA_INCONSISTENCY',\
+                                   [cable, channel, self.AcceptList])
         if pha.parityError():
             self.ErrorHandler.fill('ACD_PHA_PARITY_ERROR', [cable, channel])
 
