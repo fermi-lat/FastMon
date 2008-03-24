@@ -1,0 +1,33 @@
+
+*** v3r0p5 ***
+
+- missingGps changed to sourceGps.
+
+
+*** v3r0p4 *** 
+
+- Added a new check on the ACD readout consistency (and a new error type,
+ACD_PHA_INCONSISTENCY).
+
+
+*** v3r0p3 *** 
+
+- Some useless error checks removed (on tower ids and cal layer ids) from the
+error handler.
+
+
+*** v3r0p2 ***
+
+- Bug fix---tracebeack due to an unhandled index error exception caused by
+unphyisical strip id removed.
+
+
+*** v3r0p1 ***
+
+- Some improvements to the error handler, including some modification to the
+output xml file and error codes documentation.
+
+
+*** v3r0p0 ***
+
+- Baseline for the software freeze.
