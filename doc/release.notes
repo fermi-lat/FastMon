@@ -1,4 +1,11 @@
 
+*** v3r0p6 ***
+
+- FastMon/python/pMergeHistosMaker.py (the script creating the configuration
+text file for merging the FastMon histograms) updated to the new package
+layout (FastMonCfg is now a separate package).
+
+
 *** v3r0p5 ***
 
 - missingGps changed to sourceGps.
