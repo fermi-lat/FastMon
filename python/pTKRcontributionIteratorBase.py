@@ -7,6 +7,9 @@ import LDF
 from copy      import copy
 from pGlobals  import *
 
+
+UNPHYSICAL_TOT_VALUES = [251, 252, 253, 254]
+
 ## @brief Base TKR contribution iterator.
 
 class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
@@ -54,7 +57,7 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     def strip(self, tower, layerEnd, hit):        
         if layerEnd < 0 or layerEnd > 72:
              self.ErrorHandler.fill('UNPHYSICAL_TKR_LYR_ID',\
-                                   [tower, layerEnd, hit])  
+                                   [tower, layerEnd])  
         if hit < 0 or hit > 1535:
             self.ErrorHandler.fill('UNPHYSICAL_TKR_STRIP_ID',\
                                    [tower, layerEnd, hit])
@@ -64,8 +67,11 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
         
     def TOT(self, tower, layerEnd, tot):
         if layerEnd < 0 or layerEnd > 72:
-             self.ErrorHandler.fill('UNPHYSICAL_TKR_LYR_ID',\
-                                   [tower, layerEnd, hit])
+            self.ErrorHandler.fill('UNPHYSICAL_TKR_LYR_ID',\
+                                   [tower, layerEnd])
+        if tot in UNPHYSICAL_TOT_VALUES:
+            self.ErrorHandler.fill('UNPHYSICAL_TOT_VALUE',\
+                                   [tower, layerEnd, tot])
 
     ## @brief Function filling the TkrHits variable.
     ## @param self

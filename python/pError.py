@@ -22,8 +22,9 @@ DETAIL_LABELS = {
     'ACD_PHA_PARITY_ERROR'        : ['Cable', 'Channel'],
     'ACD_PHA_INCONSISTENCY'       : ['Cable', 'Channel', 'Accept list'],
     'UNPHYSICAL_TKR_STRIP_ID'     : ['Tower', 'LayerEnd', 'Hit'],
-    'UNPHYSICAL_TKR_LYR_ID'       : ['Tower', 'LayerEnd', 'Hit'],
-    'UNPHYSICAL_CAL_COL_ID'       : ['Tower', 'Layer', 'Column']
+    'UNPHYSICAL_TKR_LYR_ID'       : ['Tower', 'LayerEnd'],
+    'UNPHYSICAL_CAL_COL_ID'       : ['Tower', 'Layer', 'Column'],
+    'UNPHYSICAL_TOT_VALUE'        : ['Tower', 'LayerEnd', 'TOT']
     }
 
 
