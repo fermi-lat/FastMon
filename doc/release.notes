@@ -1,4 +1,10 @@
 
+*** v3r0p7 ***
+
+- The error handler now detects unphysical TOT values (251, 252, 253, 254).
+Documentation updated accordingly. 
+
+
 *** v3r0p6 ***
 
 - FastMon/python/pMergeHistosMaker.py (the script creating the configuration
