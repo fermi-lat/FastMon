@@ -33,8 +33,11 @@ class pSCPosition:
     #  A float representing the Year and Month of the data
     ## @param position
     #  The space craft position on orbit in meters, as a 3D tuple (X, Y, Z) in ECI J2000 coordinates
+    ## @param quaterion
+    #  The space craft attitude quaternion, as a 4D vector (x, y, z, w) in the ECI J2000 frame
+    #
 
-    def __init__(self, time,yearfloat = None, position=None):
+    def __init__(self, time,yearfloat = None, position=None, quaternion=None):
        ## @var YearFloat
        ## @brief A float representing the Year and Month of the data
        
@@ -46,6 +49,9 @@ class pSCPosition:
        
        ## @var Position
        ## @brief The space craft position on orbit in meters, as a 3D tuple (X, Y, Z) in ECI J2000 coordinates
+       
+       ## @var Quaternion
+       ## @brief The space craft attitude quaternion, as a 4D vector (x, y, z, w) in the ECI J2000 frame
        
        ## @var EarthCoordinates
        ## @brief The space craft position in the earth coordinates as a 3D tuple (Latitude, Longitude, Altitude)
@@ -69,6 +75,7 @@ class pSCPosition:
        self.MetInSeconds    = int(time[0])
        self.MetMicroSeconds = int(time[1])
        self.Position   = position
+       self.Quaternion  = quaternion
        self.EarthCoordinates = (None, None, None)
        self.Latitude  = None
        self.Longitude = None
