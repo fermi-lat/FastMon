@@ -1,3 +1,10 @@
+*** v3r0p8 ***
+
+- FastMon now reads the Spacecraft attitude quaternion from the magic7 file
+and the quantity is saved in the pSCPosition objects. This is a first step
+towards having the Ra,Dec Rock and Roll angles in FastMon as for GDQMQ-62.
+Documentation updated accordingly. 
+
 
 *** v3r0p7 ***
 
