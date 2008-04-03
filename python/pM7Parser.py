@@ -84,13 +84,16 @@ class pM7Parser:
     #
     # The magic7 text file structure is detailed in the class description.
     #
-    # We're interested in 3 quantities to build the space craft position table
+    # We're interested in 4 quantities to build the space craft position table
     #
     # yearfloat is a float quantity calculated using the year and month read in the magic7 text file.
     #
     # SCTime is a pair containing the time stamp in MET (seconds, microseconds)
     #
     # OrbPosition is a 3D vector (X, Y, Z) giving the space craft orbit position in J2000 coordinates, in meters.
+    #
+    # SCAttitudeQuaternion is a 4D vector (x, y, z, w) with the components of the attitude quaternion in the ECI J2000 frame
+    #
     
     def parseIt(self):
         i = 0
@@ -122,7 +125,9 @@ class pM7Parser:
                 #ORB 	13 	Flag indicating whether or not the observatory is within the LAT SAA boundary 1==IN, 0==OUT
 		OrbInSAA = dataList[12]
 
-		self.SCPositionTable.append(pSCPosition(SCTime, yearfloat, OrbPosition))
+		# OrbPosition as just been read from the file, whereas we get the latest value of SCAttitudeQuaternion
+		# As magic7 file contains many more ATT message than ORB ones that should work
+		self.SCPositionTable.append(pSCPosition(SCTime, yearfloat, OrbPosition, SCAttitudeQuaternion))
                 self.TimePoints.append(int(SCTime[0]))	    
 	    i+=1
 
