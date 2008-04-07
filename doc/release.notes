@@ -1,3 +1,10 @@
+
+*** v3r0p9 ***
+
+- Release notes updated with references to the relevant jira. No change in any
+of the functionalities at all.
+
+
 *** v3r0p8 ***
 
 - FastMon now reads the Spacecraft attitude quaternion from the magic7 file
