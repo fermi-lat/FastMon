@@ -25,7 +25,7 @@ layout (FastMonCfg is now a separate package).
 
 - missingGps changed to sourceGps.
 - release.notes added.
-* Relevant jira(s): GDQMQ-43
+* Relevant jira(s): GDQMQ-43, GDQMQ-64
 
 
 *** v3r0p4 *** 
