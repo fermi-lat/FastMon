@@ -4,12 +4,14 @@
 and the quantity is saved in the pSCPosition objects. This is a first step
 towards having the Ra,Dec Rock and Roll angles in FastMon as for GDQMQ-62.
 Documentation updated accordingly. 
+* Relevant jira(s): GDQMQ-62
 
 
 *** v3r0p7 ***
 
 - The error handler now detects unphysical TOT values (251, 252, 253, 254).
-Documentation updated accordingly. 
+Documentation updated accordingly.
+* Relevant jira(s): GDQMQ-58
 
 
 *** v3r0p6 ***
@@ -23,12 +25,14 @@ layout (FastMonCfg is now a separate package).
 
 - missingGps changed to sourceGps.
 - release.notes added.
+* Relevant jira(s): GDQMQ-43
 
 
 *** v3r0p4 *** 
 
 - Added a new check on the ACD readout consistency (and a new error type,
 ACD_PHA_INCONSISTENCY).
+* Relevant jira(s): GDQMQ-41
 
 
 *** v3r0p3 *** 
