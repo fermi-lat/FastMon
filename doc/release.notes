@@ -1,4 +1,11 @@
 
+*** v3r0p10 ***
+
+- Bug fix in the script generating the text configuration file for the merging
+from the FastMon xml configuration file. 
+* Relevant jira(s): GDQMQ-71
+
+
 *** v3r0p9 ***
 
 - Release notes updated with references to the relevant jira. No change in any
