@@ -132,6 +132,8 @@ class pEvtMetaContextProcessor:
                        context.scalers.sequence
 	self.getVariable('meta_context_gem_scalers_deadzone')[0]   =\
                        context.scalers.deadzone
+	self.getVariable('meta_context_current_earlyevent')[0]     =\
+                       context.current.earlyEvent
 	self.getVariable('meta_context_current_incomplete')[0]     =\
                        context.current.incomplete
 	self.getVariable('meta_context_current_timesecs')[0]       =\
@@ -150,6 +152,8 @@ class pEvtMetaContextProcessor:
                        context.current.timeHack.hacks
 	self.getVariable('meta_context_current_gem_timeticks')[0]  =\
                        context.current.timeHack.tics
+	self.getVariable('meta_context_previous_earlyevent')[0]     =\
+                       context.previous.earlyEvent
 	self.getVariable('meta_context_previous_incomplete')[0]    =\
                        context.previous.incomplete
 	self.getVariable('meta_context_previous_timesecs')[0]      =\
