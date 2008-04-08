@@ -1,3 +1,9 @@
+*** v3r0p11 ***
+
+- Added meta_context_current_earlyevent and meta_context_previous_earlyevent
+  in pEvtMetaEventProcessor.py
+* Relevant jira(s): GDQMQ-70
+
 
 *** v3r0p10 ***
 
