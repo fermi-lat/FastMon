@@ -273,7 +273,11 @@ class pSCPosition:
     	# or http://www.colorado.edu/geography/gcraft/notes/datum/gif/ellipse.gif
     	m_altitude=math.sqrt(x*x+y*y)/math.cos(m_lat)\
     	           -EARTH_RADIUS / (1000.*math.sqrt(1.-math.pow(0.00669454*math.sin(m_lat), 2)))
-
+        
+	# convert latitude and longitude from radian to degree
+	m_lat = math.degrees(m_lat)
+	m_lon = math.degrees(m_lon)
+	
         return (m_lat, m_lon, m_altitude)
 	
     ## @brief Call processing of the earth coordinates
