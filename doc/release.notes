@@ -1,3 +1,9 @@
+*** v3r0p12 ***
+Spacecraft latitude and longitude are now in degrees instead of radian.
+Conversion is done in pSCPosition
+* Relevant jira(s): GDQMQ-63
+
+
 *** v3r0p11 ***
 
 - Added meta_context_current_earlyevent and meta_context_previous_earlyevent
