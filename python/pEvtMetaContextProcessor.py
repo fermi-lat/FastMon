@@ -3,6 +3,7 @@
 
 from copy      import copy
 from pGlobals  import *
+import math
 
 #To run locally, needs the appropriate setup
 from ISOC.ProductUtils import ProductSpan
@@ -39,6 +40,8 @@ class pEvtMetaContextProcessor:
         self.TreeMaker    = treeMaker
 	self.EvtReader	  = None
 	self.__localCounter = 0
+        self.PreviousHacks = 0
+        self.PreviousTics  = 0
 
 
     def getVariable(self, varName):
@@ -54,13 +57,49 @@ class pEvtMetaContextProcessor:
     def setEvtReader(self, evtReader):
 	self.EvtReader = evtReader
 
+    ## @brief Calculate the number of ticks between successive 1-PPS
+    #  and get the deviation from the 20 MHz clock.
+    #  GEM time base counter is 25its, we need that to trace back rollovers
+    #  Information from the meta event timeHack are used.
+    ## The value is initialized to -9999 as default and is overwritten only 
+    #  when the second has changed. 
+    ## @param self
+    #  The class instance.
+    ## @param meta
+    #  The meta event information.
+    ## @param context
+    #  The event context information.
+
+    def getClockTicsDev20MHz(self, meta, context):
+        ticsDev = -9999
+
+	ppsCounter = meta.timeHack.hacks
+	clockTics  = meta.timeHack.tics
+
+        if (self.PreviousHacks==0 and self.PreviousTics==0):
+            self.PreviousHacks = ppsCounter
+            self.PreviousTics  = clockTics
+	    return -9999
+	    
+        if (ppsCounter != self.PreviousHacks) :
+	    DeltaTics = clockTics - self.PreviousTics
+	    if DeltaTics>=0:
+	        ticsDev = 20000000 - DeltaTics
+	    else:
+	        ticsDev = 20000000 - (math.pow(2,25) - 1 -self.PreviousTics + clockTics)
+
+        self.PreviousHacks = ppsCounter
+	self.PreviousTics  = clockTics
+        return ticsDev
+
     ## @brief Calculate the absolute timestamp.
     #  The absolute timestamp is calculated here the same way as it is in
     #  the DfiDump.py script.
-    #  Absolute time is contained in a datetime.datetime object. Need to
-    #  understand how to create a ROOT Tree branch with the absolute timestamp.
+    #  Absolute time is contained in a datetime.datetime object.
     ## @param self
     #  The class instance.
+    ## @param meta
+    #  The meta event information.
     ## @param context
     #  The event context information.
 
@@ -172,5 +211,8 @@ class pEvtMetaContextProcessor:
                        context.previous.timeHack.hacks
 	self.getVariable('meta_context_previous_gem_timeticks')[0] =\
                        context.previous.timeHack.tics
+
+        self.getVariable('clocktics_dev_20MHz')[0]             =\
+                       self.getClockTicsDev20MHz(meta, context)      
 
 
