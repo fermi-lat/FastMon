@@ -1,6 +1,14 @@
+*** v3r0p13 ***
+
+- Add the quantity clocktics_dev_20MHz that counts the number of tics between
+  1pps and gives the deviation with respect to expected 20MHz in
+  pEvtMetaEventProcessor.py 
+* Relevant jira(s): GDQMQ-70
+
+
 *** v3r0p12 ***
-Spacecraft latitude and longitude are now in degrees instead of radian.
-Conversion is done in pSCPosition
+* Spacecraft latitude and longitude are now in degrees instead of radian.
+  Conversion is done in pSCPosition
 * Relevant jira(s): GDQMQ-63
 
 
