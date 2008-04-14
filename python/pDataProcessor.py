@@ -274,7 +274,11 @@ class pDataProcessor:
     	    else:
     	      (identity, length) = struct.unpack('!LL', event)
     	      event += self.LdfFile.read(length - 8)
-              self.processEvent(event)
+              self.__preEvent()
+              self.LatDataBufIter.iterate(event, len(event))
+              self.TreeMaker.getVariable('meta_context_gem_scalers_sequence')[0] = self.NumEvents
+              self.__postEvent()
+              #self.processEvent(event)
         self.finalize()
 
     ## @brief Process an event.
