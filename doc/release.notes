@@ -1,3 +1,11 @@
+*** v3r0p14 ***
+- pDataProcessor modified as to use the internal event counter 
+  (instead of the GEM event sequence) as event number for the error handler 
+  ONLY when processing an .ldf file. 
+  This change has no impact on processing .evt file.
+* Relevant jira(s): GDQMQ-96
+
+
 *** v3r0p13 ***
 
 - Add the quantity clocktics_dev_20MHz that counts the number of tics between
@@ -7,7 +15,7 @@
 
 
 *** v3r0p12 ***
-* Spacecraft latitude and longitude are now in degrees instead of radian.
+- Spacecraft latitude and longitude are now in degrees instead of radian.
   Conversion is done in pSCPosition
 * Relevant jira(s): GDQMQ-63
 
