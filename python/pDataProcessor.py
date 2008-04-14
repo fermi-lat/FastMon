@@ -152,7 +152,8 @@ class pDataProcessor:
         if self.OutputProcessedFilePath is not None:
             self.ReportGenerator = pFastMonReportGenerator(self)
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
-	self.EvtMetaContextProcessor = pEvtMetaContextProcessor(self.TreeMaker)
+	self.EvtMetaContextProcessor = pEvtMetaContextProcessor(self.TreeMaker,\
+                                                                self.ErrorHandler)
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator

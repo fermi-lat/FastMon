@@ -21,7 +21,7 @@ class pEvtMetaContextProcessor:
     ## @param treeMaker
     #  The pRootTreeMaker object responsible for filling the ROOT tree.
 
-    def __init__(self,treeMaker):
+    def __init__(self,treeMaker, errorHandler):
 
         ## @var TreeMaker
         ## @brief The TreeMaker object which is responsible to fill the tree
@@ -39,6 +39,7 @@ class pEvtMetaContextProcessor:
 
         self.TreeMaker    = treeMaker
 	self.EvtReader	  = None
+	self.ErrorHandler = errorHandler
 	self.__localCounter = 0
         self.PreviousHacks = 0
         self.PreviousTics  = 0
@@ -57,12 +58,43 @@ class pEvtMetaContextProcessor:
     def setEvtReader(self, evtReader):
 	self.EvtReader = evtReader
 
+
+    ## @brief Check the TimeTone information for Errors
+    ## This function is called only when the timeHack second has changed.
+    ## First check if there is an error in the TimeTone by controlling
+    #  the incomplete flag. Then fill in the error handler according to
+    #  the error type. 
+    ## @param self
+    #  The class instance.
+    ## @param meta
+    #  The meta event information.
+    ## @param context
+    #  The event context information.
+    def checkTimeTone(self, meta, context):
+        if context.current.incomplete:
+	    self.ErrorHandler.fill('TIMETONE_INCOMPLETE', [context.current.timeSecs])
+	    if context.current.missingTimeTone:
+	        self.ErrorHandler.fill('TIMETONE_MISSING_TIMETONE', [])
+	    if context.current.missingCpuPps:
+	        self.ErrorHandler.fill('TIMETONE_MISSING_CPUPPS', [])
+	    if context.current.missingLatPps:
+	        self.ErrorHandler.fill('TIMETONE_MISSING_LATPPS', [])
+	    if context.current.flywheeling:
+	        self.ErrorHandler.fill('TIMETONE_FLYWHEELING', [])
+	    if context.current.earlyEvent:
+	        self.ErrorHandler.fill('TIMETONE_EARLY_EVENT', [])
+	    if not context.current.sourceGps:
+	        self.ErrorHandler.fill('TIMETONE_NULL_SOURCE_GPS', [])
+	return 0
+
     ## @brief Calculate the number of ticks between successive 1-PPS
     #  and get the deviation from the 20 MHz clock.
-    #  GEM time base counter is 25its, we need that to trace back rollovers
+    #  GEM time base counter is 25bits, we need that to trace back rollovers
     #  Information from the meta event timeHack are used.
     ## The value is initialized to -9999 as default and is overwritten only 
     #  when the second has changed. 
+    ## We also take advantage of the knowledge taht second has changed to
+    #  check TimeTone errors.
     ## @param self
     #  The class instance.
     ## @param meta
@@ -82,6 +114,9 @@ class pEvtMetaContextProcessor:
 	    return -9999
 	    
         if (ppsCounter != self.PreviousHacks) :
+	    # Check TimeTone errors
+	    self.checkTimeTone(meta, context)
+	    # Now really checking tics
 	    DeltaTics = clockTics - self.PreviousTics
 	    if DeltaTics>=0:
 	        ticsDev = 20000000 - DeltaTics
@@ -131,7 +166,7 @@ class pEvtMetaContextProcessor:
     ## @param context
     #  The evt meta context information
 
-    def process(self, meta, context):
+    def process(self, meta, context):	
         self.getVariable('event_timestamp')[0]                     =\
                        self.calculateTimeStamp(meta, context)      
         self.getVariable('meta_context_run_id')[0] = \
