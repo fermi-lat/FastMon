@@ -1,3 +1,10 @@
+*** v3r0p15 ***
+- pEvtMetaContextProcessor now processes the TimeTone errors, via the
+  ErrorHandler.
+  Error handler documentation was updated.
+* Relevant jira(s): GDQMQ-70
+
+
 *** v3r0p14 ***
 - pDataProcessor modified as to use the internal event counter 
   (instead of the GEM event sequence) as event number for the error handler 
