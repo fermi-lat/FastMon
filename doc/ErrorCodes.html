@@ -120,26 +120,69 @@
               <td class="leftAligned">Cable timeout error.</td>
 	      <td class="leftAligned"></td>
             </tr>
+
             <tr class="even">
+              <td class="leftAligned">TIMETONE_EARLY_EVENT</td>
+              <td class="leftAligned">[]</td>
+              <td class="leftAligned">The event arrived very close (a few hundred microseconds) to the TimeTone.</td>
+	      <td class="leftAligned"></td>
+            </tr>
+            <tr class="odd">
+              <td class="leftAligned">TIMETONE_FLYWHEELING</td>
+              <td class="leftAligned">[]</td>
+              <td class="leftAligned">CPU failed to construct its TimeTone message.</td>
+	      <td class="leftAligned"></td>
+            </tr>
+            <tr class="even">
+              <td class="leftAligned">TIMETONE_INCOMPLETE</td>
+              <td class="leftAligned">[timeSecs]</td>
+              <td class="leftAligned">TimeTone is incomplete.</td>
+	      <td class="leftAligned"></td>
+            </tr>
+            <tr class="odd">
+              <td class="leftAligned">TIMETONE_MISSING_CPUPPS</td>
+              <td class="leftAligned">[]</td>
+              <td class="leftAligned">Arrival of the 1-PPS signal at the CPU timed out.</td>
+	      <td class="leftAligned"></td>
+            </tr>
+            <tr class="even">
+              <td class="leftAligned">TIMETONE_MISSING_LATPPS</td>
+              <td class="leftAligned">[]</td>
+              <td class="leftAligned">Arrival of the 1-PPS signal at the LAT timed out.</td>
+	      <td class="leftAligned"></td>
+            </tr>
+            <tr class="odd">
+              <td class="leftAligned">TIMETONE_MISSING_TIMETONE</td>
+              <td class="leftAligned">[]</td>
+              <td class="leftAligned">1-PPS signal timed out.</td>
+	      <td class="leftAligned"></td>
+            </tr>
+             <tr class="even">
+              <td class="leftAligned">TIMETONE_NULL_SOURCE_GPS</td>
+              <td class="leftAligned">[]</td>
+              <td class="leftAligned">The source of the GPS signal is the spacecraft local clock, instead of the GPS clock.</td>
+	      <td class="leftAligned"></td>
+            </tr>
+            <tr class="odd">
               <td class="leftAligned">UNPHYSICAL_CAL_COL_ID</td>
               <td class="leftAligned">[Tower, Layer, Column]</td>
               <td class="leftAligned">Unphysical (i.e. not in 0--11) column id while reading a CAL log event contribution.</td>
 	      <td class="leftAligned"></td>
             </tr>
-            <tr class="odd">
+            <tr class="even">
               <td class="leftAligned">UNPHYSICAL_TOT_VALUE</td>
               <td class="leftAligned">[Tower, LayerEnd, TOT]</td>
               <td class="leftAligned">Unphysical (i.e. 251, 252, 253, 254) TOT  value while reading a TKR TOT event contribution.</td>
 	      <td class="leftAligned"></td>
             </tr>
-            <tr class="even">
+            <tr class="odd">
               <td class="leftAligned">UNPHYSICAL_TKR_LYR_ID</td>
               <td class="leftAligned">[Tower, LayerEnd]</td>
               <td class="leftAligned">Unphysical (i.e. not in 0--71) layer-end id while reading a TKR strip/TOT event contribution.
 	      The layer-end is determined by the layer id (0--35) and the side (0--1) of the readout controller on the layer.</td>
 	      <td class="leftAligned"></td>
             </tr>
-            <tr class="odd">
+            <tr class="even">
               <td class="leftAligned">UNPHYSICAL_TKR_STRIP_ID</td>
               <td class="leftAligned">[Tower, LayerEnd, Hit]</td>
               <td class="leftAligned">Unphysical (i.e. not in 0--1535) strip id while reading a TKR strip event contribution.</td>
