@@ -1,3 +1,9 @@
+*** v3r0p16 ***
+- pSCPostion now convert the attitude quaternion into Euleur angles (pitch,
+  roll and yaw), information are saved via pGeomagProcessor. Bug fix when
+  reading the quaternion in pM7Parser.
+* Relevant jira(s): GDQMQ-62
+
 *** v3r0p15 ***
 - pEvtMetaContextProcessor now processes the TimeTone errors, via the
   ErrorHandler.
