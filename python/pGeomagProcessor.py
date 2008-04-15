@@ -60,11 +60,21 @@ class pGeomagProcessor:
         lat        = sc.getLatitude()
         lon        = sc.getLongitude()
         alt        = sc.getRelativeAltitude()/1000.
+	pitch      = sc.getPitch()
+	roll       = sc.getRoll()
+	yaw        = sc.getYaw()
 	
+	# Spacecraft attitude
         self.getVariable('spacecraft_latitude')[0]  = lat
         self.getVariable('spacecraft_longitude')[0] = lon
         self.getVariable('spacecraft_altitude')[0]  = alt
+
+	# Spacecraft attitude
+        self.getVariable('spacecraft_pitch')[0] = pitch
+        self.getVariable('spacecraft_roll')[0]  = roll
+        self.getVariable('spacecraft_yaw')[0]   = yaw	
 	
+	# Geomagnetic field
         self.FieldModel.compute(lat,lon,alt,yearfloat)
         self.getVariable('geomagnetic_cutoff')[0] = self.FieldModel.RigidityCutoff
         self.getVariable('geomagnetic_bb0')[0]    = self.FieldModel.BB0

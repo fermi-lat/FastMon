@@ -111,7 +111,7 @@ class pM7Parser:
 	    dtype = dataList[2]
 	    if dtype == 'ATT':
                 #The x, y, z, and w components of the attitude quaternion in the ECI J2000 frame
-	        SCAttitudeQuaternion = (dataList[5], dataList[6], dataList[7], dataList[8])		
+	        SCAttitudeQuaternion = (float(dataList[5]), float(dataList[6]), float(dataList[7]), float(dataList[8]))		
 		#The body-axis x, y, and z components of the spacecraft angular velocity, in rad/sec
 		SCAngularVelocity =  (dataList[9], dataList[10], dataList[11])
 

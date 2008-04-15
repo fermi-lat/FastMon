@@ -33,7 +33,7 @@ class pSCPosition:
     #  A float representing the Year and Month of the data
     ## @param position
     #  The space craft position on orbit in meters, as a 3D tuple (X, Y, Z) in ECI J2000 coordinates
-    ## @param quaterion
+    ## @param quaternion
     #  The space craft attitude quaternion, as a 4D vector (x, y, z, w) in the ECI J2000 frame
     #
 
@@ -80,6 +80,10 @@ class pSCPosition:
        self.Latitude  = None
        self.Longitude = None
        self.Altitude  = None
+       self.PitchRollYaw = (None, None, None)
+       self.Roll  = None
+       self.Pitch = None
+       self.Yaw   = None
        self.JulianDate = None
        self.GMSTime = None
        self.processCoordinates()
@@ -100,7 +104,8 @@ class pSCPosition:
 	      +'Position (x, y, z) in meters = (%s, %s, %s)\n' % self.Position \
 	      +'JulianDate                   = %s\n' % self.JulianDate         \
 	      +'GMSTime                      = %s\n' % self.GMSTime            \
-	      +'Earth Coords (lat, long, alt)= (%s, %s, %s)\n' % self.EarthCoordinates 
+	      +'Earth Coords (lat, long, alt)= (%s, %s, %s)\n' % self.EarthCoordinates\
+	      +'Local Rock n Roll (pitch, roll, yaw)= (%s, %s, %s)\n' % self.PitchRollYaw 
 
     ## @brief Returns the current value of yearfloat.
     ## @param self
@@ -149,12 +154,41 @@ class pSCPosition:
 	    self.processCoordinates()
 	return self.Altitude - EARTH_RADIUS
 
-
     ## @brief Returns the current value of position.
     ## @param self
     #  The class instance.
     def getPosition(self):
 	return self.Position
+
+    ## @brief Returns the space craft Pitch (Theta).
+    #
+    #  If Pitch is None, try to process the coordinates before giving Pitch
+    ## @param self
+    #  The class instance.
+    def getPitch(self):
+	if self.Pitch is None:
+	    self.processCoordinates()
+	return self.Pitch
+
+    ## @brief Returns the space craft Roll (Phi).
+    #
+    #  If Roll is None, try to process the coordinates before giving Roll
+    ## @param self
+    #  The class instance.
+    def getRoll(self):
+	if self.Roll is None:
+	    self.processCoordinates()
+	return self.Roll
+
+    ## @brief Returns the space craft Yaw (Psi).
+    #
+    #  If Yaw is None, try to process the coordinates before giving Yaw
+    ## @param self
+    #  The class instance.
+    def getYaw(self):
+	if self.Yaw is None:
+	    self.processCoordinates()
+	return self.Yaw
 
     ## @brief Returns the Julian date for a given mission elapsed time 
     ## @param self
@@ -247,6 +281,7 @@ class pSCPosition:
     ## @param self
     #  The class instance.
     def getEarthCoordinate(self):
+        # get the individual components
  	x = self.Position[0]
 	y = self.Position[1]
 	z = self.Position[2]
@@ -279,7 +314,25 @@ class pSCPosition:
 	m_lon = math.degrees(m_lon)
 	
         return (m_lat, m_lon, m_altitude)
-	
+
+    ## @brief Convert the quaternion to Euler angles
+    ## From http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+    ## @param self
+    #  The class instance.
+    def getRockNRoll(self):
+        # I have verified that the quaternion is normalized.
+        # get the quaternion individual components
+        q0 = self.Quaternion[0]
+        q1 = self.Quaternion[1]
+        q2 = self.Quaternion[2]
+        q3 = self.Quaternion[3]
+	# Invert the matrix and return angles in degrees
+	theta = math.degrees(math.atan( 2*(q0*q1+q2*q3)/(1-2*(q1*q1+q2*q2)) ))
+	phi   = math.degrees(math.asin( 2*(q0*q2-q3*q1) ))
+	psi   = math.degrees(math.atan( 2*(q0*q3+q1*q2)/(1-2*(q2*q2+q3*q3)) ))
+        
+	return (theta, phi, psi)
+    	
     ## @brief Call processing of the earth coordinates
     ## @param self
     #  The class instance.
@@ -290,6 +343,10 @@ class pSCPosition:
         self.Latitude  = self.EarthCoordinates[0]
         self.Longitude = self.EarthCoordinates[1]       
         self.Altitude  = self.EarthCoordinates[2]
+	self.PitchRollYaw = self.getRockNRoll()
+	self.Pitch = self.PitchRollYaw[0]
+	self.Roll  = self.PitchRollYaw[1]
+	self.Yaw   = self.PitchRollYaw[2]
 
 
 	
