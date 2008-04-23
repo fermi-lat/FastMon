@@ -1,3 +1,8 @@
+*** v3r0p17 ***
+- pSCPostion now retireve the satellite z-axis Ra and Dec from  the attitude 
+  quaternion into, information are saved via pGeomagProcessor. 
+* Relevant jira(s): GDQMQ-62
+
 *** v3r0p16 ***
 - pSCPostion now convert the attitude quaternion into Euleur angles (pitch,
   roll and yaw), information are saved via pGeomagProcessor. Bug fix when
