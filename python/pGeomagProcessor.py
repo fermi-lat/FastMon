@@ -63,6 +63,8 @@ class pGeomagProcessor:
 	pitch      = sc.getPitch()
 	roll       = sc.getRoll()
 	yaw        = sc.getYaw()
+	zra        = sc.getZRa()
+	zdec        = sc.getZDec()	
 	
 	# Spacecraft attitude
         self.getVariable('spacecraft_latitude')[0]  = lat
@@ -72,7 +74,11 @@ class pGeomagProcessor:
 	# Spacecraft attitude
         self.getVariable('spacecraft_pitch')[0] = pitch
         self.getVariable('spacecraft_roll')[0]  = roll
-        self.getVariable('spacecraft_yaw')[0]   = yaw	
+        self.getVariable('spacecraft_yaw')[0]   = yaw
+
+	# Spacecraft orientation
+        self.getVariable('spacecraft_zra')[0]   = zra
+        self.getVariable('spacecraft_zdec')[0]  = zdec
 	
 	# Geomagnetic field
         self.FieldModel.compute(lat,lon,alt,yearfloat)
