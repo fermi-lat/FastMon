@@ -14,6 +14,7 @@
 import time
 import math
 import bisect
+from pSafeROOT import ROOT
 
 #Earth Flattening Coeff.
 EARTH_FLAT      = 1/298.25 
@@ -65,6 +66,27 @@ class pSCPosition:
        ## @var Altitude
        ## @brief The space craft altitude relative to the Earth center
        
+       ## @var PitchRollYaw
+       ## @brief The space craft Roll, Pithc and Yaw angles in a 3D tuple
+       
+       ## @var Roll
+       ## @brief The space craft Roll angle
+       
+       ## @var Pitch
+       ## @brief The space craft Pitch angle
+       
+       ## @var Yaw
+       ## @brief The space craft Yaw angle
+       
+       ## @var Zaxis
+       ## @brief The space craft Z axis pointing direction in equatorial coordinates (Ra, Dec)
+       
+       ## @var ZRa
+       ## @brief The space craft Z axis pointing direction Right Ascension
+       
+       ## @var ZDec
+       ## @brief The space craft Z axis pointing direction Declination
+       
        ## @var JulianDate
        ## @brief The Time stamp as a Julian Date.
        
@@ -84,6 +106,9 @@ class pSCPosition:
        self.Roll  = None
        self.Pitch = None
        self.Yaw   = None
+       self.Zaxis = (None, None)
+       self.ZRa   = None
+       self.ZDec  = None
        self.JulianDate = None
        self.GMSTime = None
        self.processCoordinates()
@@ -189,6 +214,26 @@ class pSCPosition:
 	if self.Yaw is None:
 	    self.processCoordinates()
 	return self.Yaw
+
+    ## @brief Returns the space craft Z axis RA
+    #
+    #  If ZRa is None, try to process the coordinates before giving ZRa
+    ## @param self
+    #  The class instance.
+    def getZRa(self):
+	if self.ZRa is None:
+	    self.processCoordinates()
+	return self.ZRa
+
+    ## @brief Returns the space craft Z axis Dec
+    #
+    #  If ZDec is None, try to process the coordinates before giving ZDec
+    ## @param self
+    #  The class instance.
+    def getZDec(self):
+	if self.ZDec is None:
+	    self.processCoordinates()
+	return self.ZDec
 
     ## @brief Returns the Julian date for a given mission elapsed time 
     ## @param self
@@ -332,6 +377,17 @@ class pSCPosition:
 	psi   = math.degrees(math.atan( 2*(q0*q3+q1*q2)/(1-2*(q2*q2+q3*q3)) ))
         
 	return (theta, phi, psi)
+
+    ## @brief Get the quaternion z axis pointing direction in equatorial coordinates (Ra, Dec)
+    ## @param self
+    #  The class instance.
+    def getZaxisPointing(self):
+        q = ROOT.TQuaternion(self.Quaternion[0], self.Quaternion[1], self.Quaternion[2], self.Quaternion[3])
+	zaxis = q.Rotation(ROOT.TVector3(0,0,1))
+	ra  = math.degrees(zaxis.Theta())
+	dec = math.degrees(zaxis.Phi())
+        return (ra, dec)
+
     	
     ## @brief Call processing of the earth coordinates
     ## @param self
@@ -347,8 +403,9 @@ class pSCPosition:
 	self.Pitch = self.PitchRollYaw[0]
 	self.Roll  = self.PitchRollYaw[1]
 	self.Yaw   = self.PitchRollYaw[2]
-
-
+	self.Zaxis = self.getZaxisPointing()
+	self.ZRa  = self.Zaxis[0]
+	self.ZDec = self.Zaxis[1]
 	
 if __name__ == '__main__':
     sc = pSCPosition(2008.5, (252672900, 0))
