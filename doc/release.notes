@@ -1,3 +1,10 @@
+*** v3r1p0 ***
+- Improved the calculation of clocktics_dev_20MHz :
+  It is now done only if the context incomplete flag is not set.
+  Initialization is done using the context.previous time hack
+  Better integration with Time tone error handler.
+* Relevant jira(s): GDQMQ-104 and 105
+
 *** v3r0p17 ***
 - pSCPostion now retireve the satellite z-axis Ra and Dec from  the attitude 
   quaternion into, information are saved via pGeomagProcessor. 
