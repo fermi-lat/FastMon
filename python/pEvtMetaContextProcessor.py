@@ -71,21 +71,19 @@ class pEvtMetaContextProcessor:
     ## @param context
     #  The event context information.
     def checkTimeTone(self, meta, context):
-        if context.current.incomplete:
-	    self.ErrorHandler.fill('TIMETONE_INCOMPLETE', [context.current.timeSecs])
-	    if context.current.missingTimeTone:
-	        self.ErrorHandler.fill('TIMETONE_MISSING_TIMETONE', [])
-	    if context.current.missingCpuPps:
-	        self.ErrorHandler.fill('TIMETONE_MISSING_CPUPPS', [])
-	    if context.current.missingLatPps:
-	        self.ErrorHandler.fill('TIMETONE_MISSING_LATPPS', [])
-	    if context.current.flywheeling:
-	        self.ErrorHandler.fill('TIMETONE_FLYWHEELING', [])
-	    if context.current.earlyEvent:
-	        self.ErrorHandler.fill('TIMETONE_EARLY_EVENT', [])
-	    if not context.current.sourceGps:
-	        self.ErrorHandler.fill('TIMETONE_NULL_SOURCE_GPS', [])
-	return 0
+	self.ErrorHandler.fill('TIMETONE_INCOMPLETE', [context.current.timeSecs])
+	if context.current.missingTimeTone:
+	    self.ErrorHandler.fill('TIMETONE_MISSING_TIMETONE', [])
+	if context.current.missingCpuPps:
+	    self.ErrorHandler.fill('TIMETONE_MISSING_CPUPPS', [])
+	if context.current.missingLatPps:
+	    self.ErrorHandler.fill('TIMETONE_MISSING_LATPPS', [])
+	if context.current.flywheeling:
+	    self.ErrorHandler.fill('TIMETONE_FLYWHEELING', [])
+	if context.current.earlyEvent:
+	    self.ErrorHandler.fill('TIMETONE_EARLY_EVENT', [])
+	if not context.current.sourceGps:
+	    self.ErrorHandler.fill('TIMETONE_NULL_SOURCE_GPS', [])
 
     ## @brief Calculate the number of ticks between successive 1-PPS
     #  and get the deviation from the 20 MHz clock.
@@ -113,15 +111,19 @@ class pEvtMetaContextProcessor:
             self.PreviousHacks = context.previous.timeHack.hacks
             self.PreviousTics  = context.previous.timeHack.tics
 	    
-        if (ppsCounter != self.PreviousHacks) :
-	    # Check TimeTone errors
-	    self.checkTimeTone(meta, context)
-	    # Now really checking tics
-	    DeltaTics = clockTics - self.PreviousTics
-	    if DeltaTics>=0:
-	        ticsDev = 20000000 - DeltaTics
-	    else:
-	        ticsDev = 20000000 - (math.pow(2,25) - 1 -self.PreviousTics + clockTics)
+	# Check if the second has changed
+        if  ppsCounter != self.PreviousHacks :
+	    # If there is a problem check error code else check deviation to 20MHz clock
+	    if context.current.incomplete :
+	        # Check TimeTone errors
+	        self.checkTimeTone(meta, context)
+	    else :	    
+	        # Now really checking tics
+	        DeltaTics = clockTics - self.PreviousTics
+	        if DeltaTics>=0:
+	            ticsDev = 20000000 - DeltaTics
+	        else:
+	            ticsDev = 20000000 - (math.pow(2,25) - 1 -self.PreviousTics + clockTics)
 
         self.PreviousHacks = ppsCounter
 	self.PreviousTics  = clockTics
