@@ -107,11 +107,11 @@ class pEvtMetaContextProcessor:
 
 	ppsCounter = meta.timeHack.hacks
 	clockTics  = meta.timeHack.tics
-
+	
+        # Initialize with previous hack stored
         if (self.PreviousHacks==0 and self.PreviousTics==0):
-            self.PreviousHacks = ppsCounter
-            self.PreviousTics  = clockTics
-	    return -9999
+            self.PreviousHacks = context.previous.timeHack.hacks
+            self.PreviousTics  = context.previous.timeHack.tics
 	    
         if (ppsCounter != self.PreviousHacks) :
 	    # Check TimeTone errors
