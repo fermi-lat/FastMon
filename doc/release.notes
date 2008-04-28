@@ -1,3 +1,9 @@
+*** v3r1p1 ***
+- Added the processing of the quantity new_second that is True for the first
+  event for which the second has changed, in python/pEvtMetaContextProcessor.py. 
+  new_second is to be used in fastmon trending  
+* Relevant jira(s): GDQMQ-103
+
 *** v3r1p0 ***
 - Improved the calculation of clocktics_dev_20MHz :
   It is now done only if the context incomplete flag is not set.
