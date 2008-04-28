@@ -91,8 +91,8 @@ class pEvtMetaContextProcessor:
     #  Information from the meta event timeHack are used.
     ## The value is initialized to -9999 as default and is overwritten only 
     #  when the second has changed. 
-    ## We also take advantage of the knowledge taht second has changed to
-    #  check TimeTone errors.
+    ## We also take advantage of the knowledge that second has changed to store
+    #  this piece of information and to check TimeTone errors.
     ## @param self
     #  The class instance.
     ## @param meta
@@ -101,7 +101,8 @@ class pEvtMetaContextProcessor:
     #  The event context information.
 
     def getClockTicsDev20MHz(self, meta, context):
-        ticsDev = -9999
+        newSecond = False
+	ticsDev = -9999
 
 	ppsCounter = meta.timeHack.hacks
 	clockTics  = meta.timeHack.tics
@@ -112,7 +113,8 @@ class pEvtMetaContextProcessor:
             self.PreviousTics  = context.previous.timeHack.tics
 	    
 	# Check if the second has changed
-        if  ppsCounter != self.PreviousHacks :
+        if ppsCounter != self.PreviousHacks :
+	    newSecond = True
 	    # If there is a problem check error code else check deviation to 20MHz clock
 	    if context.current.incomplete :
 	        # Check TimeTone errors
@@ -127,7 +129,7 @@ class pEvtMetaContextProcessor:
 
         self.PreviousHacks = ppsCounter
 	self.PreviousTics  = clockTics
-        return ticsDev
+        return (newSecond, ticsDev)
 
     ## @brief Calculate the absolute timestamp.
     #  The absolute timestamp is calculated here the same way as it is in
@@ -249,7 +251,6 @@ class pEvtMetaContextProcessor:
 	self.getVariable('meta_context_previous_gem_timeticks')[0] =\
                        context.previous.timeHack.tics
 
-        self.getVariable('clocktics_dev_20MHz')[0]             =\
-                       self.getClockTicsDev20MHz(meta, context)      
-
-
+	(newSecond, ticsDev) = self.getClockTicsDev20MHz(meta, context)
+        self.getVariable('new_second')[0]          = newSecond                         
+        self.getVariable('clocktics_dev_20MHz')[0] = ticsDev
