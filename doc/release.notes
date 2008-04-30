@@ -1,3 +1,7 @@
+*** v3r1p2 ***
+- Added a function to process the PrescaledDelta in pGEMcontributionBase
+* Relevant jira(s): GDQMQ-102
+
 *** v3r1p1 ***
 - Added the processing of the quantity new_second that is True for the first
   event for which the second has changed, in python/pEvtMetaContextProcessor.py. 
