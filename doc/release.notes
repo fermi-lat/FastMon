@@ -1,3 +1,9 @@
+*** v3r1p3 ***
+- Added quantities meta_LATC_master, aka meta.hardwareKey, and
+meta.softwareKey for good measure. This is the hardware configuration for the
+current run. 
+* Relevant jira(s): GDQMQ-107
+
 *** v3r1p2 ***
 - Added a function to process the PrescaledDelta in pGEMcontributionBase
 * Relevant jira(s): GDQMQ-102
