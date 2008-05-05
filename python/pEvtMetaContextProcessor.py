@@ -172,9 +172,11 @@ class pEvtMetaContextProcessor:
 
     def process(self, meta, context):	
         self.getVariable('event_timestamp')[0]                     =\
-                       self.calculateTimeStamp(meta, context)      
-        self.getVariable('meta_context_run_id')[0] = \
-                       self.EvtReader.runid()  
+                        self.calculateTimeStamp(meta, context)
+        self.getVariable('meta_softwareKey')[0] = meta.softwareKey
+        self.getVariable('meta_LATC_master')[0] = meta.hardwareKey
+		             
+        self.getVariable('meta_context_run_id')[0] = self.EvtReader.runid()  
 		            
 	self.getVariable('meta_context_open_action')[0]            =\
                        context.open.action
@@ -218,37 +220,37 @@ class pEvtMetaContextProcessor:
                        context.current.timeSecs
 	self.getVariable('meta_context_current_flywheeling')[0]    =\
                        context.current.flywheeling
-	self.getVariable('meta_context_current_source_gps')[0]    =\
+	self.getVariable('meta_context_current_source_gps')[0]     =\
                        context.current.sourceGps
-	self.getVariable('meta_context_current_missing_cpupps')[0] =\
+	self.getVariable('meta_context_current_missing_cpupps')[0]   =\
                        context.current.missingCpuPps
-	self.getVariable('meta_context_current_missing_latpps')[0] =\
+	self.getVariable('meta_context_current_missing_latpps')[0]   =\
                        context.current.missingLatPps
-	self.getVariable('meta_context_current_missing_timetone')[0]=\
+	self.getVariable('meta_context_current_missing_timetone')[0] =\
                        context.current.missingTimeTone
-	self.getVariable('meta_context_current_gem_timehacks')[0]  =\
+	self.getVariable('meta_context_current_gem_timehacks')[0]    =\
                        context.current.timeHack.hacks
-	self.getVariable('meta_context_current_gem_timeticks')[0]  =\
+	self.getVariable('meta_context_current_gem_timeticks')[0]    =\
                        context.current.timeHack.tics
-	self.getVariable('meta_context_previous_earlyevent')[0]     =\
+	self.getVariable('meta_context_previous_earlyevent')[0]      =\
                        context.previous.earlyEvent
-	self.getVariable('meta_context_previous_incomplete')[0]    =\
+	self.getVariable('meta_context_previous_incomplete')[0]      =\
                        context.previous.incomplete
-	self.getVariable('meta_context_previous_timesecs')[0]      =\
+	self.getVariable('meta_context_previous_timesecs')[0]        =\
                        context.previous.timeSecs
-	self.getVariable('meta_context_previous_flywheeling')[0]   =\
+	self.getVariable('meta_context_previous_flywheeling')[0]     =\
                        context.previous.flywheeling
-	self.getVariable('meta_context_previous_source_gps')[0]   =\
+	self.getVariable('meta_context_previous_source_gps')[0]      =\
                        context.previous.sourceGps
-	self.getVariable('meta_context_previous_missing_cpupps')[0]=\
+	self.getVariable('meta_context_previous_missing_cpupps')[0]  =\
                        context.previous.missingCpuPps
-	self.getVariable('meta_context_previous_missing_latpps')[0]=\
+	self.getVariable('meta_context_previous_missing_latpps')[0]  =\
                        context.previous.missingLatPps
 	self.getVariable('meta_context_previous_missing_timetone')[0]=\
                        context.previous.missingTimeTone
-	self.getVariable('meta_context_previous_gem_timehacks')[0] =\
+	self.getVariable('meta_context_previous_gem_timehacks')[0]   =\
                        context.previous.timeHack.hacks
-	self.getVariable('meta_context_previous_gem_timeticks')[0] =\
+	self.getVariable('meta_context_previous_gem_timeticks')[0]   =\
                        context.previous.timeHack.tics
 
 	(newSecond, ticsDev) = self.getClockTicsDev20MHz(meta, context)
