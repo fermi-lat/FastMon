@@ -156,9 +156,9 @@ class pEvtMetaContextProcessor:
         elapsed = int( (float( elapsed ) / freq * 1000000.0) + 0.5 )
         metaPPS = (meta.timeHack.hacks << 25) | meta.timeHack.tics
         currPPS = (context.current.timeHack.hacks << 25) |\
-                  context.current.timeHack.tics
+                   context.current.timeHack.tics
         prevPPS = (context.previous.timeHack.hacks << 25) |\
-                  context.previous.timeHack.tics
+                   context.previous.timeHack.tics
         secs    = context.current.timeSecs 
 	tevt = ProductSpan.utcfromtimestamp( secs, elapsed )
         return secs + elapsed/1000000.
@@ -176,7 +176,8 @@ class pEvtMetaContextProcessor:
         self.getVariable('meta_softwareKey')[0] = meta.softwareKey
         self.getVariable('meta_LATC_master')[0] = meta.hardwareKey
 		             
-        self.getVariable('meta_context_run_id')[0] = self.EvtReader.runid()  
+        self.getVariable('evt_data_transfer_id')[0] = self.EvtReader.runid()
+        self.getVariable('meta_context_run_id')[0]  = context.run.startedAt
 		            
 	self.getVariable('meta_context_open_action')[0]            =\
                        context.open.action
