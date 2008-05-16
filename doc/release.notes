@@ -1,3 +1,8 @@
+*** v3r1p4 ***
+- Added quantity evt_data_transfer_id that contains de data transfer id
+  and fixed meta_context_run_id that now contains the real run id, aka run.startedat.
+* Relevant jira(s): GDQMQ-115
+
 *** v3r1p3 ***
 - Added quantities meta_LATC_master, aka meta.hardwareKey, and
 meta.softwareKey for good measure. This is the hardware configuration for the
