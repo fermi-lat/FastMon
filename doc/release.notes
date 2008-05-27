@@ -1,3 +1,8 @@
+*** v3r1p5 ***
+- Bug Fix, change modf to fmod in the routine calculating the longitude in
+  pSCPosition.py, as done in ST astro package.
+* Relevant jira(s): GDQMQ-133 
+
 *** v3r1p4 ***
 - Added quantity evt_data_transfer_id that contains de data transfer id
   and fixed meta_context_run_id that now contains the real run id, aka run.startedat.
