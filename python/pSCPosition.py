@@ -339,7 +339,7 @@ class pSCPosition:
     		
     	# Longitude
 	m_lon = phi - self.GMSTime*math.pi/180.
-    	m_lon = math.modf(m_lon/(2*math.pi))[0] # fmod(m_lon, 2*M_PI) rest of the division of m_lon by 2Pi
+    	m_lon = math.fmod(m_lon, 2*math.pi) # fmod(m_lon, 2*M_PI) rest of the division of m_lon by 2Pi
     	if m_lon<math.pi:
 	     m_lon+=2.*math.pi   # for -180 to 180?
     	if m_lon>math.pi:
@@ -397,7 +397,7 @@ class pSCPosition:
         self.GMSTime    = self.getGMSTime(self.JulianDate)
         self.EarthCoordinates = self.getEarthCoordinate()
         self.Latitude  = self.EarthCoordinates[0]
-        self.Longitude = self.EarthCoordinates[1]       
+        self.Longitude = self.EarthCoordinates[1]
         self.Altitude  = self.EarthCoordinates[2]
 	self.PitchRollYaw = self.getRockNRoll()
 	self.Pitch = self.PitchRollYaw[0]
