@@ -1,3 +1,8 @@
+*** v3r2p1 ***
+- Bug fix when calculating the phi angle of the 3D Position vector, now using safer ROOT.TVector3 methods,
+  Longitudes looks nicer. 
+* Relevant jira(s): GDQMQ-133
+
 *** v3r2p0 ***
 - Now handling LATC_master key in LPA runs with meta.hardwareKey and in LCI runs with meta.writeCfg.
 * Relevant jira(s): GDQMQ-145 
