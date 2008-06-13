@@ -1,3 +1,7 @@
+*** v3r2p0 ***
+- Now handling LATC_master key in LPA runs with meta.hardwareKey and in LCI runs with meta.writeCfg.
+* Relevant jira(s): GDQMQ-145 
+
 *** v3r1p5 ***
 - Bug Fix, change modf to fmod in the routine calculating the longitude in
   pSCPosition.py, as done in ST astro package.
