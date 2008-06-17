@@ -154,7 +154,7 @@ class pM7Parser:
             return self.SCPositionTable[index]
         except IndexError:
             logger.error('Invalid index in pM7Parser.getSCPosition().')
-            logger.info('Required spacecraft time is %s.' % SCTime)
+            logger.info('Required spacecraft time is %s.' % SCTime[0])
             logger.info('Index returned by bisect is %s (the SC table has %s rows).' %\
                         (index, len(self.SCPositionTable)))
             logger.info('Returning the last SC position table element...')
