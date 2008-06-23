@@ -1,3 +1,8 @@
+*** v3r2p2 ***
+- Bug fix  FastMon Bug in pM7Parser when there is an invalid index in the 
+  pSCPosition list. FastMin still not able to handle an empty/corrupted M7 file.
+* Relevant jira(s): GDQMQ-156
+
 *** v3r2p1 ***
 - Bug fix when calculating the phi angle of the 3D Position vector, now using safer ROOT.TVector3 methods,
   Longitudes looks nicer. 
