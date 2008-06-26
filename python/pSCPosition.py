@@ -87,6 +87,12 @@ class pSCPosition:
        ## @var ZDec
        ## @brief The space craft Z axis pointing direction Declination
        
+       ## @var XRa
+       ## @brief The space craft X axis pointing direction Right Ascension
+       
+       ## @var XDec
+       ## @brief The space craft X axis pointing direction Declination
+       
        ## @var JulianDate
        ## @brief The Time stamp as a Julian Date.
        
@@ -235,6 +241,26 @@ class pSCPosition:
 	    self.processCoordinates()
 	return self.ZDec
 
+    ## @brief Returns the space craft X axis RA
+    #
+    #  If XRa is None, try to process the coordinates before giving XRa
+    ## @param self
+    #  The class instance.
+    def getXRa(self):
+	if self.XRa is None:
+	    self.processCoordinates()
+	return self.XRa
+
+    ## @brief Returns the space craft X axis Dec
+    #
+    #  If XDec is None, try to process the coordinates before giving XDec
+    ## @param self
+    #  The class instance.
+    def getXDec(self):
+	if self.XDec is None:
+	    self.processCoordinates()
+	return self.XDec
+
     ## @brief Returns the Julian date for a given mission elapsed time 
     ## @param self
     #  The class instance is actually not used in this stand alone function
@@ -263,7 +289,7 @@ class pSCPosition:
         C = 365.25 * An 
         if An < 0:
 	    C = C - 1
-        D = 30.6001 * (Me + 1)
+        D = int(30.6001 * (Me + 1))
         m_JD = B + C + D + Gio + 1720994.5 + float(met) / SECONDS_PER_DAY
         return m_JD
 
@@ -392,10 +418,19 @@ class pSCPosition:
     def getZaxisPointing(self):
         q = ROOT.TQuaternion(self.Quaternion[0], self.Quaternion[1], self.Quaternion[2], self.Quaternion[3])
 	zaxis = q.Rotation(ROOT.TVector3(0,0,1))
-	ra  = math.degrees(zaxis.Theta())
-	dec = math.degrees(zaxis.Phi())
-        return (ra, dec)
+	zra  = math.degrees(zaxis.Theta())
+	zdec = math.degrees(zaxis.Phi())
+        return (zra, zdec)
 
+    ## @brief Get the quaternion x axis pointing direction in equatorial coordinates (Ra, Dec)
+    ## @param self
+    #  The class instance.
+    def getXaxisPointing(self):
+        q = ROOT.TQuaternion(self.Quaternion[0], self.Quaternion[1], self.Quaternion[2], self.Quaternion[3])
+	xaxis = q.Rotation(ROOT.TVector3(1,0,0))
+	xra  = math.degrees(xaxis.Theta())
+	xdec = math.degrees(xaxis.Phi())
+        return (xra, xdec)
     	
     ## @brief Call processing of the earth coordinates
     ## @param self
@@ -414,6 +449,9 @@ class pSCPosition:
 	self.Zaxis = self.getZaxisPointing()
 	self.ZRa  = self.Zaxis[0]
 	self.ZDec = self.Zaxis[1]
+	self.Xaxis = self.getXaxisPointing()
+	self.XRa  = self.Xaxis[0]
+	self.XDec = self.Xaxis[1]
 	
 if __name__ == '__main__':
     sc = pSCPosition(2008.5, (252672900, 0))
