@@ -1,3 +1,10 @@
+*** v3r2p3 ***
+- Bug fix in Julian Date calculation, that was the cause of the wrong latitude and longitude.
+  GDQMQ-133. 
+- Added X-axis Ra and Dec pointing copying on Zaxis methods that are however probably wrong.
+  GDQMQ-160 and GDQMQ-167 
+* Relevant jira(s): GDQMQ-133, GDQMQ-160 and GDQMQ-167
+
 *** v3r2p2 ***
 - Bug fix  FastMon Bug in pM7Parser when there is an invalid index in the 
   pSCPosition list. FastMin still not able to handle an empty/corrupted M7 file.
