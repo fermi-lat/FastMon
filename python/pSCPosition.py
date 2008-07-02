@@ -104,6 +104,9 @@ class pSCPosition:
        self.MetMicroSeconds = int(time[1])
        self.Position   = position
        self.Quaternion  = quaternion
+       self.XaxisVector = None
+       self.YaxisVector = None
+       self.ZaxisVector = None
        self.EarthCoordinates = (None, None, None)
        self.Latitude  = None
        self.Longitude = None
@@ -112,6 +115,7 @@ class pSCPosition:
        self.Roll  = None
        self.Pitch = None
        self.Yaw   = None
+       self.RockAngle = None
        self.Zaxis = (None, None)
        self.ZRa   = None
        self.ZDec  = None
@@ -132,24 +136,24 @@ class pSCPosition:
     ## @param self
     #  The class instance.
     def __str__(self):
-        return '\nSpace Craft Position parameters:\n'                   	              \
-	      +'MetInSeconds                 	    = %d\n'	      % self.MetInSeconds     \
-	      +'MetMicroSeconds              	    = %s\n'	      % self.MetMicroSeconds  \
-	      +'Position (x, y, z) in meters 	    = (%s, %s, %s)\n' % self.Position         \
-	      +'JulianDate                   	    = %s\n'	      % self.JulianDate       \
-	      +'GMSTime                      	    = %s\n'	      % self.GMSTime	      \
-	      +'Earth Coords (lat, long, alt)       = (%s, %s, %s)\n' % self.EarthCoordinates \
-	      +'Local Rock n Roll (pitch, roll, yaw)= (%s, %s, %s)\n' % self.PitchRollYaw     \
-	      +'X Axis pointing (XRa, XDec)  	    = (%s, %s, %s)\n' % (self.XRa, self.XDec) \
-	      +'Y Axis pointing (YRa, YDec)  	    = (%s, %s, %s)\n' % (self.YRa, self.YDec) \
-	      +'Z AZis pointing (ZRa, ZDec)  	    = (%s, %s, %s)\n' % (self.ZRa, self.ZDec)
+        return '\nSpace Craft Position parameters:\n'                   	               \
+	      +'MetInSeconds                 	     = %d\n'	       % self.MetInSeconds     \
+	      +'MetMicroSeconds              	     = %s\n'	       % self.MetMicroSeconds  \
+	      +'Position (x, y, z) in meters 	     = (%s, %s, %s)\n' % self.Position         \
+	      +'JulianDate                   	     = %s\n'	       % self.JulianDate       \
+	      +'GMSTime                      	     = %s\n'	       % self.GMSTime	       \
+	      +'Earth Coords (lat, long, alt)        = (%s, %s, %s)\n' % self.EarthCoordinates \
+	      +'Local Euler angles (pitch, roll, yaw)= (%s, %s, %s)\n' % self.PitchRollYaw     \
+	      +'Rock angle : Zenith to ZDec          = %s\n'           % self.RockAngle        \
+	      +'X Axis pointing (XRa, XDec)  	     = (%s, %s, %s)\n' % (self.XRa, self.XDec) \
+	      +'Y Axis pointing (YRa, YDec)  	     = (%s, %s, %s)\n' % (self.YRa, self.YDec) \
+	      +'Z AZis pointing (ZRa, ZDec)  	     = (%s, %s, %s)\n' % (self.ZRa, self.ZDec)
 
     ## @brief Returns the current value of yearfloat.
     ## @param self
     #  The class instance.
     def getYearFloat(self):
 	return self.YearFloat 
-
 
     ## @brief Returns the space craft Latitude.
     #
@@ -226,6 +230,16 @@ class pSCPosition:
 	if self.Yaw is None:
 	    self.processCoordinates()
 	return self.Yaw
+
+    ## @brief Returns the space craft Rock angle
+    #
+    #  If Rock is None, try to process the coordinates before giving Rock
+    ## @param self
+    #  The class instance.
+    def getRockAngle(self):
+	if self.RockAngle is None:
+	    self.processCoordinates()
+	return self.RockAngle
 
 
     ## @brief Returns the space craft X axis RA
@@ -378,19 +392,29 @@ class pSCPosition:
 	return float(Tempo_Siderale_Ora*15.)
 
 
+    ## @brief Get all the axis vectors from the quaternion 
+    ## @param self
+    #  The class instance.
+    def setAllAxisVectors(self):
+        q = ROOT.TQuaternion(self.Quaternion[3], self.Quaternion[0], self.Quaternion[1], self.Quaternion[2])
+	self.XaxisVector = q.Rotation(ROOT.TVector3(1,0,0))
+	self.YaxisVector = q.Rotation(ROOT.TVector3(0,1,0))
+	self.ZaxisVector = q.Rotation(ROOT.TVector3(0,0,1))
+	return (self.XaxisVector, self.YaxisVector, self.ZaxisVector)
+	
 
     ## @brief Calculate and return the space craft position in Earth coordinates
     #  Routine was checked against astro package code, Jun 13th 2008 JB
     ## @param self
     #  The class instance.
     def getEarthCoordinate(self):
-        # get the individual components
+        # update to use the zenith vector
  	x = self.Position[0]
 	y = self.Position[1]
 	z = self.Position[2]
 
         # use ROOT TVector3 to avoid dumb errors
-	v3    = ROOT.TVector3(x, y, z)
+        v3 = ROOT.TVector3(x, y, z)
 	r     = v3.Mag()
 	theta = v3.Theta()
         phi   = v3.Phi()
@@ -421,11 +445,25 @@ class pSCPosition:
 	
         return (m_lat, m_lon, m_altitude)
 
+    ## @brief Get the Spacecraft Zenith direction
+    ## Direction given by the earth center and the spacecraft position in ECI frame)
+    ## @param self
+    #  The class instance.
+    def getZenithVector(self):
+ 	x = self.Position[0]
+	y = self.Position[1]
+	z = self.Position[2]
+
+        # use ROOT TVector3 to avoid dumb errors
+        zenith = ROOT.TVector3(x, y, z)
+	return zenith
+
+
     ## @brief Convert the quaternion to Euler angles
     ## From http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
     ## @param self
     #  The class instance.
-    def getRockNRoll(self):
+    def getEulerAngles(self):
         # I have verified that the quaternion is normalized.
         # get the quaternion individual components
         q0 = self.Quaternion[3]
@@ -438,15 +476,27 @@ class pSCPosition:
 	psi   = math.degrees(math.atan( 2*(q0*q3+q1*q2)/(1-2*(q2*q2+q3*q3)) ))        
 	return (theta, phi, psi)
 
-    ## @brief Get the quaternion Axis pointing direction in equatorial coordinates (Ra, Dec)
+    ## @brief Get the Spacecraft Rock angle
+    ## Angle between the Zenith (direction given by the spacecraft position in ECI frame)
+    ## and the Z axis declination
     ## @param self
     #  The class instance.
-    ## @param axis has to be TVector3 giving the axis direction
-    def getAxisPointing(self, axis):
+    def getRockAngle(self):
         q = ROOT.TQuaternion(self.Quaternion[3], self.Quaternion[0], self.Quaternion[1], self.Quaternion[2])
-	axis = q.Rotation(axis)
+	if self.ZaxisVector is None:
+	    self.setAllAxisVectors()
+	Zenith = self.getZenithVector()
+        rock   = math.degrees(self.ZaxisVector.Angle(Zenith))
+	return rock
+
+    ## @brief Get the axis (Ra, Dec) from the axis vector
+    ## @param self
+    #  The class instance.
+    ## @param axis
+    #  The axis vector you want the Ra and Dec
+    def getAxisRaDec(self, axis):
 	dec = math.degrees(axis.Theta())
-	ra  = math.degrees(axis.Phi())
+    	ra  = math.degrees(axis.Phi())
 	dec = 90-dec
 	ra += 180	    
         return (ra, dec)
@@ -454,38 +504,43 @@ class pSCPosition:
     ## @brief Get the quaternion X Axis pointing direction in equatorial coordinates (Ra, Dec)
     ## @param self
     #  The class instance.
-    ## Roll ?
-    def getXaxisPointing(self):        
-        return self.getAxisPointing(ROOT.TVector3(1,0,0))
+    def getXaxisPointing(self):
+	if self.XaxisVector is None:
+	    self.setAllAxisVectors()                    
+        return self.getAxisRaDec(self.XaxisVector)
 
     ## @brief Get the quaternion Y Axis pointing direction in equatorial coordinates (Ra, Dec)
     ## @param self
     #  The class instance.
-    ## Yaw ?
     def getYaxisPointing(self):        
-        return self.getAxisPointing(ROOT.TVector3(0,1,0))
+	if self.YaxisVector is None:
+	    self.setAllAxisVectors()            
+        return self.getAxisRaDec(self.YaxisVector)
 
     ## @brief Get the quaternion Z Axis pointing direction in equatorial coordinates (Ra, Dec)
     ## @param self
     #  The class instance.
-    ## Pitch ?
     def getZaxisPointing(self):        
-        return self.getAxisPointing(ROOT.TVector3(0,0,1))
-    	
+	if self.ZaxisVector is None:
+	    self.setAllAxisVectors()            
+        return self.getAxisRaDec(self.ZaxisVector)
+
     ## @brief Call processing of the earth coordinates
     ## @param self
     #  The class instance.
     def processCoordinates(self):
+	self.setAllAxisVectors()
         self.JulianDate = self.getGLASTDate(self.MetInSeconds)
         self.GMSTime    = self.getGMSTime(self.JulianDate)
         self.EarthCoordinates = self.getEarthCoordinate()
-        self.Latitude  = self.EarthCoordinates[0]
-        self.Longitude = self.EarthCoordinates[1]
-        self.Altitude  = self.EarthCoordinates[2]
-	self.PitchRollYaw = self.getRockNRoll()
-	self.Pitch = self.PitchRollYaw[0]
-	self.Roll  = self.PitchRollYaw[1]
-	self.Yaw   = self.PitchRollYaw[2]
+        self.Latitude         = self.EarthCoordinates[0]
+        self.Longitude        = self.EarthCoordinates[1]
+        self.Altitude         = self.EarthCoordinates[2]
+	self.PitchRollYaw = self.getEulerAngles()
+	self.Pitch 	  = self.PitchRollYaw[0]
+	self.Roll  	  = self.PitchRollYaw[1]
+	self.Yaw   	  = self.PitchRollYaw[2]
+	self.RockAngle    = self.getRockAngle()
 	self.Xaxis = self.getXaxisPointing()
 	self.XRa   = self.Xaxis[0]
 	self.XDec  = self.Xaxis[1]
