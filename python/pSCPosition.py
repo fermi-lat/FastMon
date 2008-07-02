@@ -115,6 +115,9 @@ class pSCPosition:
        self.Zaxis = (None, None)
        self.ZRa   = None
        self.ZDec  = None
+       self.Xaxis = (None, None)
+       self.XRa   = None
+       self.XDec  = None
        self.JulianDate = None
        self.GMSTime = None
        self.processCoordinates()
@@ -129,14 +132,17 @@ class pSCPosition:
     ## @param self
     #  The class instance.
     def __str__(self):
-        return '\nSpace Craft Position parameters:\n'                          \
-	      +'MetInSeconds                 = %d\n' % self.MetInSeconds       \
-	      +'MetMicroSeconds              = %s\n' % self.MetMicroSeconds    \
-	      +'Position (x, y, z) in meters = (%s, %s, %s)\n' % self.Position \
-	      +'JulianDate                   = %s\n' % self.JulianDate         \
-	      +'GMSTime                      = %s\n' % self.GMSTime            \
-	      +'Earth Coords (lat, long, alt)= (%s, %s, %s)\n' % self.EarthCoordinates\
-	      +'Local Rock n Roll (pitch, roll, yaw)= (%s, %s, %s)\n' % self.PitchRollYaw 
+        return '\nSpace Craft Position parameters:\n'                   	              \
+	      +'MetInSeconds                 	    = %d\n'	      % self.MetInSeconds     \
+	      +'MetMicroSeconds              	    = %s\n'	      % self.MetMicroSeconds  \
+	      +'Position (x, y, z) in meters 	    = (%s, %s, %s)\n' % self.Position         \
+	      +'JulianDate                   	    = %s\n'	      % self.JulianDate       \
+	      +'GMSTime                      	    = %s\n'	      % self.GMSTime	      \
+	      +'Earth Coords (lat, long, alt)       = (%s, %s, %s)\n' % self.EarthCoordinates \
+	      +'Local Rock n Roll (pitch, roll, yaw)= (%s, %s, %s)\n' % self.PitchRollYaw     \
+	      +'X Axis pointing (XRa, XDec)  	    = (%s, %s, %s)\n' % (self.XRa, self.XDec) \
+	      +'Y Axis pointing (YRa, YDec)  	    = (%s, %s, %s)\n' % (self.YRa, self.YDec) \
+	      +'Z AZis pointing (ZRa, ZDec)  	    = (%s, %s, %s)\n' % (self.ZRa, self.ZDec)
 
     ## @brief Returns the current value of yearfloat.
     ## @param self
@@ -221,25 +227,6 @@ class pSCPosition:
 	    self.processCoordinates()
 	return self.Yaw
 
-    ## @brief Returns the space craft Z axis RA
-    #
-    #  If ZRa is None, try to process the coordinates before giving ZRa
-    ## @param self
-    #  The class instance.
-    def getZRa(self):
-	if self.ZRa is None:
-	    self.processCoordinates()
-	return self.ZRa
-
-    ## @brief Returns the space craft Z axis Dec
-    #
-    #  If ZDec is None, try to process the coordinates before giving ZDec
-    ## @param self
-    #  The class instance.
-    def getZDec(self):
-	if self.ZDec is None:
-	    self.processCoordinates()
-	return self.ZDec
 
     ## @brief Returns the space craft X axis RA
     #
@@ -260,6 +247,46 @@ class pSCPosition:
 	if self.XDec is None:
 	    self.processCoordinates()
 	return self.XDec
+
+    ## @brief Returns the space craft Y aYis RA
+    #
+    #  If YRa is None, try to process the coordinates before giving YRa
+    ## @param self
+    #  The class instance.
+    def getYRa(self):
+	if self.YRa is None:
+	    self.processCoordinates()
+	return self.YRa
+
+    ## @brief Returns the space craft Y aYis Dec
+    #
+    #  If YDec is None, try to process the coordinates before giving YDec
+    ## @param self
+    #  The class instance.
+    def getYDec(self):
+	if self.YDec is None:
+	    self.processCoordinates()
+	return self.YDec
+
+    ## @brief Returns the space craft Z axis RA
+    #
+    #  If ZRa is None, try to process the coordinates before giving ZRa
+    ## @param self
+    #  The class instance.
+    def getZRa(self):
+	if self.ZRa is None:
+	    self.processCoordinates()
+	return self.ZRa
+
+    ## @brief Returns the space craft Z axis Dec
+    #
+    #  If ZDec is None, try to process the coordinates before giving ZDec
+    ## @param self
+    #  The class instance.
+    def getZDec(self):
+	if self.ZDec is None:
+	    self.processCoordinates()
+	return self.ZDec
 
     ## @brief Returns the Julian date for a given mission elapsed time 
     ## @param self
@@ -401,36 +428,49 @@ class pSCPosition:
     def getRockNRoll(self):
         # I have verified that the quaternion is normalized.
         # get the quaternion individual components
-        q0 = self.Quaternion[0]
-        q1 = self.Quaternion[1]
-        q2 = self.Quaternion[2]
-        q3 = self.Quaternion[3]
+        q0 = self.Quaternion[3]
+        q1 = self.Quaternion[0]
+        q2 = self.Quaternion[1]
+        q3 = self.Quaternion[2]
 	# Invert the matrix and return angles in degrees
 	theta = math.degrees(math.atan( 2*(q0*q1+q2*q3)/(1-2*(q1*q1+q2*q2)) ))
 	phi   = math.degrees(math.asin( 2*(q0*q2-q3*q1) ))
-	psi   = math.degrees(math.atan( 2*(q0*q3+q1*q2)/(1-2*(q2*q2+q3*q3)) ))
-        
+	psi   = math.degrees(math.atan( 2*(q0*q3+q1*q2)/(1-2*(q2*q2+q3*q3)) ))        
 	return (theta, phi, psi)
 
-    ## @brief Get the quaternion z axis pointing direction in equatorial coordinates (Ra, Dec)
+    ## @brief Get the quaternion Axis pointing direction in equatorial coordinates (Ra, Dec)
     ## @param self
     #  The class instance.
-    def getZaxisPointing(self):
-        q = ROOT.TQuaternion(self.Quaternion[0], self.Quaternion[1], self.Quaternion[2], self.Quaternion[3])
-	zaxis = q.Rotation(ROOT.TVector3(0,0,1))
-	zra  = math.degrees(zaxis.Theta())
-	zdec = math.degrees(zaxis.Phi())
-        return (zra, zdec)
+    ## @param axis has to be TVector3 giving the axis direction
+    def getAxisPointing(self, axis):
+        q = ROOT.TQuaternion(self.Quaternion[3], self.Quaternion[0], self.Quaternion[1], self.Quaternion[2])
+	axis = q.Rotation(axis)
+	dec = math.degrees(axis.Theta())
+	ra  = math.degrees(axis.Phi())
+	dec = 90-dec
+	ra += 180	    
+        return (ra, dec)
 
-    ## @brief Get the quaternion x axis pointing direction in equatorial coordinates (Ra, Dec)
+    ## @brief Get the quaternion X Axis pointing direction in equatorial coordinates (Ra, Dec)
     ## @param self
     #  The class instance.
-    def getXaxisPointing(self):
-        q = ROOT.TQuaternion(self.Quaternion[0], self.Quaternion[1], self.Quaternion[2], self.Quaternion[3])
-	xaxis = q.Rotation(ROOT.TVector3(1,0,0))
-	xra  = math.degrees(xaxis.Theta())
-	xdec = math.degrees(xaxis.Phi())
-        return (xra, xdec)
+    ## Roll ?
+    def getXaxisPointing(self):        
+        return self.getAxisPointing(ROOT.TVector3(1,0,0))
+
+    ## @brief Get the quaternion Y Axis pointing direction in equatorial coordinates (Ra, Dec)
+    ## @param self
+    #  The class instance.
+    ## Yaw ?
+    def getYaxisPointing(self):        
+        return self.getAxisPointing(ROOT.TVector3(0,1,0))
+
+    ## @brief Get the quaternion Z Axis pointing direction in equatorial coordinates (Ra, Dec)
+    ## @param self
+    #  The class instance.
+    ## Pitch ?
+    def getZaxisPointing(self):        
+        return self.getAxisPointing(ROOT.TVector3(0,0,1))
     	
     ## @brief Call processing of the earth coordinates
     ## @param self
@@ -446,12 +486,15 @@ class pSCPosition:
 	self.Pitch = self.PitchRollYaw[0]
 	self.Roll  = self.PitchRollYaw[1]
 	self.Yaw   = self.PitchRollYaw[2]
-	self.Zaxis = self.getZaxisPointing()
-	self.ZRa  = self.Zaxis[0]
-	self.ZDec = self.Zaxis[1]
 	self.Xaxis = self.getXaxisPointing()
-	self.XRa  = self.Xaxis[0]
-	self.XDec = self.Xaxis[1]
+	self.XRa   = self.Xaxis[0]
+	self.XDec  = self.Xaxis[1]
+	self.Yaxis = self.getYaxisPointing()
+	self.YRa   = self.Yaxis[0]
+	self.YDec  = self.Yaxis[1]
+	self.Zaxis = self.getZaxisPointing()
+	self.ZRa   = self.Zaxis[0]
+	self.ZDec  = self.Zaxis[1]
 	
 if __name__ == '__main__':
     sc = pSCPosition(2008.5, (252672900, 0))
