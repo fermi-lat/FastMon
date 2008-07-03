@@ -1,3 +1,16 @@
+*** v3r3p0 ***
+- Added the following quantities in pGeoMagProcessor : x and y axis Ra and Dec, earth limb infov, rock angle
+- pSCPosition : Implement calculus of the earh limb, that looks ok, and a first trial at the arc angle
+  of the earth limb in the field of view, not OK. GDQMQ-6
+- pSCPosition : Major changes - Reorganize methods to get the axis pointing and FIX BUG in the calculation
+  of the Rock angle that is now OK. GDQMQ-160 and GDQMQ-167
+- pSCPosition : Major upgrade of the class with new members for X, Y and Z axis pointing in RA and DEC,
+  new calculation and access methods, and BUG FIX for the ZRa and ZDec calculation,
+  the quaternion was not defined as usual (w, x, y, z) but stands as (x, y ,z, w) in the magic7.
+  ZRa and ZDec are now correct, so should it be for X and Y axis. GDQMQ-160 and GDQMQ-167.
+
+* Relevant jira(s): GDQMQ-6, GDQMQ-160 and GDQMQ-167
+
 *** v3r2p3 ***
 - Bug fix in Julian Date calculation, that was the cause of the wrong latitude and longitude.
   GDQMQ-133. 
