@@ -311,10 +311,20 @@ class pSCPosition:
 	if self.ZDec is None:
 	    self.processCoordinates()
 	return self.ZDec
+	
+    ## @brief Returns the angle between zenith 
+    #  and earth horizon
+    #  If HorizonAngle is None, try to process the coordinates before giving HorizonAngle
+    ## @param self
+    #  The class instance.
+    def getLimbAngle(self):
+	if self.HorizonAngle is None:
+	    self.processCoordinates()
+	return self.HorizonAngle
 
-    ## @brief Returns the space craft Z axis Dec
+    ## @brief Returns the arc angle of the earth limb within the LAT FOV
     #
-    #  If ZDec is None, try to process the coordinates before giving ZDec
+    #  If ArcAngleEarthLimb is None, try to process the coordinates before giving ArcAngleEarthLimb
     ## @param self
     #  The class instance.
     def getArcAngleEarthLimb(self):
