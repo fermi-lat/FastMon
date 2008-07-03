@@ -1,3 +1,8 @@
+*** v3r3p1 ***
+- Added a get method for the earth limb angle in pSCPosition
+  and added the quantity in pGeoMagProcessor
+* Relevant jira(s): GDQMQ-6
+
 *** v3r3p0 ***
 - Added the following quantities in pGeoMagProcessor : x and y axis Ra and Dec, earth limb infov, rock angle
 - pSCPosition : Implement calculus of the earh limb, that looks ok, and a first trial at the arc angle
