@@ -63,7 +63,7 @@ class pGeomagProcessor:
 	pitch      = sc.getPitch()
 	roll       = sc.getRoll()
 	yaw        = sc.getYaw()
-	rock       = sc.getRock()
+	rock       = sc.getRockAngle()
 	xra        = sc.getXRa()
 	xdec       = sc.getXDec()	
 	yra        = sc.getYRa()
