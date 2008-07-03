@@ -20,6 +20,7 @@ from pSafeROOT import ROOT
 EARTH_FLAT      = 1/298.25 
 EARTH_RADIUS    = 6378145
 SECONDS_PER_DAY = 24*60*60
+LAT_FOV = 70 # LAT Field of View for Earth limb is set to 80 degrees
 
 ## @brief The space craft position implementation.
 
@@ -77,6 +78,9 @@ class pSCPosition:
        
        ## @var Yaw
        ## @brief The space craft Yaw angle
+ 
+       ## @var RockAngle
+       ## @brief The space craft Rock angle : local Zenith (ECI frame) and Zaxis Declination
        
        ## @var Zaxis
        ## @brief The space craft Z axis pointing direction in equatorial coordinates (Ra, Dec)
@@ -98,6 +102,10 @@ class pSCPosition:
        
        ## @var GMSTime
        ## @brief The Time stamp in the Greenwich Meridian Sideral Time 
+
+       ## @var HorizonAngle
+       ## @brief Angle between local Zenith (ECI frame) and the earth horizon
+       
 
        self.YearFloat  = yearfloat
        self.MetInSeconds    = int(time[0])
@@ -122,8 +130,10 @@ class pSCPosition:
        self.Xaxis = (None, None)
        self.XRa   = None
        self.XDec  = None
-       self.JulianDate = None
-       self.GMSTime = None
+       self.JulianDate        = None
+       self.GMSTime           = None
+       self.HorizonAngle      = None
+       self.ArcAngleEarthLimb = None
        self.processCoordinates()
        
     ## @brief Compare 2 space craft positions using the time stamp in seconds
@@ -302,6 +312,16 @@ class pSCPosition:
 	    self.processCoordinates()
 	return self.ZDec
 
+    ## @brief Returns the space craft Z axis Dec
+    #
+    #  If ZDec is None, try to process the coordinates before giving ZDec
+    ## @param self
+    #  The class instance.
+    def getArcAngleEarthLimb(self):
+	if self.ArcAngleEarthLimb is None:
+	    self.processCoordinates()
+	return self.ArcAngleEarthLimb
+
     ## @brief Returns the Julian date for a given mission elapsed time 
     ## @param self
     #  The class instance is actually not used in this stand alone function
@@ -408,7 +428,7 @@ class pSCPosition:
     ## @param self
     #  The class instance.
     def getEarthCoordinate(self):
-        # update to use the zenith vector
+        # @todo update to use the zenith vector
  	x = self.Position[0]
 	y = self.Position[1]
 	z = self.Position[2]
@@ -482,13 +502,42 @@ class pSCPosition:
     ## @param self
     #  The class instance.
     def getRockAngle(self):
-        q = ROOT.TQuaternion(self.Quaternion[3], self.Quaternion[0], self.Quaternion[1], self.Quaternion[2])
 	if self.ZaxisVector is None:
 	    self.setAllAxisVectors()
 	Zenith = self.getZenithVector()
         rock   = math.degrees(self.ZaxisVector.Angle(Zenith))
 	return rock
 
+    ## @brief Get the Angle to the horizon
+    ## Angle between the Zenith (direction given by the spacecraft position in ECI frame)
+    ## and the Earth horizon
+    ## @param self
+    #  The class instance.
+    ## We add 10km to the earth radius because we're interested in the atmosphere.
+    def getHorizonAngle(self):
+	horizon = 180 - math.degrees(math.asin(EARTH_RADIUS/(self.Altitude+10000)))
+	return horizon
+
+    ## @brief Get the arc angle of the earth limb in the LAT FOV (Pi/3)
+    ## intersection points between a circle of
+    #  this radius, centered at the rocking angle of GLAST, and the horizon (which
+    #  has an angular radius of about 113 deg and is centered on the zenith - i.e.,
+    #  rocking angle 0). Thank Seth !
+    ## @param self
+    #  The class instance.
+    ## We add 10km to the earth radius because we're interested in the atmosphere.    
+    def getEarthLimb(self):
+	# if we're not rocking too much then we have no earth limb in FOV
+        if (self.HorizonAngle - (self.RockAngle+LAT_FOV)>0 ):
+	    return 0
+	# if not then we have to calculate the arc lenght        
+        alphaFOV = math.radians(LAT_FOV)
+        alambda  = math.radians(self.HorizonAngle)
+	theta    = math.radians(self.RockAngle)
+	thing    = math.cos(alphaFOV)/math.cos(theta - alambda)
+        elimb    = 2*math.acos( thing )
+	return math.degrees(elimb)
+	
     ## @brief Get the axis (Ra, Dec) from the axis vector
     ## @param self
     #  The class instance.
@@ -550,6 +599,9 @@ class pSCPosition:
 	self.Zaxis = self.getZaxisPointing()
 	self.ZRa   = self.Zaxis[0]
 	self.ZDec  = self.Zaxis[1]
+	self.HorizonAngle      = self.getHorizonAngle()
+	self.ArcAngleEarthLimb = self.getEarthLimb()
+	
 	
 if __name__ == '__main__':
     sc = pSCPosition(2008.5, (252672900, 0))
