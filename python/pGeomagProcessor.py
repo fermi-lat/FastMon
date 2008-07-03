@@ -70,6 +70,7 @@ class pGeomagProcessor:
 	ydec       = sc.getYDec()	
 	zra        = sc.getZRa()
 	zdec       = sc.getZDec()
+	hor        = sc.getLimbAngle()	
 	limb       = sc.getArcAngleEarthLimb()	
 	
 	# Spacecraft attitude
@@ -92,6 +93,7 @@ class pGeomagProcessor:
         self.getVariable('spacecraft_zdec')[0]  = zdec
         
 	# Earth limb arc angle in LAT field of View
+        self.getVariable('spacecraft_earthlimb')[0]     = hor
         self.getVariable('spacecraft_earthlimb_fov')[0] = limb
 	
 	# Geomagnetic field
