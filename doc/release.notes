@@ -1,3 +1,8 @@
+*** v3r3p2 ***
+- Bug fix in pSCposition getRockAngle was implemented twice, I do not even understand how that could work
+
+* Relevant jira(s): GDQMQ-187
+
 *** v3r3p1 ***
 - Added a get method for the earth limb angle in pSCPosition
   and added the quantity in pGeoMagProcessor
