@@ -511,12 +511,12 @@ class pSCPosition:
     ## and the Z axis declination
     ## @param self
     #  The class instance.
-    def getRockAngle(self):
+    def setRockAngle(self):
 	if self.ZaxisVector is None:
 	    self.setAllAxisVectors()
 	Zenith = self.getZenithVector()
-        rock   = math.degrees(self.ZaxisVector.Angle(Zenith))
-	return rock
+        self.RockAngle   = math.degrees(self.ZaxisVector.Angle(Zenith))
+	
 
     ## @brief Get the Angle to the horizon
     ## Angle between the Zenith (direction given by the spacecraft position in ECI frame)
@@ -599,7 +599,7 @@ class pSCPosition:
 	self.Pitch 	  = self.PitchRollYaw[0]
 	self.Roll  	  = self.PitchRollYaw[1]
 	self.Yaw   	  = self.PitchRollYaw[2]
-	self.RockAngle    = self.getRockAngle()
+	self.setRockAngle()
 	self.Xaxis = self.getXaxisPointing()
 	self.XRa   = self.Xaxis[0]
 	self.XDec  = self.Xaxis[1]
