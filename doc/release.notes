@@ -1,17 +1,24 @@
+*** v3r4p0 ***
+- Committed new file for merging the xml summary files from the ErrorHandler---this fixes a bug in the old
+script.
+* Relevant jira(s): LONE-70
+
+
 *** v3r3p3 ***
 - Bug fix in pLATcomponentIterator : handleError now always return 0
-
 * Relevant jira(s): GDQMQ-192
+
 
 *** v3r3p2 ***
 - Bug fix in pSCposition getRockAngle was implemented twice, I do not even understand how that could work
-
 * Relevant jira(s): GDQMQ-187
+
 
 *** v3r3p1 ***
 - Added a get method for the earth limb angle in pSCPosition
   and added the quantity in pGeoMagProcessor
 * Relevant jira(s): GDQMQ-6
+
 
 *** v3r3p0 ***
 - Added the following quantities in pGeoMagProcessor : x and y axis Ra and Dec, earth limb infov, rock angle
@@ -23,7 +30,6 @@
   new calculation and access methods, and BUG FIX for the ZRa and ZDec calculation,
   the quaternion was not defined as usual (w, x, y, z) but stands as (x, y ,z, w) in the magic7.
   ZRa and ZDec are now correct, so should it be for X and Y axis. GDQMQ-160 and GDQMQ-167.
-
 * Relevant jira(s): GDQMQ-6, GDQMQ-160 and GDQMQ-167
 
 *** v3r2p3 ***
@@ -32,6 +38,7 @@
 - Added X-axis Ra and Dec pointing copying on Zaxis methods that are however probably wrong.
   GDQMQ-160 and GDQMQ-167 
 * Relevant jira(s): GDQMQ-133, GDQMQ-160 and GDQMQ-167
+
 
 *** v3r2p2 ***
 - Bug fix  FastMon Bug in pM7Parser when there is an invalid index in the 
