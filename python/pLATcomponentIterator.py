@@ -139,4 +139,4 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
         if type(contribution) == LDF.EBFevent:
             if code == LDF.EBFcontributionIterator.ERR_PacketError:
                 self.ErrorHandler.fill('PACKET_ERROR')
-            return 0
+        return 0
