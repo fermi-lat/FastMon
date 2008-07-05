@@ -1,3 +1,8 @@
+*** v3r3p3 ***
+- Bug fix in pLATcomponentIterator : handleError now always return 0
+
+* Relevant jira(s): GDQMQ-192
+
 *** v3r3p2 ***
 - Bug fix in pSCposition getRockAngle was implemented twice, I do not even understand how that could work
 
