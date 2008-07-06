@@ -1,3 +1,9 @@
+*** v3r4p1 ***
+- pM7Parser.py : Verify that the magic 7 starts with an ATT tag, tweak it if it s not the case
+script.
+* Relevant jira(s): GDQMQ-194
+
+
 *** v3r4p0 ***
 - Committed new file for merging the xml summary files from the ErrorHandler---this fixes a bug in the old
 script.
