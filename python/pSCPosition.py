@@ -105,6 +105,12 @@ class pSCPosition:
 
        ## @var HorizonAngle
        ## @brief Angle between local Zenith (ECI frame) and the earth horizon
+
+       ## @var ZGalL
+       ## @brief The space craft Z axis pointing direction in galactic coordinates L
+       
+       ## @var ZGalB
+       ## @brief The space craft Z axis pointing direction in galactic coordinates B       
        
 
        self.YearFloat  = yearfloat
@@ -134,6 +140,9 @@ class pSCPosition:
        self.GMSTime           = None
        self.HorizonAngle      = None
        self.ArcAngleEarthLimb = None
+       self.ZGalacticLB = (None, None)
+       self.ZGalL = None
+       self.ZGalB = None
        self.processCoordinates()
        
     ## @brief Compare 2 space craft positions using the time stamp in seconds
@@ -155,9 +164,10 @@ class pSCPosition:
 	      +'Earth Coords (lat, long, alt)        = (%s, %s, %s)\n' % self.EarthCoordinates \
 	      +'Local Euler angles (pitch, roll, yaw)= (%s, %s, %s)\n' % self.PitchRollYaw     \
 	      +'Rock angle : Zenith to ZDec          = %s\n'           % self.RockAngle        \
-	      +'X Axis pointing (XRa, XDec)  	     = (%s, %s, %s)\n' % (self.XRa, self.XDec) \
-	      +'Y Axis pointing (YRa, YDec)  	     = (%s, %s, %s)\n' % (self.YRa, self.YDec) \
-	      +'Z AZis pointing (ZRa, ZDec)  	     = (%s, %s, %s)\n' % (self.ZRa, self.ZDec)
+	      +'X Axis pointing (XRa, XDec)  	     = (%s, %s)\n'     % (self.XRa, self.XDec) \
+	      +'Y Axis pointing (YRa, YDec)  	     = (%s, %s)\n'     % (self.YRa, self.YDec) \
+	      +'Z AZis pointing (ZRa, ZDec)  	     = (%s, %s)\n'     % (self.ZRa, self.ZDec) \
+	      +'Z AZis pointing (L, B)  	     = (%s, %s)\n'     % (self.ZGalL, self.ZGalB)
 
     ## @brief Returns the current value of yearfloat.
     ## @param self
@@ -311,6 +321,26 @@ class pSCPosition:
 	if self.ZDec is None:
 	    self.processCoordinates()
 	return self.ZDec
+
+    ## @brief Returns the space craft Z axis L pointing in galactic coordinate
+    #
+    #  If ZGalL is None, try to process the coordinates before giving ZGalL
+    ## @param self
+    #  The class instance.
+    def getZGalL(self):
+	if self.ZGalL is None:
+	    self.processCoordinates()
+	return self.ZGalL
+
+    ## @brief Returns the space craft Z axis B pointing in galactic coordinate
+    #
+    #  If ZGalB is None, try to process the coordinates before giving ZGalB
+    ## @param self
+    #  The class instance.
+    def getZGalB(self):
+	if self.ZGalB is None:
+	    self.processCoordinates()
+	return self.ZGalB
 	
     ## @brief Returns the angle between zenith 
     #  and earth horizon
@@ -430,7 +460,7 @@ class pSCPosition:
 	self.XaxisVector = q.Rotation(ROOT.TVector3(1,0,0))
 	self.YaxisVector = q.Rotation(ROOT.TVector3(0,1,0))
 	self.ZaxisVector = q.Rotation(ROOT.TVector3(0,0,1))
-	return (self.XaxisVector, self.YaxisVector, self.ZaxisVector)
+	return 0
 	
 
     ## @brief Calculate and return the space craft position in Earth coordinates
@@ -438,7 +468,6 @@ class pSCPosition:
     ## @param self
     #  The class instance.
     def getEarthCoordinate(self):
-        # @todo update to use the zenith vector
  	x = self.Position[0]
 	y = self.Position[1]
 	z = self.Position[2]
@@ -475,19 +504,19 @@ class pSCPosition:
 	
         return (m_lat, m_lon, m_altitude)
 
-    ## @brief Get the Spacecraft Zenith direction
-    ## Direction given by the earth center and the spacecraft position in ECI frame)
+    ## @brief Set the Spacecraft Zenith direction in galactic coordinates
+    ## Direction given by the earth center and the spacecraft position in galactic frame
+    ## from astro package SkyDir class
     ## @param self
     #  The class instance.
-    def getZenithVector(self):
- 	x = self.Position[0]
-	y = self.Position[1]
-	z = self.Position[2]
-
-        # use ROOT TVector3 to avoid dumb errors
-        zenith = ROOT.TVector3(x, y, z)
-	return zenith
-
+    def processZGalacticLB(self):
+        glb = ROOT.TVector3(self.ZaxisVector)
+	glb.RotateZ(-282.8592*math.pi/180)
+        glb.RotateX(-62.8717 *math.pi/180)
+        glb.RotateZ( 32.93224*math.pi/180)
+	#need this additional rotation to be consistent with the Telemetry Trending.
+	glb.RotateZ(math.pi)
+	return self.getAxisRaDec(glb)
 
     ## @brief Convert the quaternion to Euler angles
     ## From http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
@@ -512,10 +541,14 @@ class pSCPosition:
     ## @param self
     #  The class instance.
     def setRockAngle(self):
-	if self.ZaxisVector is None:
-	    self.setAllAxisVectors()
-	Zenith = self.getZenithVector()
-        self.RockAngle   = math.degrees(self.ZaxisVector.Angle(Zenith))
+ 	x = self.Position[0]
+	y = self.Position[1]
+	z = self.Position[2]	
+        # use ROOT TVector3 to avoid dumb errors
+        zenith = ROOT.TVector3(x, y, z)
+
+        self.RockAngle   = math.degrees(self.ZaxisVector.Angle(zenith))
+	return 0
 	
 
     ## @brief Get the Angle to the horizon
@@ -564,24 +597,18 @@ class pSCPosition:
     ## @param self
     #  The class instance.
     def getXaxisPointing(self):
-	if self.XaxisVector is None:
-	    self.setAllAxisVectors()                    
         return self.getAxisRaDec(self.XaxisVector)
 
     ## @brief Get the quaternion Y Axis pointing direction in equatorial coordinates (Ra, Dec)
     ## @param self
     #  The class instance.
     def getYaxisPointing(self):        
-	if self.YaxisVector is None:
-	    self.setAllAxisVectors()            
         return self.getAxisRaDec(self.YaxisVector)
 
     ## @brief Get the quaternion Z Axis pointing direction in equatorial coordinates (Ra, Dec)
     ## @param self
     #  The class instance.
     def getZaxisPointing(self):        
-	if self.ZaxisVector is None:
-	    self.setAllAxisVectors()            
         return self.getAxisRaDec(self.ZaxisVector)
 
     ## @brief Call processing of the earth coordinates
@@ -589,17 +616,17 @@ class pSCPosition:
     #  The class instance.
     def processCoordinates(self):
 	self.setAllAxisVectors()
+	self.setRockAngle()
         self.JulianDate = self.getGLASTDate(self.MetInSeconds)
         self.GMSTime    = self.getGMSTime(self.JulianDate)
         self.EarthCoordinates = self.getEarthCoordinate()
         self.Latitude         = self.EarthCoordinates[0]
         self.Longitude        = self.EarthCoordinates[1]
         self.Altitude         = self.EarthCoordinates[2]
-	self.PitchRollYaw = self.getEulerAngles()
-	self.Pitch 	  = self.PitchRollYaw[0]
-	self.Roll  	  = self.PitchRollYaw[1]
-	self.Yaw   	  = self.PitchRollYaw[2]
-	self.setRockAngle()
+	self.PitchRollYaw     = self.getEulerAngles()
+	self.Pitch 	      = self.PitchRollYaw[0]
+	self.Roll  	      = self.PitchRollYaw[1]
+	self.Yaw   	      = self.PitchRollYaw[2]
 	self.Xaxis = self.getXaxisPointing()
 	self.XRa   = self.Xaxis[0]
 	self.XDec  = self.Xaxis[1]
@@ -611,6 +638,9 @@ class pSCPosition:
 	self.ZDec  = self.Zaxis[1]
 	self.HorizonAngle      = self.getHorizonAngle()
 	self.ArcAngleEarthLimb = self.getEarthLimb()
+	self.ZGalacticLB = self.processZGalacticLB()
+	self.ZGalL = self.ZGalacticLB[0]
+	self.ZGalB = self.ZGalacticLB[1]
 	
 	
 if __name__ == '__main__':
