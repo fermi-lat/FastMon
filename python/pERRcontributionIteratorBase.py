@@ -36,6 +36,12 @@ class pERRcontributionIteratorBase(LDF.ERRcontributionIterator):
         self.offset(offset)
         self.ErrorHandler = errorHandler
 
+    def handleError(self, event, code, p1, p2):
+        if code == LDF.ERRcontributionIterator.ERR_TEMbug:
+            self.ErrorHandler.fill('TEM_BUG_INSTANCE', [])
+            return LDF.ERRcontributionIterator.ERR_TEMbug
+        return 0
+
     ## @brief Dispatch function for GCCC errors.
     
     def gcccError(self, tower, gccc, err):
