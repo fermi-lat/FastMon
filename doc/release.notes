@@ -1,3 +1,8 @@
+*** v3r4p2 ***
+- pSCPosition and pGeomagProcessor : Add Z axis pointing in galactic coordinates L,B 
+* Relevant jira(s): GDQMQ-193
+
+
 *** v3r4p1 ***
 - pM7Parser.py : Verify that the magic 7 starts with an ATT tag, tweak it if it s not the case
 script.
