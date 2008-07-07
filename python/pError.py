@@ -1,10 +1,8 @@
 ## @package pError
 ## @brief Package describing an error.
 
-import pUtils
 
-
-DETAIL_LABELS = {
+ERROR_DETAIL_LABELS_DICT = {
     'GCCC_ERROR'                  : ['Tower', 'GCCC', 'Err'],
     'GTCC_ERROR'                  : ['Tower', 'GTCC', 'Err'],
     'PHASE_ERROR'                 : ['Tower', 'Err'],
@@ -21,11 +19,12 @@ DETAIL_LABELS = {
     'ACD_HEADER_PARITY_ERROR'     : ['Cable'],
     'ACD_PHA_PARITY_ERROR'        : ['Cable', 'Channel'],
     'ACD_PHA_INCONSISTENCY'       : ['Cable', 'Channel', 'Accept list'],
-    'UNPHYSICAL_TKR_STRIP_ID'     : ['Tower', 'LayerEnd', 'Hit'],
-    'UNPHYSICAL_TKR_LYR_ID'       : ['Tower', 'LayerEnd'],
-    'UNPHYSICAL_CAL_COL_ID'       : ['Tower', 'Layer', 'Column'],
-    'UNPHYSICAL_TOT_VALUE'        : ['Tower', 'LayerEnd', 'TOT'],
+    'TEM_BUG_INSTANCE'            : [],
     'TIMETONE_INCOMPLETE'         : ['timeSecs']
+    }
+
+ERROR_DOCUMENTATION_DICT = {
+    
     }
 
 
@@ -56,12 +55,13 @@ class pError:
 
     ## @brief Return a dict formatted for writing the xml output
     #  for the error summary event by event.
+
     def getXmlDict(self):
         XmlDict = {}
         XmlDict['code'] = self.ErrorCode
         for i in range(len(self.Details)):
             try:
-                label = DETAIL_LABELS[self.ErrorCode][i]
+                label = ERROR_DETAIL_LABELS_DICT[self.ErrorCode][i]
             except KeyError:
                 label = 'Parameter %d' % i
             XmlDict[label] = self.Details[i]        
@@ -76,7 +76,7 @@ class pError:
         details = ''
         for i in range(len(self.Details)):
             try:
-                label = DETAIL_LABELS[self.ErrorCode][i]
+                label = ERROR_DETAIL_LABELS_DICT[self.ErrorCode][i]
             except KeyError:
                 label = 'Parameter %d' % i
             details += '%s=%s, ' % (label, self.Details[i])
@@ -89,8 +89,9 @@ class pError:
         return self.getAsText()
 
 
+
 if __name__ == '__main__':
-    errors = [pError('UNPHYSICAL_STRIP_ID', [12, 34, 1753]),
+    errors = [pError('TEM_BUG_INSTANCE'),
               pError('TEST_CODE', [3, 2])]
     for error in errors:
         print error
