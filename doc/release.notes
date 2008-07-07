@@ -1,3 +1,9 @@
+*** v3r5p0 ***
+- Event iterators changed to detect instances of the TEM firmware bug and not to
+care of unphysical strips anymore.
+* Relevant jira(s): GDQMQ-197
+
+
 *** v3r4p2 ***
 - pSCPosition and pGeomagProcessor : Add Z axis pointing in galactic coordinates L,B 
 * Relevant jira(s): GDQMQ-193
