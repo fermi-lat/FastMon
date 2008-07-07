@@ -5,7 +5,7 @@
 ERROR_DETAIL_LABELS_DICT = {
     'GCCC_ERROR'                  : ['Tower', 'GCCC', 'Err'],
     'GTCC_ERROR'                  : ['Tower', 'GTCC', 'Err'],
-    'PHASE_ERROR'                 : ['Tower', 'Err'],
+    'PHASE_ERROR'                 : ['Tower', 'Tags'],
     'TIMEOUT_ERROR'               : ['Tower', 'Err'],
     'GTRC_PHASE_ERROR'            : ['Tower', 'GTCC', 'GTRC', 'Err'],
     'GTFE_PHASE_ERROR'            : ['Tower', 'GTCC', 'GTRC', 'Err1', 'Err2',\
@@ -19,7 +19,7 @@ ERROR_DETAIL_LABELS_DICT = {
     'ACD_HEADER_PARITY_ERROR'     : ['Cable'],
     'ACD_PHA_PARITY_ERROR'        : ['Cable', 'Channel'],
     'ACD_PHA_INCONSISTENCY'       : ['Cable', 'Channel', 'Accept list'],
-    'TEM_BUG_INSTANCE'            : [],
+    'TEM_BUG_INSTANCE'            : ['Type'],
     'TIMETONE_INCOMPLETE'         : ['timeSecs']
     }
 
