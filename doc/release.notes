@@ -1,3 +1,7 @@
+*** v3r5p1 ***
+- Cable tags added to the details of the phasing errors.
+
+
 *** v3r5p0 ***
 - Event iterators changed to detect instances of the TEM firmware bug and not to
 care of unphysical strips anymore.
