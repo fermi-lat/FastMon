@@ -20,12 +20,50 @@ ERROR_DETAIL_LABELS_DICT = {
     'ACD_PHA_PARITY_ERROR'        : ['Cable', 'Channel'],
     'ACD_PHA_INCONSISTENCY'       : ['Cable', 'Channel', 'AcceptList'],
     'TEM_BUG_INSTANCE'            : ['Type'],
-    'TIMETONE_INCOMPLETE'         : ['timeSecs']
+    'TIMETONE_INCOMPLETE'         : ['timeSecs'],
+    'TIMETONE_EARLY_EVENT'        : [],
+    'TIMETONE_FLYWHEELING'        : [],
+    'TIMETONE_MISSING_CPUPPS'     : [],
+    'TIMETONE_MISSING_LATPPS'     : [],
+    'TIMETONE_MISSING_TIMETONE'   : [],
+    'TIMETONE_NULL_SOURCE_GPS'    : []
     }
 
-ERROR_DOCUMENTATION_DICT = {
-    
+ERROR_DOC_DICT = {
+    'ACD_PHA_INCONSISTENCY'    :\
+        'There is a signal from a channel for which the accept bit is not set.',
+    'TIMETONE_EARLY_EVENT'     :\
+        'The event arrived close (a few hundred microseconds) to the TimeTone.',
+    'TIMETONE_FLYWHEELING'     :\
+        'CPU failed to construct its TimeTone message.',
+    'TIMETONE_INCOMPLETE'      :\
+        'The TimeTone is incomplete.',
+    'TIMETONE_MISSING_CPUPPS'  :\
+        'The arrival of the 1-PPS signal at the CPU timed out.',
+    'TIMETONE_MISSING_LATPPS'  :\
+        'The arrival of the 1-PPS signal at the LAT timed out.',
+    'TIMETONE_MISSING_TIMETONE':\
+	'The 1-PPS signal timed out.',
+    'TIMETONE_NULL_SOURCE_GPS' :\
+	'The source of the 1-PPS signal is the spacecraft clock, not the GPS.'
     }
+
+ERROR_REMARKS_DICT = {
+
+    }
+
+def getExplanation(errorCode):
+    try:
+        return ERROR_DOC_DICT[errorCode]
+    except:
+        return '-'
+
+def getRemerks(errorCode):
+    try:
+        return ERROR_REMARKS_DICT[errorCode]
+    except:
+        return '-'
+
 
 
 ## @brief Class describing a generic error.
