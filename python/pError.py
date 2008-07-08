@@ -97,6 +97,23 @@ class pError:
     def getXmlLine(self):
         return '<error code="%s" %s/>' %\
             (self.ErrorCode, self.getDetailsAsText())
+
+    ## @brief Return the label corresponding to a certain item in the
+    #  list of details.
+    #
+    #  If the label is not defined in ERROR_DETAIL_LABELS_DICT, then a generic
+    #  one is built in place. If the index exceeds the number of elements
+    #  in the predefined list, then it is assumed that the value is
+    #  effectively the error summary.
+
+    def getDetailLabel(self, index):
+        if index == len(ERROR_DETAIL_LABELS_DICT[self.ErrorCode]):
+            return 'Summary'
+        else:
+            try:
+                return ERROR_DETAIL_LABELS_DICT[self.ErrorCode][index]
+            except:
+                return 'Parameter%d' % index
         
     ## @brief Return the error details formatted in such a way that they can be
     #  printed on the screen or put into the report.
@@ -106,11 +123,7 @@ class pError:
     def getDetailsAsText(self):
         details = ''
         for (i, detail) in enumerate(self.Details):
-            try:
-                label = ERROR_DETAIL_LABELS_DICT[self.ErrorCode][i]
-            except:
-                label = 'Parameter%d' % i
-            details += ' %s="%s"' % (label, self.Details[i])
+            details += ' %s="%s"' % (self.getDetailLabel(i), self.Details[i])
         return details
 
     def getAsText(self):
