@@ -18,7 +18,7 @@ ERROR_DETAIL_LABELS_DICT = {
     'GTCC_DATA_PARITY_ERROR'      : ['Tower', 'GTCC', 'Err'],
     'ACD_HEADER_PARITY_ERROR'     : ['Cable'],
     'ACD_PHA_PARITY_ERROR'        : ['Cable', 'Channel'],
-    'ACD_PHA_INCONSISTENCY'       : ['Cable', 'Channel', 'Accept list'],
+    'ACD_PHA_INCONSISTENCY'       : ['Cable', 'Channel', 'AcceptList'],
     'TEM_BUG_INSTANCE'            : ['Type'],
     'TIMETONE_INCOMPLETE'         : ['timeSecs']
     }
@@ -53,15 +53,12 @@ class pError:
         self.ErrorCode   = errorCode
         self.Details     = details
 
+    def hasDetails(self):
+        return self.Details != []
+
     def getXmlLine(self):
-        line = '<error code="%s"' % self.ErrorCode
-        for (i, detail) in enumerate(self.Details):
-            try:
-                label = ERROR_DETAIL_LABELS_DICT[self.ErrorCode][i]
-            except:
-                label = 'Parameter %d' % i
-            line += ' %s="%s"' % (label, self.Details[i])
-        return '%s/>' % line
+        return '<error code="%s" %s/>' %\
+            (self.ErrorCode, self.getDetailsAsText())
         
     ## @brief Return the error details formatted in such a way that they can be
     #  printed on the screen or put into the report.
@@ -70,16 +67,19 @@ class pError:
 
     def getDetailsAsText(self):
         details = ''
-        for i in range(len(self.Details)):
+        for (i, detail) in enumerate(self.Details):
             try:
                 label = ERROR_DETAIL_LABELS_DICT[self.ErrorCode][i]
-            except KeyError:
-                label = 'Parameter %d' % i
-            details += '%s=%s, ' % (label, self.Details[i])
-        return details[:-2]
+            except:
+                label = 'Parameter%d' % i
+            details += ' %s="%s"' % (label, self.Details[i])
+        return details
 
     def getAsText(self):
-        return '%s (%s)' % (self.ErrorCode, self.getDetailsAsText())
+        text = self.ErrorCode
+        if self.hasDetails():
+            text += ' (%s)' % self.getDetailsAsText().strip().replace(' ', ', ')
+        return text
 
     def __str__(self):
         return self.getAsText()
