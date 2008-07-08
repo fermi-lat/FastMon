@@ -115,7 +115,7 @@ class pErrorHandler:
             xmlWriter.openTag('errorEvent', {'eventNumber': eventNumber})
             xmlWriter.indent()
             for error in errorEvent.ErrorsList:
-                xmlWriter.writeTag('error', error.getXmlDict())
+                xmlWriter.writeLine(error.getXmlLine())
             xmlWriter.backup()
             xmlWriter.closeTag('errorEvent')
         xmlWriter.backup()
