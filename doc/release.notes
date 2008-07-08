@@ -1,6 +1,7 @@
 *** v3r5p1 ***
 - Cable tags added to the details of the phasing errors.
 - Improved xml output for the error handler.
+- Error documentation moved from the old text file to the python class file.
 
 
 *** v3r5p0 ***
