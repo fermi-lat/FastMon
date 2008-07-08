@@ -2,6 +2,8 @@
 - Cable tags added to the details of the phasing errors.
 - Improved xml output for the error handler.
 - Error documentation moved from the old text file to the python class file.
+- Error summary parsing added.
+* Relevant jira(s): GDQMQ-197
 
 
 *** v3r5p0 ***
@@ -11,19 +13,20 @@ care of unphysical strips anymore.
 
 
 *** v3r4p2 ***
-- pSCPosition and pGeomagProcessor : Add Z axis pointing in galactic coordinates L,B 
+- pSCPosition and pGeomagProcessor : Add Z axis pointing in galactic
+coordinates L,B 
 * Relevant jira(s): GDQMQ-193
 
 
 *** v3r4p1 ***
-- pM7Parser.py : Verify that the magic 7 starts with an ATT tag, tweak it if it s not the case
-script.
+- pM7Parser.py : Verify that the magic 7 starts with an ATT tag, tweak it if
+it s not the case script.
 * Relevant jira(s): GDQMQ-194
 
 
 *** v3r4p0 ***
-- Committed new file for merging the xml summary files from the ErrorHandler---this fixes a bug in the old
-script.
+- Committed new file for merging the xml summary files from the
+ErrorHandler---this fixes a bug in the old script.
 * Relevant jira(s): LONE-70
 
 
@@ -33,7 +36,8 @@ script.
 
 
 *** v3r3p2 ***
-- Bug fix in pSCposition getRockAngle was implemented twice, I do not even understand how that could work
+- Bug fix in pSCposition getRockAngle was implemented twice, I do not even
+understand how that could work.
 * Relevant jira(s): GDQMQ-187
 
 
@@ -44,22 +48,26 @@ script.
 
 
 *** v3r3p0 ***
-- Added the following quantities in pGeoMagProcessor : x and y axis Ra and Dec, earth limb infov, rock angle
-- pSCPosition : Implement calculus of the earh limb, that looks ok, and a first trial at the arc angle
+- Added the following quantities in pGeoMagProcessor : x and y axis Ra and
+Dec, earth limb infov, rock angle
+- pSCPosition : Implement calculus of the earh limb, that looks ok, and a
+first trial at the arc angle
   of the earth limb in the field of view, not OK. GDQMQ-6
-- pSCPosition : Major changes - Reorganize methods to get the axis pointing and FIX BUG in the calculation
+- pSCPosition : Major changes - Reorganize methods to get the axis pointing
+and FIX BUG in the calculation
   of the Rock angle that is now OK. GDQMQ-160 and GDQMQ-167
-- pSCPosition : Major upgrade of the class with new members for X, Y and Z axis pointing in RA and DEC,
-  new calculation and access methods, and BUG FIX for the ZRa and ZDec calculation,
-  the quaternion was not defined as usual (w, x, y, z) but stands as (x, y ,z, w) in the magic7.
-  ZRa and ZDec are now correct, so should it be for X and Y axis. GDQMQ-160 and GDQMQ-167.
+- pSCPosition : Major upgrade of the class with new members for X, Y and Z
+axis pointing in RA and DEC, new calculation and access methods, and BUG FIX
+for the ZRa and ZDec calculation, the quaternion was not defined as usual
+(w, x, y, z) but stands as (x, y ,z, w) in the magic7. ZRa and ZDec are now
+correct, so should it be for X and Y axis. GDQMQ-160 and GDQMQ-167.
 * Relevant jira(s): GDQMQ-6, GDQMQ-160 and GDQMQ-167
 
 *** v3r2p3 ***
-- Bug fix in Julian Date calculation, that was the cause of the wrong latitude and longitude.
-  GDQMQ-133. 
-- Added X-axis Ra and Dec pointing copying on Zaxis methods that are however probably wrong.
-  GDQMQ-160 and GDQMQ-167 
+- Bug fix in Julian Date calculation, that was the cause of the wrong latitude
+and longitude. GDQMQ-133. 
+- Added X-axis Ra and Dec pointing copying on Zaxis methods that are however
+probably wrong. GDQMQ-160 and GDQMQ-167 
 * Relevant jira(s): GDQMQ-133, GDQMQ-160 and GDQMQ-167
 
 
