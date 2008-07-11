@@ -107,13 +107,13 @@ class pError:
     #  effectively the error summary.
 
     def getDetailLabel(self, index):
-        if index == len(ERROR_DETAIL_LABELS_DICT[self.ErrorCode]):
-            return 'Summary'
-        else:
-            try:
+        try:
+            if index == len(ERROR_DETAIL_LABELS_DICT[self.ErrorCode]):
+                return 'Summary'
+            else:
                 return ERROR_DETAIL_LABELS_DICT[self.ErrorCode][index]
-            except:
-                return 'Parameter%d' % index
+        except:
+            return 'Parameter%d' % index
         
     ## @brief Return the error details formatted in such a way that they can be
     #  printed on the screen or put into the report.
