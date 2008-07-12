@@ -3,7 +3,8 @@
 - Improved xml output for the error handler.
 - Error documentation moved from the old text file to the python class file.
 - Error summary parsing added.
-* Relevant jira(s): GDQMQ-197
+- New error_summary variable added. 
+* Relevant jira(s): GDQMQ-197, GDQMQ-173
 
 
 *** v3r5p0 ***
