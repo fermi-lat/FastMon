@@ -54,12 +54,13 @@ class pErrorHandler:
         # using the correct event ID
         # to be called at the end of event processing
         if self.ErrorsBuffer != []:
-            self.ErrorEventsDict[eventNumber] =\
-                                 pErrorEvent(eventNumber)
+            errorEvent = pErrorEvent(eventNumber)
             for error in self.ErrorsBuffer:
-                self.ErrorEventsDict[eventNumber].addError(error)
-
+                errorEvent.addError(error)
+            self.ErrorEventsDict[eventNumber] = errorEvent
             self.ErrorsBuffer = []
+            return errorEvent.ErrorSummary
+        return 0x0
 
     def getNumErrors(self):
         return sum(self.ErrorCountsDict.values())

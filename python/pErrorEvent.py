@@ -1,31 +1,30 @@
 
 ERROR_BITS_DICT = {
-    'GCCC_ERROR'                  : 1,
-    'GTCC_ERROR'                  : 2,
-    'PHASE_ERROR'                 : 3,
-    'TIMEOUT_ERROR'               : 4,
-    'GTRC_PHASE_ERROR'            : 5,
-    'GTFE_PHASE_ERROR'            : 6,
-    'GTCC_FIFO_ERROR'             : 7,
-    'GTCC_TIMEOUT_ERROR'          : 8,
-    'GTCC_HEADER_PARITY_ERROR'    : 9,
-    'GTCC_WORD_COUNT_PARITY_ERROR': 10,
-    'GTRC_SUMMARY_ERROR'          : 11,
-    'GTCC_DATA_PARITY_ERROR'      : 12,
-    'ACD_HEADER_PARITY_ERROR'     : 13,
-    'ACD_PHA_PARITY_ERROR'        : 14,
-    'ACD_PHA_INCONSISTENCY'       : 15,
-    'TEM_BUG_INSTANCE'            : 16,
-    'TIMETONE_INCOMPLETE'         : 17,
-    'TIMETONE_EARLY_EVENT'        : 18,
-    'TIMETONE_FLYWHEELING'        : 19,
-    'TIMETONE_MISSING_CPUPPS'     : 20,
-    'TIMETONE_MISSING_LATPPS'     : 21,
-    'TIMETONE_MISSING_TIMETONE'   : 22,
-    'TIMETONE_NULL_SOURCE_GPS'    : 23
+    'GCCC_ERROR'                  : 0,
+    'GTCC_ERROR'                  : 1,
+    'PHASE_ERROR'                 : 2,
+    'TIMEOUT_ERROR'               : 3,
+    'GTRC_PHASE_ERROR'            : 4,
+    'GTFE_PHASE_ERROR'            : 5,
+    'GTCC_FIFO_ERROR'             : 6,
+    'GTCC_TIMEOUT_ERROR'          : 7,
+    'GTCC_HEADER_PARITY_ERROR'    : 8,
+    'GTCC_WORD_COUNT_PARITY_ERROR': 9,
+    'GTRC_SUMMARY_ERROR'          : 10,
+    'GTCC_DATA_PARITY_ERROR'      : 11,
+    'ACD_HEADER_PARITY_ERROR'     : 12,
+    'ACD_PHA_PARITY_ERROR'        : 13,
+    'ACD_PHA_INCONSISTENCY'       : 14,
+    'TEM_BUG_INSTANCE'            : 15,
+    'TIMETONE_INCOMPLETE'         : 16,
+    'TIMETONE_EARLY_EVENT'        : 17,
+    'TIMETONE_FLYWHEELING'        : 18,
+    'TIMETONE_MISSING_CPUPPS'     : 19,
+    'TIMETONE_MISSING_LATPPS'     : 20,
+    'TIMETONE_MISSING_TIMETONE'   : 21,
+    'TIMETONE_NULL_SOURCE_GPS'    : 22,
+    'UNKNOWN_ERROR'               : 31
     }
-
-UNKNOWN_ERROR_BIT = 0
 
 
 class pErrorEvent:
@@ -33,14 +32,14 @@ class pErrorEvent:
     def __init__(self, eventNumber):
         self.EventNumber = eventNumber
         self.ErrorsList  = []
-        self.ErrorSummary = 0x0
+        self.ErrorSummary = 0
 
     def assertSummaryBit(self, errorCode):
         try:
             bitNumber = ERROR_BITS_DICT[errorCode]
         except KeyError:
-            bitNumber = UNKNOWN_ERROR_BIT
-        self.ErrorSummary |= (0x1 << bitNumber)
+            bitNumber = ERROR_BITS_DICT['UNKNOWN_ERROR']
+        self.ErrorSummary |= (1 << bitNumber)
 
     def addError(self, error):
         self.ErrorsList.append(error)
