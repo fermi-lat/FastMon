@@ -1,3 +1,9 @@
+*** v3r5p3 ***
+- Added a plot to monitor the ACD occupancy in electronic space
+  AcdHitsCounter_CableChannel_TH2 give the occupancy per ACD cable, channel
+  AcdHitChannel[12][18] is the associated tree variable.
+* Relevant jira(s): GDQMQ-1
+
 
 *** v3r5p2 ***
 - New error_summary variable added (new FastMonCfg v1r4p0). 
