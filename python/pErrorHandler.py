@@ -21,20 +21,26 @@ class pErrorHandler:
         self.ErrorEventsList = []
         self.ErrorsBuffer = []
 
+    ## @brief Fill the summary dictionary (indexed by error code)
+    #  and the error buffer, with which the error event will be filled
+    #  when the flushErrorBuffer() method is called.
+
     def fill(self, errorCode, parameters=[]):
         error = pError(errorCode, parameters)
-        # fill the summary by error code
         try:
             self.ErrorCountsDict[errorCode] += 1
         except KeyError:
             self.ErrorCountsDict[errorCode] = 1
-        # fill a buffer of errors for this event.
         self.ErrorsBuffer.append(error)
         
+    ## @brief Method to be called *at the end* of the event processing,
+    #  when all the errors have been detected.
+    #
+    #  At this point an ErrorEvent object is created (with the correct event
+    #  id) and all the errors in the buffer are dumped into it.
+    #  Ready for the next event!
+
     def flushErrorsBuffer(self, eventNumber):
-        # fill the ErrorEventsDict, in case the event has errors,
-        # using the correct event ID
-        # to be called at the end of event processing
         if self.ErrorsBuffer != []:
             errorEvent = pErrorEvent(eventNumber)
             for error in self.ErrorsBuffer:
