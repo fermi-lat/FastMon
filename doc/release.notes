@@ -1,8 +1,9 @@
 *** v3r5p5 ***
-- Minor improvemente in the interface to the output of pErrorEvent.
+- Minor improvements in the interface to the output of pErrorEvent.
 - More informations added to the error summary xml and some internal
 improvements.
 - pFastMonReportGenerator updated accordingly.
+- Merging script modified to accomodate the changes.
 
 
 *** v3r5p4 ***
