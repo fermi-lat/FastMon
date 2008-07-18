@@ -22,9 +22,10 @@ ERROR_BITS_DICT = {
     'TIMETONE_MISSING_CPUPPS'     : 19,
     'TIMETONE_MISSING_LATPPS'     : 20,
     'TIMETONE_MISSING_TIMETONE'   : 21,
-    'TIMETONE_NULL_SOURCE_GPS'    : 22,
-    'UNKNOWN_ERROR'               : 31
+    'TIMETONE_NULL_SOURCE_GPS'    : 22
     }
+
+UNKNOWN_ERROR_BIT = 31
 
 
 class pErrorEvent:
@@ -34,12 +35,20 @@ class pErrorEvent:
         self.ErrorsList  = []
         self.ErrorSummary = 0
 
-    def assertSummaryBit(self, errorCode):
+    def getBitNumber(self, errorCode):
         try:
-            bitNumber = ERROR_BITS_DICT[errorCode]
+            return ERROR_BITS_DICT[errorCode]
         except KeyError:
-            bitNumber = ERROR_BITS_DICT['UNKNOWN_ERROR']
-        self.ErrorSummary |= (1 << bitNumber)
+            return UNKNOWN_ERROR_BIT
+
+    def assertSummaryBit(self, errorCode):
+        self.ErrorSummary |= (1 << self.getBitNumber(errorCode))
+
+    def hasErrors(self):
+        return self.ErrorSummary > 0
+
+    def hasError(self, errorCode):
+        return bool((self.ErrorSummary >> self.getBitNumber(errorCode)) & 1)
 
     def addError(self, error):
         self.ErrorsList.append(error)
@@ -66,8 +75,10 @@ class pErrorEvent:
 if __name__ == '__main__':
     from pError import pError
     badEvent = pErrorEvent(313)
-    badEvent.addError(pError('TEST'))
     badEvent.addError(pError('TEST', [1, 2, 3]))
-    badEvent.addError(pError('GCCC_ERROR'))
+    badEvent.addError(pError('GCCC_ERROR', [0, 2, 6]))
     print badEvent
-       
+    print badEvent.hasErrors()
+    print badEvent.hasError('TEST')
+    print badEvent.hasError('GCCC_ERROR')
+    print badEvent.hasError('GTCC_FIFO_ERROR')

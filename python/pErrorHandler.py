@@ -60,7 +60,7 @@ class pErrorHandler:
             self.ErrorEventsDict[eventNumber] = errorEvent
             self.ErrorsBuffer = []
             return errorEvent.ErrorSummary
-        return 0x0
+        return 0
 
     def getNumErrors(self):
         return sum(self.ErrorCountsDict.values())
