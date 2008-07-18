@@ -15,28 +15,11 @@ MAX_ERROR_EVENTS = 500
 
 class pErrorHandler:
 
-    def __init__(self, pickleFilePath = None):
+    def __init__(self):
         self.NumProcessedEvents = 'n/a'
         self.ErrorCountsDict = {}
-        self.ErrorEventsDict = {}
+        self.ErrorEventsList = []
         self.ErrorsBuffer = []
-        if pickleFilePath is not None:
-            self.load(pickleFilePath)
-            
-    def load(self, inputFilePath):
-        logger.info('Unpickling the error handler from %s...' % inputFilePath)
-        startTime = time.time()
-        (self.ErrorCountsDict, self.ErrorEventsDict) =\
-                                cPickle.load(file(inputFilePath, 'r'))
-        logger.info('Done in %.4f s.\n' % (time.time() - startTime))
-        
-    def dump(self, outputFilePath):
-        logger.info('Pickling the error handler into %s...' % outputFilePath)
-        startTime = time.time()
-        cPickle.dump((self.ErrorCountsDict, self.ErrorEventsDict),\
-                     file(outputFilePath, 'w'))
-        logger.info('Done in %.4f s.\n' % (time.time() - startTime))
-
 
     def fill(self, errorCode, parameters=[]):
         error = pError(errorCode, parameters)
@@ -48,7 +31,6 @@ class pErrorHandler:
         # fill a buffer of errors for this event.
         self.ErrorsBuffer.append(error)
         
-
     def flushErrorsBuffer(self, eventNumber):
         # fill the ErrorEventsDict, in case the event has errors,
         # using the correct event ID
@@ -57,7 +39,7 @@ class pErrorHandler:
             errorEvent = pErrorEvent(eventNumber)
             for error in self.ErrorsBuffer:
                 errorEvent.addError(error)
-            self.ErrorEventsDict[eventNumber] = errorEvent
+            self.ErrorEventsList.append(errorEvent)
             self.ErrorsBuffer = []
             return errorEvent.ErrorSummary
         return 0
@@ -66,24 +48,8 @@ class pErrorHandler:
         return sum(self.ErrorCountsDict.values())
 
     def getNumErrorEvents(self):
-        return len(self.ErrorEventsDict)
-            
-    def browseErrors(self):
-        if self.getNumErrors() == 0:
-            logger.info('No errors found in this file.')
-            sys.exit()
-        logger.info('%d events with errors (%d errors in total) found.' %\
-                    (self.getNumErrorEvents(), self.getNumErrors()))
-        logger.info('Starting error browser...\n')
-        errorEventsList = self.ErrorEventsDict.keys()
-        errorEventsList.sort()
-        for eventNumber in errorEventsList:
-            print self.ErrorEventsDict[eventNumber]
-            message = 'Press q to quit, any other key to continue\n'
-            if raw_input(message) == 'q':
-                sys.exit()
-        logger.info('There are no more errors.\n')
-
+        return len(self.ErrorEventsList)
+ 
     def writeXmlOutput(self, filename):
         try:
             from pXmlWriter import pXmlWriter
@@ -98,8 +64,15 @@ class pErrorHandler:
         xmlWriter.writeComment('Summary by error code')
         xmlWriter.openTag('errorSummary')
         xmlWriter.indent()
-        for (code, number) in self.ErrorCountsDict.items():
-            xmlWriter.writeTag('errorType', {'code':code, 'quantity': number })
+        for (errorCode, numErrors) in self.ErrorCountsDict.items():
+            numEvents = 0
+            for errorEvent in self.ErrorEventsList:
+                if errorEvent.hasError(errorCode):
+                    numEvents += 1
+            xmlWriter.writeTag('errorType', {'code':errorCode,
+                                             'quantity': numErrors,
+                                             'events': numEvents
+                                             })
         xmlWriter.backup()
         xmlWriter.closeTag('errorSummary')
         xmlWriter.newLine()
@@ -109,10 +82,7 @@ class pErrorHandler:
                            'num_processed_events'  : self.NumProcessedEvents,
                            'truncated'             : truncated})
         xmlWriter.indent()
-        errorEventNumbers = self.ErrorEventsDict.keys()
-        errorEventNumbers.sort()
-        for eventNumber in errorEventNumbers[:MAX_ERROR_EVENTS]:
-            errorEvent = self.ErrorEventsDict[eventNumber]
+        for (eventNumber, errorEvent) in enumerate(self.ErrorEventsList):
             xmlWriter.openTag('errorEvent', {'eventNumber': eventNumber})
             xmlWriter.indent()
             for error in errorEvent.ErrorsList:
