@@ -1,7 +1,14 @@
+*** v3r6p0 ***
+- Minor improvemente in the interface to the output of pErrorEvent.
+- More informations added to the error summary xml and some internal
+improvements.
+
+
 *** v3r5p4 ***
 - Bug fix in pSCPosition Ra axis pointing calculation,
   folding in 2Pi was not done correctly
 * Relevant jira(s): GDQMQ-212
+
 
 *** v3r5p3 ***
 - Added a plot to monitor the ACD occupancy in electronic space
