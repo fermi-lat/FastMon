@@ -1,3 +1,12 @@
+*** v3r5p6 ***
+- pErrorEvent : Move the TIMETONE errors to the lowest bits so that it is easier
+  not to cut them out but cutting real errors applyingError_summary < 64 - GDQMQ-173
+- pError : Reorganize error dictionnary to take into account new errors reported by 
+  the new version of the LDF. For now, I do not store the details of the errors
+  reported by the different subsystems, besides the TEM_BUG. - GDQMQ-197
+* Relevant jira(s): GDQMQ-173 GDQMQ-197
+
+
 *** v3r5p5 ***
 - Minor improvements in the interface to the output of pErrorEvent.
 - More informations added to the error summary xml and some internal
