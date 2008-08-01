@@ -26,7 +26,12 @@ ERROR_BITS_DICT = {
     'ERR_CONTRIB_ERROR'           : 24,
     'TKR_CONTRIB_ERROR'           : 25,
     'CAL_CONTRIB_ERROR'           : 26,
-    'ACD_CONTRIB_ERROR'           : 27
+    'AEM_CONTRIB_ERROR'           : 27, 
+    'PACKET_ERROR'                : 28,
+    'EBF_CONTRIB_ERROR'           : 29,
+    'LAT_CONTRIB_ERROR'           : 30,
+    'LAT_DATAGRAM_ERROR'          : 31,
+    'EBF_EVENT_ERROR'             : 31    
     }
 
 UNKNOWN_ERROR_BIT = 31

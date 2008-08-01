@@ -1,3 +1,5 @@
+import pSafeLogger
+logger = pSafeLogger.getLogger('pCALcontributionIteratorBase')
 
 import LDF
 
@@ -36,6 +38,27 @@ class pCALcontributionIteratorBase(LDF.CALcontributionIterator):
         self.TemId        = LDF.LATPcellHeader.source(contribution.header())
         self.TreeMaker    = treeMaker
         self.ErrorHandler = errorHandler
+
+    ## @brief Handle error function overload
+    #  Inspiration from the original c++ code implementation
+    #  of the handleError function in "CALcontributionIterator.cpp"
+    #
+    ##  return code is:
+    #   - negative to indicate bail immediately
+    #   - 0 for SUCCESS
+    #   - positive to indicate that there was an error but iteration can continue
+    #
+    ## No error is expected to be found when parsing the CAL contribution ?
+    def handleError(self, event, code, p1, p2):        	
+    	logger.debug("UNKNOWN_ERROR\n"\
+	             "\tFor TEM %d contribution:\n"\
+                     "\tUnrecognized error code %d = 0x%08x with "\
+                     "\targuments %d = 0x%08x, %d = 0x%08x\n" %\
+                     (self.TemId, code, code, p1, p1, p2, p2))
+
+        self.ErrorHandler.fill('CAL_CONTRIB_ERROR', ['UNKNOWN_ERROR_CODE', p1, p2])
+    	return code
+
 
     ## @brief Function included by default by the corresponding method
     #  of the derived iterator (the one which is actually run).

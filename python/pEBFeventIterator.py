@@ -38,13 +38,28 @@ class pEBFeventIterator(LDF.LDBI_EBFeventIterator):
     #  Parameter 2.
 
     def handleError(self, event, code, p1, p2):
-        fn = 'pEBFeventIterator.handleError()'
         if code == LDF.EBFeventIterator.ERR_NonEBFevent:
-            logger.error('%s: non-EBF event contribution.' % fn)
-            return 1
+            logger.debug("handleError:ERR_NonEBFevent \n"\
+                	 "\tExpected an EBFevent TypeId, not 0x%08x\n" % p1)
+		   
+	    self.ErrorHandler.fill('EBF_EVENT_ERROR', ['Non EBF event', p1])
+
+    	elif code == LDF.EBFeventIterator.ERR_BadStatus:
+            logger.debug("handleError:ERR_BadStatus \n"\
+                  	 "\tEvent has bad internal status %d = 0x%08x\n"\
+                         "\tAborting processing of event\n" % (p1, p1))
+		   
+	    self.ErrorHandler.fill('EBF_EVENT_ERROR', ['Bad Status', p1])
+	     
         else:
-            logger.error('%s: unknown error code.' % fn)
-            return 0
+    	    logger.debug("UNKNOWN_ERROR\n"\
+                         "\tUnrecognized error code %d = 0x%08x with "\
+                         "\targuments %d = 0x%08x, %d = 0x%08x\n" %\
+                         (code, code, p1, p1, p2, p2))
+            self.ErrorHandler.fill('EBF_EVENT_ERROR', ['UNKNOWN_ERROR_CODE', p1, p2])
+
+        return code
+
 
     ## @brief Process the event.
     ## @param self
