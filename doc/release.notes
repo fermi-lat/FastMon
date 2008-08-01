@@ -1,3 +1,30 @@
+*** v4r0p0 ***
+- Work only with LDF > 6.4.0
+- Improve handling of errors following the new version of the LDF,
+  all kind of errors now taken into account : pAEMcontributionIteratorBase.py
+- Use the logger to dump debug message in case of an error : pCALcontributionIteratorBase.py
+- Improve handling of errors following the new version of the LDF, 
+  all kind of errors now taken into account : pEBFeventIterator.py
+- Improve handling of errors following the new version of the LDF,
+  all kind of errors now taken into account. 
+  TEM_BUG is now known and reported as such : pERRcontributionIteratorBase.py
+- New error contributions added for each iterators.
+  ACD renamed as AEM :  pError.py
+- New error bits added. ACD renamed as AEM.
+  LAT_DATAGRAM and EBF_EVENT have the same code : pErrorEvent.py
+- Improve handling of errors following the new version of the LDF,
+  all kind of errors now taken into account. Note that the new LDF code
+  checks the status of the iterator and exits whenever a serious error is found.
+  pLATcomponentIterator.py
+- Improve handling of errors following the new version of the LDF, 
+  all kind of errors now taken into account : pLATcontributionIterator.py
+- Use the logger to dump debug message in case of an error : pLATdatagramIterator.py
+- Improve handling of errors following the new version of the LDF,
+  all kind of errors now taken into account. 
+  TEM_BUG is now known and reported as such : pTKRcontributionIteratorBase.py
+
+* Relevant jira(s): GDQMQ-197
+
 *** v3r5p6 ***
 - pErrorEvent : Move the TIMETONE errors to the lowest bits so that it is easier
   not to cut them out but cutting real errors applyingError_summary < 64 - GDQMQ-173
