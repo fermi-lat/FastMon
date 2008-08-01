@@ -1,3 +1,7 @@
+*** v4r1p0 ***
+- Retag things below after removing a wrong tag.
+  Hopefully, everything is OK now. I hate cvs.
+
 *** v4r0p0 ***
 - Work only with LDF > 6.4.0
 - Improve handling of errors following the new version of the LDF,
