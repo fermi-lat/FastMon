@@ -1,3 +1,7 @@
+*** v4r1p1 ***
+- Looks like an old version of pXmlInputList was tagged.
+  I fixed it and tagged again. 
+
 *** v4r1p0 ***
 - Retag things below after removing a wrong tag.
   Hopefully, everything is OK now. I hate cvs.
