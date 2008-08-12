@@ -1,0 +1,20 @@
+package FastMon 
+version v0r0
+
+author E. Charles <echarles@slac.stanford.edu>
+
+use GlastPolicy v*
+use facilities v*
+use xmlBase v* 
+
+#the following prepend makes the includes folder available locally: avoid the package_include
+#macro_prepend includes "-I $(FASTMONROOT) " WIN32 "/I $(FASTMONROOT) "
+
+macro common_headers   "" WIN32
+
+macro source "*.cxx" WIN32 "*.h *.cxx"
+
+#macro_append ROOT_linkopts " -lHist -lGpad -lGraf -lGui -lGraf3d -lPostscript -lTreePlayer -lGraf3d"
+
+#macro testreport_linkopts "$(ROOT_linkopts) $(commonRootData_linkopts) $(mcRootData_linkopts) $(digiRootData_linkopts) $(reconRootData_linkopts)"
+
