@@ -1,3 +1,10 @@
+*** v4r1p4 ***
+- Change histogram name AcdHitsCounter_CableChannel_TH2 to AcdHitMap_GafeGarc_TH2,
+  and swap axis to match the Digi definition, in pCustomPlotter
+- Log the LDF version in pDataProcessor
+* Relevant jira(s): GDQMQ-243 and GDQMQ-244
+
+
 *** v4r1p3 ***
 - Add back cmt requirements file
   It had disappeared from the latest tag
