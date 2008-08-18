@@ -56,7 +56,6 @@ class pRootTreeVariable(pXmlElement):
         ## @brief The underlying numpy object filling the tree.
         
         pXmlElement.__init__(self, element)
-        self.Name     = '%s%s' % (FAST_MON_PREFIX, self.Name)
         self.Type     = self.getTagValue('type')
         self.Shape    = self.evalTagValue('shape')
         self.LeafList = self.__getLeafList()
