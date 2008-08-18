@@ -580,13 +580,17 @@ class pCustomPlotter:
     ## @brief  Return a ROOT TH2F object with the ACD channels occupancy
     #  Each time a PMT is read, the corresponding cable, channel bin content
     #  is incremented by one.
+    # 
+    #  Axis and title match Digi definition
+    #
     #  Some ACD tiles are bigger than others, so they'll probably have a higher occupancy.
     ## @param plotRep
-    #  The custom plot representation from the pXmlParser object. 
+    #  The custom plot representation from the pXmlParser object.
+    # 
 
-    def AcdHitsCounter_CableChannel(self, plotRep):
+    def AcdHitMap_GafeGarc(self, plotRep):
         self.__startTimer()
-        histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 12, -0.5, 11.5, 18, -0.5, 17.5)
+        histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 18, -0.5, 17.5, 12, -0.5, 11.5)
         self.__createTmpRootTree(['AcdHitChannel'], plotRep.Cut)
 	
         acdHits = self.__createNumpyArray('AcdHitChannel', (12, 18), 'int')	        
@@ -598,7 +602,7 @@ class pCustomPlotter:
 	    
         for cable in range(12):
             for channel in range(18):
-                histogram.Fill(cable, channel, AcdHitSum[cable][channel])
+                histogram.Fill(channel, cable, AcdHitSum[cable][channel])
 	
         self.__stopTimer(plotRep)
         self.__deleteTmpRootTree()
