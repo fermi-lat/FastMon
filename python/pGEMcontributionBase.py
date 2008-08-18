@@ -113,15 +113,39 @@ class pGEMcontributionBase:
         self.TreeMaker.getVariable('DeadZoneDelta')[1] = tmpDZone
 
         
+    ## @brief Function filling the PrescaledLast tree variable.
+    ## @param self
+    #  The class instance.
+	
+    def PrescaledLast(self):
+        self.TreeMaker.getVariable('PrescaledLast')[0] = copy(self.prescaled())
+
+    ## @brief Function filling the PrescaledDelta tree variable.
+    #  Do not reset this variable!        
+    ## @param self
+    #  The class instance.
+    ## @note The Prescaled counter is a 24 bit counter.
+	
+    def PrescaledDelta(self):
+        tmpPrS = copy(self.prescaled())
+        if self.TreeMaker.getVariable('processor_event_number')[0] == 0:
+            self.TreeMaker.getVariable('PrescaledDelta')[0] = 0
+        else:
+            if self.TreeMaker.getVariable('PrescaledDelta')[1] > tmpPrS:
+                self.TreeMaker.getVariable('PrescaledDelta')[0] =\
+                tmpPrS - self.TreeMaker.getVariable('PrescaledDelta')[1] + 2**24             
+            else:
+                self.TreeMaker.getVariable('PrescaledDelta')[0] =\
+                tmpPrS - self.TreeMaker.getVariable('PrescaledDelta')[1]
+        self.TreeMaker.getVariable('PrescaledDelta')[1] = tmpPrS
+
+
     ## @brief Function filling the LivetimeLast tree variable.
     ## @param self
     #  The class instance.
 	
     def LivetimeLast(self):
         self.TreeMaker.getVariable('LivetimeLast')[0] = copy(self.liveTime())
-
-    def PrescaledLast(self):
-        self.TreeMaker.getVariable('PrescaledLast')[0] = copy(self.prescaled())
 
     ## @brief Function filling the condsummary tree variable.
     ## @param self
@@ -272,7 +296,4 @@ class pGEMcontributionBase:
     def gem_delta_window_open_time(self):
         self.TreeMaker.getVariable('gem_delta_window_open_time')[0] =\
                        copy(self.deltaWindowOpenTime())
-
-
-
 
