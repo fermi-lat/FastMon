@@ -89,7 +89,7 @@ class pContributionIteratorWriter(pCodeGenerator):
         self.implementIterator()
         self.implementFunctions()
         self.backup()
-        logger.info('Done in %s s.\n' % (time.time() - startTime))
+        logger.info('Done in %.4f s.\n' % (time.time() - startTime))
 
     ## @brief Write to file the implementation of the fillEventContribution()
     #  method of the iterator (which is the main function, called whenever
