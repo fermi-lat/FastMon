@@ -523,10 +523,11 @@ class pCUSTOMXmlRep(pPlotXmlRep):
     #  The ROOT tree.
 
     def getRootObjects(self, rootTree, tower=None, layer=None):
+    	expression = 'self.Plotter.%s(self)' % self.Type
         try:
-            histograms = eval('self.Plotter.%s(self)' % self.Type)
+            histograms = eval(expression)
         except AttributeError:
-            logger.error('Type %s not defined in pCustomPlotter.' % self.Type)
+            logger.error('Could not eval %s.' % expression)
             logger.info('Returning an empty histogram list.')
             return []
         for histogram in histograms:
