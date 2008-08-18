@@ -590,7 +590,8 @@ class pSCPosition:
 	dec = math.degrees(axis.Theta())
     	ra  = math.degrees(axis.Phi())
 	dec = 90-dec
-	ra += 180	    
+	if ra<0:
+	    ra+=360
         return (ra, dec)
 
     ## @brief Get the quaternion X Axis pointing direction in equatorial coordinates (Ra, Dec)

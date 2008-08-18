@@ -30,7 +30,6 @@ class pXmlParser:
 
     def __init__(self, configFilePath=None):
 
-
         ## @var InputListsDict
         ## @brief Dictionary containing the input lists.
 
@@ -55,17 +54,13 @@ class pXmlParser:
         self.OutputListsDict      = {}
         self.EnabledPlotRepsDict  = {}
         if XML_CONFIG_DIR_VAR_NAME in os.environ:
-            baseConfigFilePath = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
-                                              'baseConfig.xml')
+            xmlCfgDirPath = os.environ[XML_CONFIG_DIR_VAR_NAME]
+            baseConfigFilePath = os.path.join(xmlCfgDirPath, 'baseConfig.xml')
             if configFilePath is None:
-                configFilePath = os.path.join(os.environ[XML_CONFIG_DIR_VAR_NAME],\
-                                              'config.xml')
+                configFilePath = os.path.join(xmlCfgDirPath, 'config.xml')
         else:
             sys.exit("Environmental variable %s not found. Exiting..."\
 	    %  XML_CONFIG_DIR_VAR_NAME)
-
-
-
         filePathsList = [baseConfigFilePath, configFilePath]
         for filePath in filePathsList:
             logger.info('Parsing input xml file %s...' % filePath)
@@ -154,8 +149,4 @@ class pXmlParser:
                'Enabled variables: %s\n' % self.EnabledVariablesDict.keys() +\
                'Num. output lists: %d\n' % self.getNumOutputLists()         +\
                'Enabled plot reps: %s\n' % self.EnabledPlotRepsDict.keys()
-
-
-if __name__ == '__main__':
-    parser = pXmlParser('../xml/config.xml')
-    print parser
+    
