@@ -3,7 +3,6 @@
 import pSafeLogger
 logger = pSafeLogger.getLogger('pXmlErrorMerger')
 
-import sys
 
 from pXmlWriter import pXmlWriter
 from xml.dom    import minidom
@@ -14,7 +13,6 @@ class pXmlErrorMerger(pXmlWriter):
 
     def mergeXmlFiles(self, inputList):
         self.ErrorCountsDict = {}
-        self.EventCountsDict = {}
         self.EventSummaryDict = {'num_error_events'      : 0,
                                  'num_processed_events'  : 0,
                                  'truncated'             : 0
@@ -36,11 +34,6 @@ class pXmlErrorMerger(pXmlWriter):
                 self.ErrorCountsDict[code] += quantity
             except KeyError:
                 self.ErrorCountsDict[code] = quantity
-            events = int(element.getAttribute('events'))
-            try:
-                self.EventCountsDict[code] += events
-            except KeyError:
-                self.EventCountsDict[code] = events
         element = pXmlBaseElement(xmlDoc.getElementByTagName('eventSummary'))
         for key in self.EventSummaryDict.keys():
             self.EventSummaryDict[key] += element.evalAttribute(key)
@@ -58,10 +51,7 @@ class pXmlErrorMerger(pXmlWriter):
         self.openTag('errorSummary')
         self.indent()
         for (code, number) in self.ErrorCountsDict.items():
-            events = self.EventCountsDict[code]
-            self.writeTag('errorType', {'code':code,
-                                        'quantity': number,
-                                        'events': events})
+            self.writeTag('errorType', {'code':code, 'quantity': number })
         self.backup()
         self.closeTag('errorSummary')
         self.newLine()
@@ -84,8 +74,5 @@ if __name__ == "__main__":
     parser.add_option('-o', '--output-file', dest='o')
     parser.add_option('-i', '--input-file', dest='i', action='append')
     options, args = parser.parse_args()
-    if options.i is None:
-        print 'Please provide a list of xml file to merge through the i option.'
-        sys.exit()
     merger = pXmlErrorMerger(options.o)
     merger.mergeXmlFiles(options.i)

@@ -9,9 +9,6 @@ from pAEMcontributionIterator     import pAEMcontributionIterator
 from pERRcontributionIteratorBase import pERRcontributionIteratorBase
 from pGEMcontribution             import pGEMcontribution
 
-import pSafeLogger
-logger = pSafeLogger.getLogger('pLATcomponentIterator')
-
 
 ## @brief Implementation of the LAT component iterator.
 
@@ -67,9 +64,7 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
         tkrIterator = pTKRcontributionIterator(event, contribution,\
                                                self.TreeMaker     ,\
                                                self.ErrorHandler)
-	rc     = tkrIterator.iterate()
-	status = tkrIterator.status()
-	# Note Trying to fill the event contribution only if the event has no error
+        tkrIterator.iterate()
         tkrIterator.fillEventContribution()
         if tkrIterator.diagnostic() is not None:
             self.TKRend(tkrIterator.diagnostic())
@@ -87,9 +82,7 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
         calIterator = pCALcontributionIterator(event, contribution,\
                                                self.TreeMaker     ,\
                                                self.ErrorHandler)
-        rc     = calIterator.iterate() 
-        status = calIterator.status() 
-	# Note Trying to fill the event contribution only if the event has no error
+        calIterator.iterate()
         calIterator.fillEventContribution()
         self.CALend(calIterator.CALend())
         return 0
@@ -106,9 +99,7 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
         aemIterator = pAEMcontributionIterator(event, contribution,\
                                                self.TreeMaker     ,\
                                                self.ErrorHandler)
-        rc     = aemIterator.iterate()        
-        status = aemIterator.status()        
-	# Note Trying to fill the event contribution only if the event has no error
+        aemIterator.iterate()        
 	aemIterator.fillEventContribution()
         return 0
 
@@ -146,52 +137,6 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
     
     def handleError(self, contribution, code, p1, p2):
         if type(contribution) == LDF.EBFevent:
-    	    if code == LDF.EBFcontributionIterator.ERR_NumContributions:
-    	    	logger.debug("handleError:ERR_NumContributions\n" \
-    	    		     "\tNumber of contributions found > %d\n" % p1)
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Number of Contributions', p1])
-
-    	    elif code == LDF.EBFcontributionIterator.ERR_PastEnd:
-    	    	logger.debug("handleError:ERR_PastEnd\n" \
-    	    		     "\tIterated past end of event by 0x%0x = %d bytes\n" \
-    	    		     % (p1, p1))
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Past End', p1, p1])
-
-    	    elif code == LDF.EBFcontributionIterator.ERR_ZeroLength:
-    	    	logger.debug("handleError:ERR_ZeroLength\n" \
-    	    		     "\tFound a contribution with zero length\n")
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Zero Length'])
-
-            elif code == LDF.EBFcontributionIterator.ERR_PacketError:
-	        DICT = {LDF.EBFcontribution.Parity     : 'parity'     ,\
-		        LDF.EBFcontribution.Truncated  : 'truncated'  ,\
-		        LDF.EBFcontribution.WriteFault : 'write fault',\
-		        LDF.EBFcontribution.TimedOut   : 'timed out'  ,\
-			}
-		try:
-		    errtype = DICT[p1]
-		except:
-		    errtype = 'unknown'
-		logger.debug("handleError:ERR_PacketError\n"\
-                	     "\tError Type : %s\n" % errtype)
-	        self.ErrorHandler.fill('PACKET_ERROR', [errtype])
-
-    	    elif code == LDF.EBFcontributionIterator.ERR_NoMap:
-    	    	logger.debug("handleError:ERR_NoMap\n" \
-    	    		     "\tNo contribution map exists for EBF version %0x\n"% p1)
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['No Map', p1, p1])
-
-    	    elif code == LDF.EBFcontributionIterator.ERR_SeqNoMismatch:
-    	    	logger.debug("handleError:ERR_SeqNoMismatch\n" \
-    	    		     "\tEvent has nonmatching sequence numbers %u and %u\n" \
-    	    		     % (p1, p2))
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Sequence Number Mismatch', p1, p1])
-
-    	    else:
-    	        logger.debug("UNKNOWN_ERROR\n"\
-              	 	     "\tUnrecognized error code %d = 0x%08x with\n"\
-              		     "\targuments %d = 0x%08x, %d = 0x%08x\n"%\
-           		     (code, code, p1, p1, p2, p2))
-                self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['UNKNOWN_ERROR_CODE', p1, p2])
-
-        return code
+            if code == LDF.EBFcontributionIterator.ERR_PacketError:
+                self.ErrorHandler.fill('PACKET_ERROR')
+        return 0

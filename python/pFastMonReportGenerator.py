@@ -69,12 +69,11 @@ class pFastMonBaseReportGenerator(pBaseReportGenerator):
         self.write('Here is the detailed list of events with error(s)',\
                    pageLabel)
         self.newline(pageLabel)
-        if self.ErrorHandler.getNumErrorEvents() > 0:
-            for errorEvent in self.ErrorHandler.ErrorEventsList:
-                self.addDictionary('Event %d' %\
-                                       errorEvent.EventNumber,\
-                                       errorEvent.getErrorsDict(),\
-                                       'error_details')
+        dictionary = self.ErrorHandler.ErrorEventsDict
+        if (len(dictionary)):
+            for (eventNumber, errorEvent) in dictionary.items():
+                self.addDictionary('Event %d' % eventNumber,\
+                                   errorEvent.getErrorsDict(), 'error_details')
         else:
             self.write('No error(s) found in this run.', pageLabel)
 
