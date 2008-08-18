@@ -88,8 +88,9 @@ class pErrorHandler:
                            'num_processed_events'  : self.NumProcessedEvents,
                            'truncated'             : truncated})
         xmlWriter.indent()
-        for (eventNumber, errorEvent) in enumerate(self.ErrorEventsList):
-            xmlWriter.openTag('errorEvent', {'eventNumber': eventNumber})
+        for errorEvent in self.ErrorEventsList:
+            xmlWriter.openTag('errorEvent',\
+                                  {'eventNumber': errorEvent.EventNumber})
             xmlWriter.indent()
             for error in errorEvent.ErrorsList:
                 xmlWriter.writeLine(error.getXmlLine())
