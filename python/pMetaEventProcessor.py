@@ -111,8 +111,8 @@ class pMetaEventProcessor:
                        meta.context().current().timeSecs()
 	self.getVariable('meta_context_current_flywheeling')[0]    =\
                        meta.context().current().flywheeling()
-	self.getVariable('meta_context_current_missing_gps')[0]    =\
-                       meta.context().current().missingGps()
+	self.getVariable('meta_context_current_source_gps')[0]    =\
+                       meta.context().current().sourceGps()
 	self.getVariable('meta_context_current_missing_cpupps')[0] =\
                        meta.context().current().missingCpuPps()
 	self.getVariable('meta_context_current_missing_latpps')[0] =\
@@ -129,8 +129,8 @@ class pMetaEventProcessor:
                        meta.context().previous().timeSecs()
 	self.getVariable('meta_context_previous_flywheeling')[0]   =\
                        meta.context().previous().flywheeling()
-	self.getVariable('meta_context_previous_missing_gps')[0]   =\
-                       meta.context().previous().missingGps()
+	self.getVariable('meta_context_previous_source_gps')[0]   =\
+                       meta.context().previous().sourceGps()
 	self.getVariable('meta_context_previous_missing_cpupps')[0]=\
                        meta.context().previous().missingCpuPps()
 	self.getVariable('meta_context_previous_missing_latpps')[0]=\
