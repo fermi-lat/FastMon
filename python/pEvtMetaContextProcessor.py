@@ -174,7 +174,11 @@ class pEvtMetaContextProcessor:
         self.getVariable('event_timestamp')[0]                     =\
                         self.calculateTimeStamp(meta, context)
         self.getVariable('meta_softwareKey')[0] = meta.softwareKey
-        self.getVariable('meta_LATC_master')[0] = meta.hardwareKey
+
+	if str(meta.__class__).split("'")[1] == 'eventFile.LPA_Info':
+	    self.getVariable('meta_LATC_master')[0] = meta.hardwareKey
+	else:
+	    self.getVariable('meta_LATC_master')[0] = meta.writeCfg
 		             
         self.getVariable('evt_data_transfer_id')[0] = self.EvtReader.runid()
         self.getVariable('meta_context_run_id')[0]  = context.run.startedAt
