@@ -114,8 +114,10 @@ class pGEMcontributionWriter(pContributionWriter):
         somethingDone = False
         if len(self.__Variables):
             for variable in self.__Variables:
+                if variable.Name not in self.BaseFunctions:
+                    logger.error('Function %s not defined.' % variable.Name)
                 for function in self.BaseFunctions:
-                    if variable.getName() == function:
+                    if variable.Name == function:
                         self.writeLine('self.%s()' % function)
                         somethingDone = True
         if not somethingDone:
