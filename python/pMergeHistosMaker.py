@@ -33,7 +33,7 @@ class pMergeHistosMaker:
         outputFile = file(outputFilePath, 'w')
         for plotName in self.PlotList:
             if self.XmlParser.EnabledPlotRepsDict[plotName].Level == 'tower':
-                outputFile.writelines('%s_TowerLoop%s%s\n' %\
+                outputFile.writelines('%s_Tower_TowerLoop%s%s\n' %\
                                       (plotName, SEPARATOR,\
                                        DEFAULT_MERGE_MODE))
             else:
