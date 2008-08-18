@@ -114,6 +114,9 @@ class pDataProcessor:
         ## @var PrevTimestamp
         ## @brief The time stamp of the previous event, initialized to 0.
 
+        logger.info('Starting Data Processor.')
+	logger.info('Using LDF Version : %s - %s - %s', LDF.LDF_VERSION_STR, LDF.LDF_VERSION, LDF.__file__)
+	
         self.InputFilePath = inputFilePath
         if outputFilePath is None:
             logger.info('Output file path not specified.')
