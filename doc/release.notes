@@ -1,3 +1,7 @@
+*** ??? ***
+- Add ERR_TrgParityError to the handleError(),
+  to synced with the last LDF developments, pLATcomponentIterator.py
+
 *** v4r2p0 ***
 - Update old files to v3r5p6 after the tags were lost
   Hopefully, everything is OK now. I hate cvs even more than before.
