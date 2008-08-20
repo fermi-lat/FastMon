@@ -161,7 +161,7 @@ class pERRcontributionIteratorBase(LDF.ERRcontributionIterator):
     #  What shall we do with err ?
 
     def gtrcPhaseError(self, tower, gtcc, gtrc, err):
-        self.ErrorHandler.fill('GTRC_PHASE_EgtccDataParityErrorRROR', [tower, gtcc, gtrc])
+        self.ErrorHandler.fill('GTRC_PHASE_ERROR', [tower, gtcc, gtrc])
         return 0
 
     ## @brief Dispatch function for GTCC "GTFE phase error" errors.
