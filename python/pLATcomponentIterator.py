@@ -155,7 +155,7 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
     	    	logger.debug("handleError:ERR_PastEnd\n" \
     	    		     "\tIterated past end of event by 0x%0x = %d bytes\n" \
     	    		     % (p1, p1))
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Past End', p1, p1])
+	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Past End', p1])
 
     	    elif code == LDF.EBFcontributionIterator.ERR_ZeroLength:
     	    	logger.debug("handleError:ERR_ZeroLength\n" \
@@ -179,13 +179,18 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
     	    elif code == LDF.EBFcontributionIterator.ERR_NoMap:
     	    	logger.debug("handleError:ERR_NoMap\n" \
     	    		     "\tNo contribution map exists for EBF version %0x\n"% p1)
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['No Map', p1, p1])
+	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['No Map', p1])
 
     	    elif code == LDF.EBFcontributionIterator.ERR_SeqNoMismatch:
     	    	logger.debug("handleError:ERR_SeqNoMismatch\n" \
     	    		     "\tEvent has nonmatching sequence numbers %u and %u\n" \
     	    		     % (p1, p2))
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Sequence Number Mismatch', p1, p1])
+	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Sequence Number Mismatch', p1])
+
+    	    elif code == LDF.EBFcontributionIterator.ERR_TrgParityError:
+    	    	logger.debug("handleError:ERR_TrgParityError\n" \
+    	    		     "\tContribution with ID has a Trigger Parity Error\n")
+	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Trigger Parity Error', p1])
 
     	    else:
     	        logger.debug("UNKNOWN_ERROR\n"\
