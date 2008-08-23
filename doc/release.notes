@@ -1,3 +1,7 @@
+*** v4r2p2 ***
+- Add the seconds_elapsed to the error summary: pXmlErrorMerger
+* Relevant jira(s): GDQMQ-251
+
 *** v4r2p1 ***
 - Add the seconds_elapsed to the error summary: pErrorHandler.py
 - Give number of seconds elapsed to the ErrorHandler: pDataProcessor.py 
