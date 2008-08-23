@@ -1,3 +1,9 @@
+*** v4r3p0 ***
+- Add spacecraft_orbit_mode and spacecraft_orbit_inSAA, read them from magic7, pass them to the updated pSCPosition
+  constructor, add get methods, and fill quantities in the pGeomagProcessor in
+  pM7Parser.py pSCPosition.py pGeomagProcessor.py
+* Relevant jira(s): GDQMQ-195
+
 *** v4r2p2 ***
 - Add the seconds_elapsed to the error summary: pXmlErrorMerger
 * Relevant jira(s): GDQMQ-251
