@@ -17,6 +17,7 @@ class pXmlErrorMerger(pXmlWriter):
         self.EventCountsDict = {}
         self.EventSummaryDict = {'num_error_events'      : 0,
                                  'num_processed_events'  : 0,
+				 'seconds_elapsed'       : 0,
                                  'truncated'             : 0
                                  }
         self.ErrorEventsList = []
