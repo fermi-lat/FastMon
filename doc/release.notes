@@ -4,6 +4,7 @@
 - Add ERR_TrgParityError to the handleError(),
   to synced with the last LDF developments, pLATcomponentIterator.py
 - Bug fix in gtrcPhaseError, pERRcontributionIteratorBase.py
+* Relevant jira(s): GDQMQ-251
 
 *** v4r2p0 ***
 - Update old files to v3r5p6 after the tags were lost
