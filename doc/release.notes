@@ -1,4 +1,6 @@
-*** ??? ***
+*** v4r2p1 ***
+- Add the seconds_elapsed to the error summary: pErrorHandler.py
+- Give number of seconds elapsed to the ErrorHandler: pDataProcessor.py 
 - Add ERR_TrgParityError to the handleError(),
   to synced with the last LDF developments, pLATcomponentIterator.py
 - Bug fix in gtrcPhaseError, pERRcontributionIteratorBase.py
