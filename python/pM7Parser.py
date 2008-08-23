@@ -139,7 +139,7 @@ class pM7Parser:
 
 		# OrbPosition as just been read from the file, whereas we get the latest value of SCAttitudeQuaternion
 		# As magic7 file contains many more ATT message than ORB ones that should work
-		self.SCPositionTable.append(pSCPosition(SCTime, yearfloat, OrbPosition, SCAttitudeQuaternion))
+		self.SCPositionTable.append(pSCPosition(SCTime, yearfloat, OrbPosition, SCAttitudeQuaternion, OrbMode, OrbInSAA))
                 self.TimePoints.append(int(SCTime[0]))	    
 	    i+=1
 

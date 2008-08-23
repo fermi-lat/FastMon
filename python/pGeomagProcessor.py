@@ -57,6 +57,8 @@ class pGeomagProcessor:
     #  A space craft position as an object of the @ref pSCPosition class
     def process(self, sc):
         yearfloat  = sc.getYearFloat()
+	orbmode    = sc.getOrbMode()
+	orbinsaa   = sc.getOrbInSAA()
         lat        = sc.getLatitude()
         lon        = sc.getLongitude()
         alt        = sc.getRelativeAltitude()/1000.
@@ -75,7 +77,11 @@ class pGeomagProcessor:
 	zgalL      = sc.getZGalL()
         zgalB      = sc.getZGalB()
 	
-	# Spacecraft attitude
+	# Spacecraft mode
+	self.getVariable('spacecraft_orbit_mode')[0]  = orbmode
+	self.getVariable('spacecraft_orbit_inSAA')[0] = orbinsaa
+	
+	# Spacecraft position
         self.getVariable('spacecraft_latitude')[0]  = lat
         self.getVariable('spacecraft_longitude')[0] = lon
         self.getVariable('spacecraft_altitude')[0]  = alt

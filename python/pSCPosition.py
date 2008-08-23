@@ -39,7 +39,7 @@ class pSCPosition:
     #  The space craft attitude quaternion, as a 4D vector (x, y, z, w) in the ECI J2000 frame
     #
 
-    def __init__(self, time,yearfloat = None, position=None, quaternion=None):
+    def __init__(self, time,yearfloat = None, position=None, quaternion=None, orbmode=None, orbinsaa=None):
        ## @var YearFloat
        ## @brief A float representing the Year and Month of the data
        
@@ -54,6 +54,12 @@ class pSCPosition:
        
        ## @var Quaternion
        ## @brief The space craft attitude quaternion, as a 4D vector (x, y, z, w) in the ECI J2000 frame
+
+       ## @var OrbMode
+       ## @brief The spacecraft attitude-control mode 3==inertially pointed, 5==sky survey (TBR)
+
+       ## @var OrbInSAA
+       ## @brief Flag indicating whether or not the observatory is within the LAT SAA boundary 1==IN, 0==OUT
        
        ## @var EarthCoordinates
        ## @brief The space craft position in the earth coordinates as a 3D tuple (Latitude, Longitude, Altitude)
@@ -117,7 +123,9 @@ class pSCPosition:
        self.MetInSeconds    = int(time[0])
        self.MetMicroSeconds = int(time[1])
        self.Position   = position
-       self.Quaternion  = quaternion
+       self.Quaternion = quaternion
+       self.OrbMode    = orbmode
+       self.OrbInSAA   = orbinsaa
        self.XaxisVector = None
        self.YaxisVector = None
        self.ZaxisVector = None
@@ -155,18 +163,19 @@ class pSCPosition:
     ## @param self
     #  The class instance.
     def __str__(self):
-        return '\nSpace Craft Position parameters:\n'                   	               \
-	      +'MetInSeconds                 	     = %d\n'	       % self.MetInSeconds     \
-	      +'MetMicroSeconds              	     = %s\n'	       % self.MetMicroSeconds  \
-	      +'Position (x, y, z) in meters 	     = (%s, %s, %s)\n' % self.Position         \
-	      +'JulianDate                   	     = %s\n'	       % self.JulianDate       \
-	      +'GMSTime                      	     = %s\n'	       % self.GMSTime	       \
-	      +'Earth Coords (lat, long, alt)        = (%s, %s, %s)\n' % self.EarthCoordinates \
-	      +'Local Euler angles (pitch, roll, yaw)= (%s, %s, %s)\n' % self.PitchRollYaw     \
-	      +'Rock angle : Zenith to ZDec          = %s\n'           % self.RockAngle        \
-	      +'X Axis pointing (XRa, XDec)  	     = (%s, %s)\n'     % (self.XRa, self.XDec) \
-	      +'Y Axis pointing (YRa, YDec)  	     = (%s, %s)\n'     % (self.YRa, self.YDec) \
-	      +'Z AZis pointing (ZRa, ZDec)  	     = (%s, %s)\n'     % (self.ZRa, self.ZDec) \
+        return '\nSpace Craft Position parameters:\n'                   	                       \
+	      +'MetInSeconds                 	     = %d\n'	       % self.MetInSeconds             \
+	      +'MetMicroSeconds              	     = %s\n'	       % self.MetMicroSeconds          \
+	      +'Orbit (Mode, in SAA)                 = (%s, %s)\n'     % (self.OrbMode, self.OrbInSAA) \
+	      +'Position (x, y, z) in meters 	     = (%s, %s, %s)\n' % self.Position                 \
+	      +'JulianDate                   	     = %s\n'	       % self.JulianDate               \
+	      +'GMSTime                      	     = %s\n'	       % self.GMSTime	               \
+	      +'Earth Coords (lat, long, alt)        = (%s, %s, %s)\n' % self.EarthCoordinates         \
+	      +'Local Euler angles (pitch, roll, yaw)= (%s, %s, %s)\n' % self.PitchRollYaw             \
+	      +'Rock angle : Zenith to ZDec          = %s\n'           % self.RockAngle                \
+	      +'X Axis pointing (XRa, XDec)  	     = (%s, %s)\n'     % (self.XRa, self.XDec)         \
+	      +'Y Axis pointing (YRa, YDec)  	     = (%s, %s)\n'     % (self.YRa, self.YDec)         \
+	      +'Z AZis pointing (ZRa, ZDec)  	     = (%s, %s)\n'     % (self.ZRa, self.ZDec)         \
 	      +'Z AZis pointing (L, B)  	     = (%s, %s)\n'     % (self.ZGalL, self.ZGalB)
 
     ## @brief Returns the current value of yearfloat.
@@ -175,6 +184,23 @@ class pSCPosition:
     def getYearFloat(self):
 	return self.YearFloat 
 
+    ## @brief Returns the current value of yearfloat.
+    ## @param self
+    #  The class instance.
+    def getOrbMode(self):
+	return self.OrbMode 
+
+    ## @brief Returns the current value of yearfloat.
+    ## @param self
+    #  The class instance.
+    def getOrbInSAA(self):
+	return self.OrbInSAA 
+
+    ## @brief Returns the current value of yearfloat.
+    ## @param self
+    #  The class instance.
+    def getYearFloat(self):
+	return self.YearFloat 
     ## @brief Returns the space craft Latitude.
     #
     #  If Latitude is None, try to process the coordinates before giving Latitude
