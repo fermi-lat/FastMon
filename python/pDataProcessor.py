@@ -324,14 +324,33 @@ class pDataProcessor:
                 self.GeomagProcessor.process(position)
 	        # Need to copy the value, not to let python use a reference !
 		self.PrevTimestamp = copy(timestamp)
-        self.__postEvent()
+        self.__postEvent(buff)
 
     def __preEvent(self):
         self.TreeMaker.resetVariables()
 	self.TreeMaker.VariablesDictionary['processor_event_number'][0] =\
                        self.NumEvents
 
-    def __postEvent(self):
+    ## @brief Post event processing 
+    #
+    #  where the Tree is filled and the Errors are dumped to the xml
+    ## @param self
+    #  The class instance.
+    ## @param buff
+    #  The buff object of type LDF.EBFeventIterator
+    #
+    ## FASTMON_DUMP_ERRORS_TO_FILE is defined in Common/python/pGlobals
+    #  if set to True, FastMon will dump events with at least one error to a file
+    #  Use for debugging purpose only.
+    
+    def __postEvent(self, buff):        
+        # Try/Except in case the variable is not even defined for backward compatibility
+	try:
+	    if FASTMON_DUMP_ERRORS_TO_FILE and self.ErrorHandler.ErrorsBuffer != []:
+	        self.__dumpEventToFile(buff)
+        except:
+	    pass
+
         self.ErrorHandler.flushErrorsBuffer(\
             self.TreeMaker.getVariable('meta_context_gem_scalers_sequence')[0])
         self.TreeMaker.fillTree()
@@ -369,6 +388,27 @@ class pDataProcessor:
         self.ErrorHandler.NumProcessedEvents = self.NumEvents
         self.ErrorHandler.SecondsElapsed     = delta_time
         self.ErrorHandler.writeXmlOutput(self.OutputErrorFilePath)
+
+    ## @brief Dump an event buffer to a file
+    #
+    ## @param self
+    #  The class instance.
+    ## @param buff
+    #  The buff object of type LDF.EBFeventIterator
+    #
+    ## This function is now used only to dump event with an error to a separate
+    #  file.
+    
+    def __dumpEventToFile(self, buff):       
+       evtnum = self.TreeMaker.getVariable('meta_context_gem_scalers_sequence')
+       fname = 'Err_'+self.InputFilePath.split('/')[-1][:-3]+'ebf'
+       outputDirPath  = os.path.split(self.OutputFilePath)[0]
+       fpath = os.path.join(outputDirPath, fname)
+       logger.debug('Writing event %d with errors to file' % evtnum)
+       logger.debug('Output Error File %s' % fpath)
+       f = file(fpath, 'ab')
+       f.write(buff)
+       f.close()       
 
 
     ## @brief Write an xml summary file with run statistics
