@@ -351,8 +351,10 @@ class pDataProcessor:
         except:
 	    pass
 
-        self.ErrorHandler.flushErrorsBuffer(\
-            self.TreeMaker.getVariable('meta_context_gem_scalers_sequence')[0])
+        error_summary = self.ErrorHandler.flushErrorsBuffer(\
+                             self.TreeMaker.getVariable('meta_context_gem_scalers_sequence')[0])
+	self.TreeMaker.getVariable('error_summary')[0]=error_summary
+	
         self.TreeMaker.fillTree()
 	self.NumEvents += 1
 	if not self.NumEvents % 100:
