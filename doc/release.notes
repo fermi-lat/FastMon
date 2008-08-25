@@ -1,3 +1,7 @@
+*** v4r3p2 ***
+- error_summary is filled in __postEvent : pDataProcessor
+* Relevant jira(s): GDQMQ-254
+
 *** v4r3p1 ***
 - When FASTMON_DUMP_ERRORS_TO_FILE is set to true, the events with an error are dumped to a file
   calling the new method __dumpEventToFile. For debugging purpose only : pDataProcessor
