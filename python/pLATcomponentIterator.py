@@ -2,6 +2,7 @@
 ## @brief Package responsible for the whole event iteration stuff.
 
 import LDF
+from pGlobals  import *
 
 from pTKRcontributionIterator     import pTKRcontributionIterator
 from pCALcontributionIterator     import pCALcontributionIterator
@@ -132,7 +133,12 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
 	errIterator.iterate()
         return 0
 
+
     ## @brief Handle packet errors.
+    #  From Ric Claus and C++ code
+    #  
+    #  The LookupErrorCode function is in Common/python/pGlobals
+    #
     ## @param self
     #  The class instance.
     ## @param contribution
@@ -143,60 +149,34 @@ class pLATcomponentIterator(LDF.LATcomponentIterator):
     #  Parameter 1.
     ## @param p2
     #  Parameter 2.
+    ## Error types 
+    #  ERR_NumContributions : Number of contributions found too big
+    #  ERR_PastEnd          : Iterated past end of event
+    #  ERR_ZeroLength       : Found a contribution with zero length
+    #  ERR_PacketError      : Packet Error (Parity, Truncated, WriteFault, TimedOut)
+    #  ERR_NoMap            : No contribution map exists for EBF version
+    #  ERR_SeqNoMismatch    : Event has nonmatching sequence numbers
+    #  ERR_TrgParityError   : Contribution with ID has a Trigger Parity Error
+    #
     
     def handleError(self, contribution, code, p1, p2):
+        DICT = {LDF.EBFcontribution.Parity     : 'parity'     ,\
+                LDF.EBFcontribution.Truncated  : 'truncated'  ,\
+                LDF.EBFcontribution.WriteFault : 'write fault',\
+                LDF.EBFcontribution.TimedOut   : 'timed out'  ,\
+                }
         if type(contribution) == LDF.EBFevent:
-    	    if code == LDF.EBFcontributionIterator.ERR_NumContributions:
-    	    	logger.debug("handleError:ERR_NumContributions\n" \
-    	    		     "\tNumber of contributions found > %d\n" % p1)
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Number of Contributions', p1])
-
-    	    elif code == LDF.EBFcontributionIterator.ERR_PastEnd:
-    	    	logger.debug("handleError:ERR_PastEnd\n" \
-    	    		     "\tIterated past end of event by 0x%0x = %d bytes\n" \
-    	    		     % (p1, p1))
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Past End', p1])
-
-    	    elif code == LDF.EBFcontributionIterator.ERR_ZeroLength:
-    	    	logger.debug("handleError:ERR_ZeroLength\n" \
-    	    		     "\tFound a contribution with zero length\n")
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Zero Length'])
-
-            elif code == LDF.EBFcontributionIterator.ERR_PacketError:
-	        DICT = {LDF.EBFcontribution.Parity     : 'parity'     ,\
-		        LDF.EBFcontribution.Truncated  : 'truncated'  ,\
-		        LDF.EBFcontribution.WriteFault : 'write fault',\
-		        LDF.EBFcontribution.TimedOut   : 'timed out'  ,\
-			}
+            s = LDF.EBFcontributionIterator.handleError(self, contribution, code, p1,p2)
+            errName = LookupErrorCode(self, code)[4:]
+            if errName == 'PacketError':
 		try:
 		    errtype = DICT[p1]
 		except:
 		    errtype = 'unknown'
-		logger.debug("handleError:ERR_PacketError\n"\
-                	     "\tError Type : %s\n" % errtype)
-	        self.ErrorHandler.fill('PACKET_ERROR', [errtype])
+                self.ErrorHandler.fill('PACKET_ERROR', [errtype])
+            else:
+               self.ErrorHandler.fill('EBF_CONTRIB_ERROR', [errName, p1, p2])
+            return s
+	# If the contribution is not EBF then we just return the error code
+	return code
 
-    	    elif code == LDF.EBFcontributionIterator.ERR_NoMap:
-    	    	logger.debug("handleError:ERR_NoMap\n" \
-    	    		     "\tNo contribution map exists for EBF version %0x\n"% p1)
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['No Map', p1])
-
-    	    elif code == LDF.EBFcontributionIterator.ERR_SeqNoMismatch:
-    	    	logger.debug("handleError:ERR_SeqNoMismatch\n" \
-    	    		     "\tEvent has nonmatching sequence numbers %u and %u\n" \
-    	    		     % (p1, p2))
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Sequence Number Mismatch', p1])
-
-    	    elif code == LDF.EBFcontributionIterator.ERR_TrgParityError:
-    	    	logger.debug("handleError:ERR_TrgParityError\n" \
-    	    		     "\tContribution with ID has a Trigger Parity Error\n")
-	    	self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['Trigger Parity Error', p1])
-
-    	    else:
-    	        logger.debug("UNKNOWN_ERROR\n"\
-              	 	     "\tUnrecognized error code %d = 0x%08x with\n"\
-              		     "\targuments %d = 0x%08x, %d = 0x%08x\n"%\
-           		     (code, code, p1, p1, p2, p2))
-                self.ErrorHandler.fill('EBF_CONTRIB_ERROR', ['UNKNOWN_ERROR_CODE', p1, p2])
-
-        return code
