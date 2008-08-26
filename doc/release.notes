@@ -1,4 +1,4 @@
-*** v4r4p0 ***
+*** v4r4p1 ***
 - Update error handling using a new function provided by Ric to automatically log the error type
   for ALL iterators.
 - TEM_BUG are still tagged as such in the ERR contribution but
