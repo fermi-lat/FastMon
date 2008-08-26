@@ -1,3 +1,14 @@
+*** v4r4p0 ***
+- Update error handling using a new function provided by Ric to automatically log the error type
+  for ALL iterators.
+- TEM_BUG are still tagged as such in the ERR contribution but
+  in the TKR contribution iterator  UnphysStrip, BadStripOrder, UnPhysTOT and TooManyHits are not
+  anymore counted as TEM_BUG, the bug should be catched earlier.
+- The function LookupErrorCode(obj, code) is defined in Common/python/pGlobals.py v4r9p0
+  This means that this version of FastMon (>v4r4p0) REQUIRES  Common >= v4r9p0
+
+* Relevant jira(s): GDQMQ-257
+
 *** v4r3p2 ***
 - error_summary is filled in __postEvent : pDataProcessor
 * Relevant jira(s): GDQMQ-254
