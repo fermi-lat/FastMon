@@ -5,6 +5,7 @@ import pSafeLogger
 logger = pSafeLogger.getLogger('pLATdatagramIterator')
 
 import LDF
+from pGlobals  import *
 
 
 ## @brief Implementation of the LAT datagram iterator.
@@ -25,7 +26,7 @@ class pLATdatagramIterator(LDF.LDBI_LATdatagramIterator):
         LDF.LDBI_LATdatagramIterator.__init__(self, latContributionIterator)
         self.__LatContributionIterator = latContributionIterator
 
-    ## @brief Handle datagram errors.
+    ## @brief Handle error function overload
     ## @param self
     #  The class instance.
     ## @param contribution
@@ -36,21 +37,25 @@ class pLATdatagramIterator(LDF.LDBI_LATdatagramIterator):
     #  Parameter 1.
     ## @param p2
     #  Parameter 2.
-    
-    def handleError(self, contribution, code, p1, p2):
-        if code == LDF.LATdatagramIterator.ERR_IDmismatch:
-            logger.debug('handleError:ERR_IDmismatch\n'\
-	                 '\tIdentity mismatch: got %08x, expected %08x\n' % (p1, p2))
-            self.ErrorHandler.fill('LAT_DATAGRAM_ERROR', ['ID Mismatch'])
-	    
-        else:
-    	    logger.debug("UNKNOWN_ERROR\n"\
-                         "\tUnrecognized error code %d = 0x%08x with "\
-                         "\targuments %d = 0x%08x, %d = 0x%08x\n" %\
-                         (code, code, p1, p1, p2, p2))
-            self.ErrorHandler.fill('LAT_DATAGRAM_ERROR', ['UNKNOWN_ERROR_CODE', p1, p2])
+    #   
+    ##  From Ric Claus
+    #  
+    #  The LookupErrorCode function is in Common/python/pGlobals
+    #
+    ##  return code is:
+    #   - negative to indicate bail immediately
+    #   - 0 for SUCCESS
+    #   - positive to indicate that there was an error but iteration can continue
+    #
+    ## Error type 
+    #  LATdatagramIterator.ERR_IDmismatch	Identity mismatch
+    #  
 
-        return code
+    def handleError(self, contribution, code, p1, p2):
+        s = LDF.LATdatagramIterator.handleError(self, contribution, code, p1,p2)
+        errName = LookupErrorCode(self, code)[4:]
+        self.ErrorHandler.fill('LAT_DATAGRAM_ERROR', [errName, p1, p2])
+        return s
 
     ## @brief Process the datagram.
     ## @param self

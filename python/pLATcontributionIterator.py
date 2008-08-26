@@ -5,6 +5,7 @@ import pSafeLogger
 logger = pSafeLogger.getLogger('pLATcontributionIterator')
 
 import LDF
+from pGlobals  import *
 
 
 ## @brief Implementation of the LAT contribution iterator.
@@ -20,7 +21,8 @@ class pLATcontributionIterator(LDF.LDBI_LATcontributionIterator):
     def __init__(self, ebfEventIterator):
         LDF.LDBI_LATcontributionIterator.__init__(self, ebfEventIterator)
 
-    ## @brief Handle LAT contribution iterator errors.
+
+    ## @brief Handle error function overload
     ## @param self
     #  The class instance.
     ## @param contribution
@@ -31,25 +33,23 @@ class pLATcontributionIterator(LDF.LDBI_LATcontributionIterator):
     #  Parameter 1.
     ## @param p2
     #  Parameter 2.
+    #   
+    ##  From Ric Claus
+    #  
+    #  The LookupErrorCode function is in Common/python/pGlobals
+    #
+    ##  return code is:
+    #   - negative to indicate bail immediately
+    #   - 0 for SUCCESS
+    #   - positive to indicate that there was an error but iteration can continue
+    ## Error type 
+    #  ERR_UDFcontribution : Found unrecognized LATdatagram contribution
+    #  ERR_NotProgressing   : Iteration is not making progress, Parser may be lost
+    #
 
     def handleError(self, contribution, code, p1, p2):
+        s = LDF.LATcontributionIterator.handleError(self, contribution, code, p1,p2)
+        errName = LookupErrorCode(self, code)[4:]
+        self.ErrorHandler.fill('LAT_CONTRIB_ERROR', [errName, p1, p2])
+        return s
 
-        if code == LDF.LATcontributionIterator.ERR_UDFcontribution:
-            logger.debug('handleError:ERR_UDFcontribution\n'\
-	                 '\tFound unrecognized LATdatagram contribution type 0x%08X' % p1 )
-            self.ErrorHandler.fill('LAT_CONTRIB_ERROR', ['Unrecognized Contribution', p1])
-	    	     
-        elif code == LDF.LATcontributionIterator.ERR_NotProgressing:
-            logger.debug('handleError:ERR_UDFcontribution\n'\
-	                 '\tIteration is not making progress\n'\
-                         '\tParser may be lost\n')
-            self.ErrorHandler.fill('LAT_CONTRIB_ERROR', ['Not Progressing'])
-	    
-        else:
-    	    logger.debug("UNKNOWN_ERROR\n"\
-                         "\tUnrecognized error code %d = 0x%08x with "\
-                         "\targuments %d = 0x%08x, %d = 0x%08x\n" %\
-                         (code, code, p1, p1, p2, p2))
-            self.ErrorHandler.fill('LAT_CONTRIB_ERROR', ['UNKNOWN_ERROR_CODE', p1, p2])
-			  
-        return code
