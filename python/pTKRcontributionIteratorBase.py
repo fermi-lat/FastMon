@@ -44,10 +44,10 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
         self.TreeMaker    = treeMaker
         self.ErrorHandler = errorHandler
 
-
     ## @brief Handle error function overload
-    #  Inspiration from the original c++ code implementation
-    #  of the handleError function in "TKRcontributionIterator.cpp"
+    #  From Ric Claus
+    #  
+    #  The LookupErrorCode function is in Common/python/pGlobals
     #
     ##  return code is:
     #   - negative to indicate bail immediately
@@ -56,79 +56,17 @@ class pTKRcontributionIteratorBase(LDF.TKRcontributionIterator):
     #
     #	501 : 'ERR_WrongOrder'	    # TOTs cannot be accessed before strips have been iterated over
     #	502 : 'ERR_PastEnd'	    # Attempted to iterate past the end of the contribution.
-    #	503 : 'ERR_UnphysStrip'     # Encountered an unphysical strip : StripMax = 1535
-    #	504 : 'ERR_BadStripOrder'   # Out of order strip found
-    #	505 : 'ERR_UnPhysTOT'       # Encountered an unphysical TOT : 251, 252, 253, 254
-    #	506 : 'ERR_TooManyHits'     # Too many hits for GTRC size
+    #	503 : 'ERR_UnphysStrip'     # Encountered an unphysical strip : StripMax = 1535 (due to TEM_BUG)
+    #	504 : 'ERR_BadStripOrder'   # Out of order strip found (due to TEM_BUG)
+    #	505 : 'ERR_UnPhysTOT'       # Encountered an unphysical TOT : 251, 252, 253, 254 (due to TEM_BUG)
+    #	506 : 'ERR_TooManyHits'     # Too many hits for GTRC size (due to TEM_BUG)
 
     def handleError(self, event, code, p1, p2):
+      s = LDF.TKRcontributionIterator.handleError(self, event, code, p1,p2)
+      errName = LookupErrorCode(self, code)[4:]
+      self.ErrorHandler.fill('TKR_CONTRIB_ERROR', [errName, self.TemId, p1, p2])
+      return s
 
-    	 if code == LDF.TKRcontributionIterator.ERR_WrongOrder:
-             logger.debug("iterateTOTs:ERR_WrongOrder \n"\
-                   	  "\tFor TEM %d contribution:\n"\
-                   	  "\tTOTs cannot be accessed before "\
-                   	  "\tstrips have been iterated over."%\
-		          (self.TemId))
-		   
-	     self.ErrorHandler.fill('TKR_CONTRIB_ERROR', ['Cannot Access ToT before strips', self.TemId])
-	     
-    	 elif code == LDF.TKRcontributionIterator.ERR_PastEnd:
-             which = ["Strips", "TOTs"]
-             logger.debug("iterate%s:ERR_PastEnd \n"\
-                          "\tFor TEM %d contribution:"\
-                          "\tAttempted to iterate past the end of the contribution.\n"%\
-                          (which[p1], self.TemId))
-		   
-	     self.ErrorHandler.fill('TKR_CONTRIB_ERROR', ['Past End', self.TemId, p1, p2])
-
-    	 elif code == LDF.TKRcontributionIterator.ERR_UnphysStrip:
-             logger.debug("iterateStrips:ERR_UnphysStrip \n"\
-                          "\tFor TEM %d contribution:\n"\
-                          "\tEncountered an unphysical strip # (%d).\n"\
-                          "\Rest of contribution (TKR, DIAG, ERR) is uniterable due\n"\
-                          "\tto the TEM firmware bug." % (self.TemId, p1))
-		   
-	     self.ErrorHandler.fill('TEM_BUG', ['Unphysical strip', self.TemId, p1])
-
-    	 elif code == LDF.TKRcontributionIterator.ERR_UnphysTOT:
-             logger.debug("iterateTOTs:ERR_UnphysTOT \n"\
-                   	  "\tFor TEM %d, contribution:\n"\
-                   	  "\tEncountered an unphysical TOT value # (%d).\n"\
-                   	  "\tRest of contribution (TKR, DIAG, ERR) is uniterable due\n"\
-                   	  "\tto the TEM firmware bug." % (self.TemId, p1))
-		   
-	     self.ErrorHandler.fill('TEM_BUG', ['Unphysical TOT', self.TemId, p1])
-
-    	 elif code == LDF.TKRcontributionIterator.ERR_BadStripOrder:
-             logger.debug("iterateStrips:ERR_BadStripOrder \n"\
-                   	  "\tFor TEM %d contribution:\n"\
-                   	  "\tOut of order strip found: %d is not > %d.\n"\
-                   	  "\tRest of contribution (TKR, DIAG, ERR) is uniterable due\n"\
-                   	  "\tto the TEM firmware bug."%\
-		          (self.TemId, p1, p2))
-		   
-	     self.ErrorHandler.fill('TEM_BUG', ['Bad Strip Order',self.TemId, p1])
-
-    	 elif code == LDF.TKRcontributionIterator.ERR_TooManyHits:
-             logger.debug("iterateStrips:ERR_TooManyHits\n"\
-                   	  "\tFor TEM %d contribution:\n"\
-                   	  "\tMore hits found on layter-end %d than a GTRC can produce (%d).\n"\
-                   	  "\tRest of contribution (TKR, DIAG, ERR) is uniterable due\n"\
-                   	  "\tto the TEM firmware bug."%\
-		   	  (self.TemId, p1, p2))
-		   
-	     self.ErrorHandler.fill('TEM_BUG', ['Too Many Hits in GTRC',self.TemId, p1, p2])
-
-    	 else:
-    	     logger.debug("UNKNOWN_ERROR\n"\
-	                  "\tFor TEM %d contribution:\n"\
-                          "\tUnrecognized error code %d = 0x%08x with "\
-                          "\targuments %d = 0x%08x, %d = 0x%08x\n" %\
-                          (self.TemId, code, code, p1, p1, p2, p2))
-
-             self.ErrorHandler.fill('TKR_CONTRIB_ERROR', ['UNKNOWN_ERROR_CODE', self.TemId, p1, p2])
-	     
-    	 return code
 
     ## @brief Iterate over the event contribution.
     #  Iterate first over strips to check for unphysical strip ids
