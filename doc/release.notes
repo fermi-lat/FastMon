@@ -1,3 +1,45 @@
+*** v4r4p0 ***
+- Update error handling using a new function provided by Ric to automatically log the error type
+  for ALL iterators.
+- TEM_BUG are still tagged as such in the ERR contribution but
+  in the TKR contribution iterator  UnphysStrip, BadStripOrder, UnPhysTOT and TooManyHits are not
+  anymore counted as TEM_BUG, the bug should be catched earlier.
+- The function LookupErrorCode(obj, code) is defined in Common/python/pGlobals.py v4r9p0
+  This means that this version of FastMon (>v4r4p0) REQUIRES  Common >= v4r9p0
+
+* Relevant jira(s): GDQMQ-257
+
+*** v4r3p2 ***
+- error_summary is filled in __postEvent : pDataProcessor
+* Relevant jira(s): GDQMQ-254
+
+*** v4r3p1 ***
+- When FASTMON_DUMP_ERRORS_TO_FILE is set to true, the events with an error are dumped to a file
+  calling the new method __dumpEventToFile. For debugging purpose only : pDataProcessor
+* Relevant jira(s): GDQMQ-253
+
+*** v4r3p0 ***
+- Add spacecraft_orbit_mode and spacecraft_orbit_inSAA, read them from magic7, pass them to the updated pSCPosition
+  constructor, add get methods, and fill quantities in the pGeomagProcessor in
+  pM7Parser.py pSCPosition.py pGeomagProcessor.py
+* Relevant jira(s): GDQMQ-195
+
+*** v4r2p2 ***
+- Add the seconds_elapsed to the error summary: pXmlErrorMerger
+* Relevant jira(s): GDQMQ-251
+
+*** v4r2p1 ***
+- Add the seconds_elapsed to the error summary: pErrorHandler.py
+- Give number of seconds elapsed to the ErrorHandler: pDataProcessor.py 
+- Add ERR_TrgParityError to the handleError(),
+  to synced with the last LDF developments, pLATcomponentIterator.py
+- Bug fix in gtrcPhaseError, pERRcontributionIteratorBase.py
+* Relevant jira(s): GDQMQ-251
+
+*** v4r2p0 ***
+- Update old files to v3r5p6 after the tags were lost
+  Hopefully, everything is OK now. I hate cvs even more than before.
+
 *** v4r1p5 ***
 - Bug fix, event number was not correctly reported in pErrorHandler
 * Relevant jira(s): GDQMQ-197
