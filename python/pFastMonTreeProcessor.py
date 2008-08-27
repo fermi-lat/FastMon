@@ -33,12 +33,19 @@ class pFastMonTreeProcessor(pBaseTreeProcessor):
     #  of the xml configuration file.
     ## @param self
     #  The class instance.
+    #
+    ## Sorting the keys before creating the plots
 
     def createObjects(self):
-        for rep in self.XmlParser.EnabledPlotRepsDict.values():
-            if rep.__class__.__name__ == 'pCUSTOMXmlRep':
+        keys = self.XmlParser.EnabledPlotRepsDict.keys()
+	keys.sort()
+	for key in keys:
+	    rep = self.XmlParser.EnabledPlotRepsDict[key]
+            logger.debug('%s processing.' % rep.getName())
+	    if rep.__class__.__name__ == 'pCUSTOMXmlRep':
                 rep.setPlotter(self.CustomPlotter)
             rep.createRootObjects(self.RootTree)
+            logger.debug('%s done.' % rep.getName())
 
 
 
