@@ -56,19 +56,17 @@ class pCustomPlotter:
             if self.RootTree.GetLeaf(varName) is None:
                 logger.error('Could not find %s.' % varName)
             self.RootTree.SetBranchStatus(varName, 1)
-        if cut != '':
-            self.TmpRootTree = self.RootTree.CopyTree(cut)
-        else:
-            self.TmpRootTree = self.RootTree
-        
+        # Always copy the tree... safer for some not understood reason 
+	self.TmpRootTree = self.RootTree.CopyTree(cut)
+
     def __createNumpyArray(self, varName, shape, type):
         numpyArray = numpy.zeros(shape, type)
         self.TmpRootTree.SetBranchAddress(varName, numpyArray)
         return numpyArray
 
     def __deleteTmpRootTree(self):
-        self.TmpRootTree = None
         self.__closeTmpRootFile()
+	self.TmpRootTree = None
         self.RootTree.SetBranchStatus('*', 1)
         
     def ToT_0_WhenTkrHitsExist_TowerPlane(self, plotRep):
