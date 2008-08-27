@@ -1,3 +1,15 @@
+*** v4r5p0 ***
+- Always do a CopyTree even when there is no cut, it seems more reliable
+  pCustomPlotter.py
+- Sort list of plots before creating them and add some logging to know
+   which plot is cbeing done : pFastMonTreeProcessor.py
+- Update getExpandedExpression() to add only _ and not a full suffix
+  pXmlOutputList.py
+- Needs FastMonCfg v1r6p0
+
+* Relevant jira(s): GDQMQ-258
+
+
 *** v4r4p1 ***
 - Update error handling using a new function provided by Ric to automatically log the error type
   for ALL iterators.
