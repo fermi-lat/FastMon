@@ -20,7 +20,7 @@ class pCustomPlotter:
     def __init__(self, rootFilePath, rootTree):
         self.ObjectsPool = {}
         self.RootFilePath = rootFilePath
-        self.RootTree = rootTree
+        self.RootTree = rootTree.CloneTree()
         self.TmpRootTree = None
         self.StartTime = None
         self.TmpFilePath = os.path.join(os.path.dirname(rootFilePath),\
