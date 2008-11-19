@@ -1,3 +1,11 @@
+*** v4r5p1 ***
+- pCustomPlotter.py : The input tree is now cloned before being used, and in particular
+  copy with cuts to create the plots. For some reason I do not understand, this fixes
+  the crash seen with ROOT version greater than v5.18.00. The trick work with v5.20 and
+  is backward compatible with 5.18.
+
+* Relevant jira(s): GDQMQ-266
+
 *** v4r5p0 ***
 - Always do a CopyTree even when there is no cut, it seems more reliable
   pCustomPlotter.py
