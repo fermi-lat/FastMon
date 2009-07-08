@@ -14,7 +14,9 @@
 import time
 import math
 import bisect
-from pSafeROOT import ROOT
+
+from pSafeROOT   import ROOT
+from pSAAPolygon import pVertex
 
 #Earth Flattening Coeff.
 EARTH_FLAT      = 1/298.25 
@@ -39,7 +41,8 @@ class pSCPosition:
     #  The space craft attitude quaternion, as a 4D vector (x, y, z, w) in the ECI J2000 frame
     #
 
-    def __init__(self, time,yearfloat = None, position=None, quaternion=None, orbmode=None, orbinsaa=None):
+    def __init__(self, time,yearfloat = None, position=None, quaternion=None, orbmode=None, orbinsaa=None,
+                 saaPolygon = None):
        ## @var YearFloat
        ## @brief A float representing the Year and Month of the data
        
@@ -126,6 +129,7 @@ class pSCPosition:
        self.Quaternion = quaternion
        self.OrbMode    = orbmode
        self.OrbInSAA   = orbinsaa
+       self.SAAPolygon = saaPolygon
        self.XaxisVector = None
        self.YaxisVector = None
        self.ZaxisVector = None
@@ -637,6 +641,13 @@ class pSCPosition:
     #  The class instance.
     def getZaxisPointing(self):        
         return self.getAxisRaDec(self.ZaxisVector)
+
+    def getDistanceToSAA(self):
+        if self.SAAPolygon is None:
+            return -9999
+        else:
+            vertex = pVertex(self.getLongitude(), self.getLatitude())
+            return self.SAAPolygon.getDistanceToBorder(vertex)
 
     ## @brief Call processing of the earth coordinates
     ## @param self
