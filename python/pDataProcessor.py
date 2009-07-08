@@ -56,7 +56,8 @@ class pDataProcessor:
 
     def __init__(self, inputFilePath, configFilePath = None,
                  outputFilePath = None, outputProcessedFilePath = None,
-                 outputErrorFilePath = None, inputMagic7FilePath = None):
+                 outputErrorFilePath = None, inputMagic7FilePath = None,
+                 saaDefinitionFile = None):
 
         ## @var XmlParser
         ## @brief The xml parser object (pXmlParser instance).
@@ -115,8 +116,9 @@ class pDataProcessor:
         ## @brief The time stamp of the previous event, initialized to 0.
 
         logger.info('Starting Data Processor.')
-	logger.info('Using LDF Version : %s - %s - %s', LDF.LDF_VERSION_STR, LDF.LDF_VERSION, LDF.__file__)
-	
+	logger.info('Using LDF Version : %s - %s - %s', LDF.LDF_VERSION_STR,
+                    LDF.LDF_VERSION, LDF.__file__)
+        
         self.InputFilePath = inputFilePath
         if outputFilePath is None:
             logger.info('Output file path not specified.')
@@ -150,13 +152,15 @@ class pDataProcessor:
             from pM7Parser          import pM7Parser
             from IGRF               import IGRF
             logger.info('Using magic7 file : %s' % self.InputMagic7FilePath)
-            self.M7Parser = pM7Parser(self.InputMagic7FilePath)
+            self.M7Parser = pM7Parser(self.InputMagic7FilePath,
+                                      saaDefinitionFile)
             self.GeomagProcessor = pGeomagProcessor(self.TreeMaker)
         if self.OutputProcessedFilePath is not None:
             self.ReportGenerator = pFastMonReportGenerator(self)
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
-	self.EvtMetaContextProcessor = pEvtMetaContextProcessor(self.TreeMaker,\
-                                                                self.ErrorHandler)
+	self.EvtMetaContextProcessor =\
+                                     pEvtMetaContextProcessor(self.TreeMaker,\
+                                                             self.ErrorHandler)
         self.__updateContributionIterators()
         self.__updateContributions()
         from pLATcomponentIterator    import pLATcomponentIterator
@@ -441,7 +445,7 @@ class pDataProcessor:
     
 if __name__ == '__main__':
     from pOptionParser import pOptionParser
-    optparser = pOptionParser('cnorvVpem', 1, 1, False)
+    optparser = pOptionParser('cnorvVpems', 1, 1, False)
     if optparser.Options.o == None:
         optparser.error('the -o option is mandatory. Exiting...')
     if optparser.Options.p == optparser.Options.o:
@@ -451,7 +455,8 @@ if __name__ == '__main__':
         optparser.error('cannot use the -r option without -p')
     dataProcessor = pDataProcessor(optparser.Argument, optparser.Options.c,\
                                    optparser.Options.o, optparser.Options.p,\
-                                   optparser.Options.e, optparser.Options.m)
+                                   optparser.Options.e, optparser.Options.m,
+                                   optparser.Options.s)
     dataProcessor.startProcessing(optparser.Options.n)
     if optparser.Options.p != None:
         dataProcessor.TreeProcessor.run()
