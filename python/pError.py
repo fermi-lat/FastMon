@@ -30,12 +30,7 @@ ERROR_DETAIL_LABELS_DICT = {
     'ERR_CONTRIB_ERROR'           : ['Type', 'Tower'],    
     'TKR_CONTRIB_ERROR'           : ['Type', 'Tower'],    
     'CAL_CONTRIB_ERROR'           : ['Type', 'Tower'],    
-    'AEM_CONTRIB_ERROR'           : ['Type'],
-    'PACKET_ERROR'                : ['Type'],
-    'EBF_CONTRIB_ERROR'           : ['Type'],
-    'LAT_CONTRIB_ERROR'           : ['Type'],
-    'LAT_DATAGRAM_ERROR'          : ['Type'],
-    'EBF_EVENT_ERROR'             : ['Type']
+    'ACD_CONTRIB_ERROR'           : ['Type', 'Tower']
     }
 
 ERROR_DOC_DICT = {

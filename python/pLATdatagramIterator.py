@@ -38,19 +38,13 @@ class pLATdatagramIterator(LDF.LDBI_LATdatagramIterator):
     #  Parameter 2.
     
     def handleError(self, contribution, code, p1, p2):
+        fn = 'pLATdatagramIterator.handleError()'
         if code == LDF.LATdatagramIterator.ERR_IDmismatch:
-            logger.debug('handleError:ERR_IDmismatch\n'\
-	                 '\tIdentity mismatch: got %08x, expected %08x\n' % (p1, p2))
-            self.ErrorHandler.fill('LAT_DATAGRAM_ERROR', ['ID Mismatch'])
-	    
+            logger.error('%s: identity mismatch.'  % fn)
+            return -1
         else:
-    	    logger.debug("UNKNOWN_ERROR\n"\
-                         "\tUnrecognized error code %d = 0x%08x with "\
-                         "\targuments %d = 0x%08x, %d = 0x%08x\n" %\
-                         (code, code, p1, p1, p2, p2))
-            self.ErrorHandler.fill('LAT_DATAGRAM_ERROR', ['UNKNOWN_ERROR_CODE', p1, p2])
-
-        return code
+            logger.error('%s: unknown error code.' % fn)
+            return 0
 
     ## @brief Process the datagram.
     ## @param self
