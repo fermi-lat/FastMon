@@ -1,7 +1,10 @@
 ## @package pGeomagProcessor
 ## @brief Basic module to handle the processing of geomagnetic quantities using the IGRF package
 
-from IGRF import IGRF
+from IGRF        import IGRF
+
+import pSafeLogger
+logger = pSafeLogger.getLogger('pGeomagProcessor')
 
 ## @brief The data processor implementation.
 #
@@ -76,6 +79,7 @@ class pGeomagProcessor:
 	limb       = sc.getArcAngleEarthLimb()	
 	zgalL      = sc.getZGalL()
         zgalB      = sc.getZGalB()
+        dsaa       = sc.getDistanceToSAA()
 	
 	# Spacecraft mode
 	self.getVariable('spacecraft_orbit_mode')[0]  = orbmode
@@ -85,6 +89,7 @@ class pGeomagProcessor:
         self.getVariable('spacecraft_latitude')[0]  = lat
         self.getVariable('spacecraft_longitude')[0] = lon
         self.getVariable('spacecraft_altitude')[0]  = alt
+        self.getVariable('spacecraft_distance_to_saa')[0] = dsaa
 
 	# Spacecraft attitude
         self.getVariable('spacecraft_pitch')[0] = pitch
