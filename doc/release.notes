@@ -1,10 +1,25 @@
-*** v4r5p1 ***
-- pCustomPlotter.py : The input tree is now cloned before being used, and in particular
-  copy with cuts to create the plots. For some reason I do not understand, this fixes
-  the crash seen with ROOT version greater than v5.18.00. The trick work with v5.20 and
-  is backward compatible with 5.18.
+*** v5r0p0 ***
+Quite a few files modified to accomodate the plot of the distance to the SAA.
+The detailed description of the changes is:
+- pDataProcessor.py: one more command line option added (-s) to pass the
+  xml file with the definition of the SAA.
+- pGeomagProcessor.py: added filling of the output tree with the distance to
+  the SAA variable.
+- pM7Parser.py: new class member (the SAA polygon) added.
+- pSAAPolygon.py: EARTH_RADIUS not imported anymore from pSCPosition due to
+  an import clash.
+- pSCPosition.py: added a new class member (the SAA polygon) and a new
+  method returning the distance of a generic point from the polygon itself.
+* Relevant jira(s): GDQMQ-311
 
+
+*** v4r5p1 ***
+- pCustomPlotter.py : The input tree is now cloned before being used, and in
+  particular copy with cuts to create the plots. For some reason I do not
+  understand, this fixes the crash seen with ROOT version greater than
+  v5.18.00. The trick work with v5.20 and is backward compatible with 5.18.
 * Relevant jira(s): GDQMQ-266
+
 
 *** v4r5p0 ***
 - Always do a CopyTree even when there is no cut, it seems more reliable
@@ -14,39 +29,46 @@
 - Update getExpandedExpression() to add only _ and not a full suffix
   pXmlOutputList.py
 - Needs FastMonCfg v1r6p0
-
 * Relevant jira(s): GDQMQ-258
 
 
 *** v4r4p1 ***
-- Update error handling using a new function provided by Ric to automatically log the error type
-  for ALL iterators.
+- Update error handling using a new function provided by Ric to automatically
+  log the error type for ALL iterators.
 - TEM_BUG are still tagged as such in the ERR contribution but
-  in the TKR contribution iterator  UnphysStrip, BadStripOrder, UnPhysTOT and TooManyHits are not
-  anymore counted as TEM_BUG, the bug should be catched earlier.
-- The function LookupErrorCode(obj, code) is defined in Common/python/pGlobals.py v4r9p0
+  in the TKR contribution iterator  UnphysStrip, BadStripOrder, UnPhysTOT and
+  TooManyHits are not anymore counted as TEM_BUG, the bug should be catched
+  earlier.
+- The function LookupErrorCode(obj, code) is defined in
+  Common/python/pGlobals.py v4r9p0
   This means that this version of FastMon (>v4r4p0) REQUIRES  Common >= v4r9p0
-
 * Relevant jira(s): GDQMQ-257
+
 
 *** v4r3p2 ***
 - error_summary is filled in __postEvent : pDataProcessor
 * Relevant jira(s): GDQMQ-254
 
+
 *** v4r3p1 ***
-- When FASTMON_DUMP_ERRORS_TO_FILE is set to true, the events with an error are dumped to a file
-  calling the new method __dumpEventToFile. For debugging purpose only : pDataProcessor
+- When FASTMON_DUMP_ERRORS_TO_FILE is set to true, the events with an error
+  are dumped to a file calling the new method __dumpEventToFile.
+  For debugging purpose only : pDataProcessor
 * Relevant jira(s): GDQMQ-253
 
+
 *** v4r3p0 ***
-- Add spacecraft_orbit_mode and spacecraft_orbit_inSAA, read them from magic7, pass them to the updated pSCPosition
-  constructor, add get methods, and fill quantities in the pGeomagProcessor in
-  pM7Parser.py pSCPosition.py pGeomagProcessor.py
+- Add spacecraft_orbit_mode and spacecraft_orbit_inSAA, read them from magic7,
+  pass them to the updated pSCPosition constructor, add get methods, and fill
+  quantities in the pGeomagProcessor in pM7Parser.py pSCPosition.py
+  pGeomagProcessor.py
 * Relevant jira(s): GDQMQ-195
+
 
 *** v4r2p2 ***
 - Add the seconds_elapsed to the error summary: pXmlErrorMerger
 * Relevant jira(s): GDQMQ-251
+
 
 *** v4r2p1 ***
 - Add the seconds_elapsed to the error summary: pErrorHandler.py
@@ -65,32 +87,39 @@
 * Relevant jira(s): GDQMQ-197
 
 *** v4r1p4 ***
-- Change histogram name AcdHitsCounter_CableChannel_TH2 to AcdHitMap_GafeGarc_TH2,
-  and swap axis to match the Digi definition, in pCustomPlotter
+- Change histogram name AcdHitsCounter_CableChannel_TH2 to
+  AcdHitMap_GafeGarc_TH2, and swap axis to match the Digi definition,
+  in pCustomPlotter
 - Log the LDF version in pDataProcessor
 * Relevant jira(s): GDQMQ-243 and GDQMQ-244
+
 
 *** v4r1p3 ***
 - Add back cmt requirements file
   It had disappeared from the latest tag
 
+
 *** v4r1p2 ***
 - pCustomPlotter tagged with the ACD plot in elx space
   It had disappeared from the latest tag
+
 
 *** v4r1p1 ***
 - Looks like an old version of pXmlInputList was tagged.
   I fixed it and tagged again. 
 
+
 *** v4r1p0 ***
 - Retag things below after removing a wrong tag.
   Hopefully, everything is OK now. I hate cvs.
+
 
 *** v4r0p0 ***
 - Work only with LDF > 6.4.0
 - Improve handling of errors following the new version of the LDF,
   all kind of errors now taken into account : pAEMcontributionIteratorBase.py
-- Use the logger to dump debug message in case of an error : pCALcontributionIteratorBase.py
+- Use the logger to dump debug message in case of an error:
+  pCALcontributionIteratorBase.py
 - Improve handling of errors following the new version of the LDF, 
   all kind of errors now taken into account : pEBFeventIterator.py
 - Improve handling of errors following the new version of the LDF,
@@ -102,23 +131,27 @@
   LAT_DATAGRAM and EBF_EVENT have the same code : pErrorEvent.py
 - Improve handling of errors following the new version of the LDF,
   all kind of errors now taken into account. Note that the new LDF code
-  checks the status of the iterator and exits whenever a serious error is found.
+  checks the status of the iterator and exits whenever a serious error is
+  found.
   pLATcomponentIterator.py
 - Improve handling of errors following the new version of the LDF, 
   all kind of errors now taken into account : pLATcontributionIterator.py
-- Use the logger to dump debug message in case of an error : pLATdatagramIterator.py
+- Use the logger to dump debug message in case of an error:
+  pLATdatagramIterator.py
 - Improve handling of errors following the new version of the LDF,
   all kind of errors now taken into account. 
   TEM_BUG is now known and reported as such : pTKRcontributionIteratorBase.py
-
 * Relevant jira(s): GDQMQ-197
 
+
 *** v3r5p6 ***
-- pErrorEvent : Move the TIMETONE errors to the lowest bits so that it is easier
-  not to cut them out but cutting real errors applyingError_summary < 64 - GDQMQ-173
-- pError : Reorganize error dictionnary to take into account new errors reported by 
-  the new version of the LDF. For now, I do not store the details of the errors
-  reported by the different subsystems, besides the TEM_BUG. - GDQMQ-197
+- pErrorEvent : Move the TIMETONE errors to the lowest bits so that it is
+  easier not to cut them out but cutting real errors applying
+  Error_summary < 64 - GDQMQ-173
+- pError : Reorganize error dictionnary to take into account new errors
+  reported by  the new version of the LDF. For now, I do not store the details
+  of the errors reported by the different subsystems, besides the TEM_BUG.
+- GDQMQ-197
 * Relevant jira(s): GDQMQ-173 GDQMQ-197
 
 
