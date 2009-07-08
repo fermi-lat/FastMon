@@ -13,7 +13,8 @@ from math import sqrt, cos, sin, acos, pi, atan2
 
 from pXmlBaseParser  import pXmlBaseParser
 from pXmlBaseElement import pXmlBaseElement
-from pSCPosition     import EARTH_RADIUS
+
+EARTH_RADIUS = 6378145
 
 DEG_TO_RAD = pi/180.
 RAD_TO_DEG = 1./DEG_TO_RAD
