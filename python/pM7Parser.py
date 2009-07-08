@@ -31,7 +31,8 @@ logger = pSafeLogger.getLogger('pM7Parser')
 import time
 import math
 import bisect
-from pSCPosition import pSCPosition 
+from pSCPosition import pSCPosition
+from pSAAPolygon import pSAAPolygon, pVertex
 
 ## @brief The Magic7 parser implementation
 #
@@ -45,7 +46,7 @@ class pM7Parser:
     ## @param inputFilePath
     #  The full path to the magic7 text file.
 
-    def __init__(self, inputFilePath):
+    def __init__(self, inputFilePath, saaDefinitionFile):
         ## @var m7FilePath
         ## @brief The magic7 file path
 	
@@ -60,7 +61,11 @@ class pM7Parser:
 	#
 	# This list is used to retreive the nearest space craft position corresponding to a time stamp.
 	
-	
+        if saaDefinitionFile is None:
+            logger.info('No SAA definition provided. Corresponding variables will not be filled.')
+            self.SAAPolygon = None
+        else:
+            self.SAAPolygon = pSAAPolygon(saaDefinitionFile)
         self.m7FilePath = inputFilePath
 	self.m7FileContent = file(self.m7FilePath ,'r').readlines()
 	self.tweakM7content()
@@ -136,10 +141,11 @@ class pM7Parser:
 		OrbMode = dataList[11]
                 #ORB 	13 	Flag indicating whether or not the observatory is within the LAT SAA boundary 1==IN, 0==OUT
 		OrbInSAA = dataList[12]
-
+                
 		# OrbPosition as just been read from the file, whereas we get the latest value of SCAttitudeQuaternion
 		# As magic7 file contains many more ATT message than ORB ones that should work
-		self.SCPositionTable.append(pSCPosition(SCTime, yearfloat, OrbPosition, SCAttitudeQuaternion, OrbMode, OrbInSAA))
+		self.SCPositionTable.append(pSCPosition(SCTime, yearfloat, OrbPosition, SCAttitudeQuaternion, OrbMode,
+                                                        OrbInSAA, self.SAAPolygon))
                 self.TimePoints.append(int(SCTime[0]))	    
 	    i+=1
 
@@ -194,8 +200,8 @@ if __name__ == '__main__':
     m7FilePath = '/data37/users/ISOCdata/071009001/magic7_071009001.txt'
     p = pM7Parser(m7FilePath)
     p.parseIt()
-    for met in [252672900, 252674520, 252675925]: 
+    for met in p.TimePoints: 
         sc = p.getSCPosition((met,0))
         sc.processCoordinates()
-        print sc
+        print sc.getLongitude(), sc.getLatitude(), sc.getDistanceToSAA(), sc.OrbInSAA
     
