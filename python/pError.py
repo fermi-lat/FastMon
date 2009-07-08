@@ -3,13 +3,6 @@
 
 
 ERROR_DETAIL_LABELS_DICT = {
-    'TIMETONE_INCOMPLETE'         : ['timeSecs'],
-    'TIMETONE_EARLY_EVENT'        : [],
-    'TIMETONE_FLYWHEELING'        : [],
-    'TIMETONE_MISSING_CPUPPS'     : [],
-    'TIMETONE_MISSING_LATPPS'     : [],
-    'TIMETONE_MISSING_TIMETONE'   : [],
-    'TIMETONE_NULL_SOURCE_GPS'    : [],
     'GCCC_ERROR'                  : ['Tower', 'GCCC', 'Err'],
     'GTCC_ERROR'                  : ['Tower', 'GTCC', 'Err'],
     'PHASE_ERROR'                 : ['Tower', 'Tags'],
@@ -17,25 +10,23 @@ ERROR_DETAIL_LABELS_DICT = {
     'GTRC_PHASE_ERROR'            : ['Tower', 'GTCC', 'GTRC', 'Err'],
     'GTFE_PHASE_ERROR'            : ['Tower', 'GTCC', 'GTRC', 'Err1', 'Err2',\
                                      'Err3', 'Err3' , 'Err4', 'Err5'],
-    'GTCC_FIFO_ERROR'             : ['Tower', 'GTCC', 'GTRC', 'Err'],
-    'GTCC_TIMEOUT_ERROR'          : ['Tower', 'GTCC', 'GTRC'],
-    'GTCC_HEADER_PARITY_ERROR'    : ['Tower', 'GTCC', 'GTRC'],
-    'GTCC_WORD_COUNT_PARITY_ERROR': ['Tower', 'GTCC', 'GTRC'],
-    'GTRC_SUMMARY_ERROR'          : ['Tower', 'GTCC', 'GTRC'],
-    'GTCC_DATA_PARITY_ERROR'      : ['Tower', 'GTCC', 'GTRC'],
+    'GTCC_FIFO_ERROR'             : ['Tower', 'GTCC', 'Err'],
+    'GTCC_TIMEOUT_ERROR'          : ['Tower', 'GTCC', 'Err'],
+    'GTCC_HEADER_PARITY_ERROR'    : ['Tower', 'GTCC', 'Err'],
+    'GTCC_WORD_COUNT_PARITY_ERROR': ['Tower', 'GTCC', 'Err'],
+    'GTRC_SUMMARY_ERROR'          : ['Tower', 'GTCC', 'Err'],
+    'GTCC_DATA_PARITY_ERROR'      : ['Tower', 'GTCC', 'Err'],
     'ACD_HEADER_PARITY_ERROR'     : ['Cable'],
     'ACD_PHA_PARITY_ERROR'        : ['Cable', 'Channel'],
     'ACD_PHA_INCONSISTENCY'       : ['Cable', 'Channel', 'AcceptList'],
-    'TEM_BUG'                     : ['Type', 'Tower'],
-    'ERR_CONTRIB_ERROR'           : ['Type', 'Tower'],    
-    'TKR_CONTRIB_ERROR'           : ['Type', 'Tower'],    
-    'CAL_CONTRIB_ERROR'           : ['Type', 'Tower'],    
-    'AEM_CONTRIB_ERROR'           : ['Type'],
-    'PACKET_ERROR'                : ['Type'],
-    'EBF_CONTRIB_ERROR'           : ['Type'],
-    'LAT_CONTRIB_ERROR'           : ['Type'],
-    'LAT_DATAGRAM_ERROR'          : ['Type'],
-    'EBF_EVENT_ERROR'             : ['Type']
+    'TEM_BUG_INSTANCE'            : ['Type'],
+    'TIMETONE_INCOMPLETE'         : ['timeSecs'],
+    'TIMETONE_EARLY_EVENT'        : [],
+    'TIMETONE_FLYWHEELING'        : [],
+    'TIMETONE_MISSING_CPUPPS'     : [],
+    'TIMETONE_MISSING_LATPPS'     : [],
+    'TIMETONE_MISSING_TIMETONE'   : [],
+    'TIMETONE_NULL_SOURCE_GPS'    : []
     }
 
 ERROR_DOC_DICT = {
@@ -147,7 +138,7 @@ class pError:
 
 
 if __name__ == '__main__':
-    errors = [pError('TEM_BUG'),
+    errors = [pError('TEM_BUG_INSTANCE'),
               pError('TEST_CODE', [3, 2])]
     for error in errors:
         print error
