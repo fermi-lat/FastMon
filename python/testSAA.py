@@ -38,8 +38,9 @@ if __name__ == '__main__':
         lat = pos.getLatitude()
         dsaa = pos.getDistanceToSAA()
         fsaa = float(pos.OrbInSAA)
-        if (dsaa < 0 and fsaa < 0) or (dsaa > 0 and fsaa > 0): 
-            print met, lon, lat, dsaa, fsaa
+        if (dsaa < 0 and fsaa < 0) or (dsaa > 0 and fsaa > 0):
+            print 'MET %.3f s (%.3f, %.3f): SAA dist. is %.2f km (flag %d)' %\
+                  (met, lon, lat, dsaa, fsaa)
         gLon.SetPoint(i, met, lon)
         gLat.SetPoint(i, met, lat)       
         gOrb.SetPoint(i, lon, lat)
