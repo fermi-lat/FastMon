@@ -1,6 +1,8 @@
 *** v5r0p1 *** (TO BE TAGGED)
 - Test program added to read a m7 file and make plots of the orbit and dstance
 to the SAA.
+- Some more work for the calculation of the distance to the SAA. Still pretty
+rough, but first reasonable implementation.
 
 
 *** v5r0p0 ***
