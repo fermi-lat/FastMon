@@ -1,3 +1,8 @@
+*** v5r0p1 ***
+- Test program added to read a m7 file and make plots of the orbit and dstance
+to the SAA.
+
+
 *** v5r0p0 ***
 Quite a few files modified to accomodate the plot of the distance to the SAA.
 The detailed description of the changes is:
