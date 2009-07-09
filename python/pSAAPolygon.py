@@ -24,6 +24,9 @@ MIN_LATITUDE  = - MAX_LATITUDE
 MAX_LONGITUDE = 180.0
 MIN_LONGITUDE = - MAX_LONGITUDE
 
+EARTH_GRID = ROOT.TH2F('grid', 'grid', 1000, -180, 180, 1000, -180, 180)
+EARTH_GRID.GetXaxis().SetTitle('Longitude (degrees)')
+EARTH_GRID.GetYaxis().SetTitle('Latitude (degrees)')
 
 def getDistanceOnSphere(v1, v2):
     b = DEG_TO_RAD*(90 - v1.Lat)
@@ -140,6 +143,13 @@ class pSAAPolygon:
         return RAD_TO_DEG*atan2(v.Lon - self.Center.Lon,
                                 v.Lat - self.Center.Lat)
 
+    ## @brief Return the segment which is crossed by the straigh line
+    #  conecting a generic vertex v to the center of the SAA.
+    ## @param self
+    #  The class instance.
+    ## @param v
+    #  The vertex to be connected with the center.
+
     def getCrossSegment(self, v):
         angle = self.getAngleToCenter(v)
         for (i, vertex) in enumerate(self.VertexList):
@@ -163,7 +173,6 @@ class pSAAPolygon:
         if distance < 0:
             distance = -999
         return distance
-        
 
 
 if __name__ == '__main__':
@@ -172,10 +181,7 @@ if __name__ == '__main__':
     v1 = pVertex(90, 20, 't1', ROOT.kBlack, 24)
     v2 = pVertex(-40, -10, 't2', ROOT.kBlack, 24)    
     polygon = pSAAPolygon('../../FastMonCfg/xml/saaDefinition.xml')
-    h = ROOT.TH2F('saa', 'saa', 1000, -180, 180, 1000, -180, 180)
-    h.GetXaxis().SetTitle('Longitude (degrees)')
-    h.GetYaxis().SetTitle('Latitude (degrees)')
-    h.Draw()
+    EARTH_GRID.Draw()
     polygon.draw()
     v1.draw()
     v2.draw()
