@@ -5,6 +5,10 @@ import numpy
 D2R = pi/180.
 
 
+# Ref "The Astronomical Almanac", QB8.U5, 2003, p. B18,B20.
+# TEME to TETE rotation from Montenbruck adn Gill (TL1080.M66)
+# And of course: Eric Siskind, private communications :-)
+
 
 def getJ2000toTETERotationMatrix(JD):
     # Initialize the matrices.
@@ -15,7 +19,7 @@ def getJ2000toTETERotationMatrix(JD):
     P = numpy.zeros((3, 3), 'd')
     C_TETE_J2000 = numpy.zeros((3, 3), 'd')
     
-    # /* TETE to MEME (Nutation) */      
+    # TETE to MEME (Nutation)
     d = JD - 2452639.5
     arg1 = (67.1 - 0.053*d)*D2R
     arg2 = (198.5 + 1.971*d)*D2R
@@ -33,7 +37,7 @@ def getJ2000toTETERotationMatrix(JD):
     N[0][2] = -N[2][0]
     N[0][1] = -N[1][0]
     
-    # /* MEME to J2000 (Precession) */
+    # MEME to J2000 (Precession)
     T = (JD - 2451545.0)/36525.0
     z =     D2R*((0.6406161+(3.041E-4+5.10E-6*T)*T)*T)
     theta = D2R*((0.5567530-(1.185E-4+1.16E-5*T)*T)*T)
@@ -55,7 +59,7 @@ def getJ2000toTETERotationMatrix(JD):
     P[1][2] =  s2*s3
     P[2][2] =  c2
     
-    # /* TETE to J2000 (Precession, then Nutation) */
+    # TETE to J2000 (Precession, then Nutation)
     C_TETE_J2000[0][0] = N[0][0]*P[0][0]+N[0][1]*P[1][0]+N[0][2]*P[2][0]
     C_TETE_J2000[0][1] = N[0][0]*P[0][1]+N[0][1]*P[1][1]+N[0][2]*P[2][1]
     C_TETE_J2000[0][2] = N[0][0]*P[0][2]+N[0][1]*P[1][2]+N[0][2]*P[2][2]
