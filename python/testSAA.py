@@ -10,7 +10,7 @@ USE_DATE = True
 SAA_XML_FILE_PATH =\
    '/data/work/datamon/dataMonitoring/FastMonCfg/xml/saaDefinition.xml'
 EARTH_GRID.GetYaxis().SetRangeUser(-30, 30)
-TIME_FORMAT = '%b %d 20%y, %H:%M%F2000-12-31 22:00:00'
+TIME_FORMAT = '%b %d 20%y, %H:%M:%S%F2000-12-31 22:00:00'
 
 
 if __name__ == '__main__':
