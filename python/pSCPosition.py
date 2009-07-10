@@ -505,9 +505,10 @@ class pSCPosition:
 	y = self.Position[1]
 	z = self.Position[2]
 
-        # This is absolutely brilliant! We start with three numbers, create a numpy matrix for the
-        # multiplication with the rotation matrix and, go back to three numbers and then convert
-        # them into a ROOT.TVector3 object to transform into polar coordinates.
+        # This is absolutely brilliant! We start with a list coverted to three numbers,
+        # create a numpy matrix for the multiplication with the rotation matrix, go back to
+        # three numbers and then convert them into a ROOT.TVector3 object to transform into
+        # polar coordinates.
         # Talking about code optimization...
         R = pTETEUtils.getJ2000toTETERotationMatrix(self.JulianDate)
         v = numpy.matrix([[x], [y], [z]], 'd')
