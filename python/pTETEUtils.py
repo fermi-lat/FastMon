@@ -10,17 +10,17 @@ D2R = pi/180.
 # And of course: Eric Siskind, private communications :-)
 
 def getPrecessionMatrix(julianDate):
-    P = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]], 'd')
-    T = (julianDate - 2451545.0)/36525.0
-    z =     D2R*((0.6406161+(3.041E-4+5.10E-6*T)*T)*T)
+    P     = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]], 'd')
+    T     = (julianDate - 2451545.0)/36525.0
+    z     =     D2R*((0.6406161+(3.041E-4+5.10E-6*T)*T)*T)
     theta = D2R*((0.5567530-(1.185E-4+1.16E-5*T)*T)*T)
-    zeta =  D2R*((0.6406161+(8.390E-5+5.00E-6*T)*T)*T)
-    c1=cos(-zeta)
-    s1=sin(-zeta)
-    c2=cos(theta)
-    s2=sin(theta)
-    c3=cos(-z)
-    s3=sin(-z)
+    zeta  =  D2R*((0.6406161+(8.390E-5+5.00E-6*T)*T)*T)
+    c1    = cos(-zeta)
+    s1    = sin(-zeta)
+    c2    = cos(theta)
+    s2    = sin(theta)
+    c3    = cos(-z)
+    s3    = sin(-z)
     P[0, 0] =  c1*c2*c3-s3*s1
     P[1, 0] = -c1*c2*s3-c3*s1
     P[2, 0] =  c1*s2
@@ -33,13 +33,13 @@ def getPrecessionMatrix(julianDate):
     return P
 
 def getNutationMatrix(julianDate):
-    N = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]], 'd')
-    d = julianDate - 2452639.5
+    N    = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]], 'd')
+    d    = julianDate - 2452639.5
     arg1 = (67.1 - 0.053*d)*D2R
     arg2 = (198.5 + 1.971*d)*D2R
     dpsi = (-0.0048*sin(arg1)-0.0004*sin(arg2))*D2R
     deps = (0.0026*cos(arg1)+0.0002*cos(arg2))*D2R
-    eps = 23.44*D2R
+    eps  = 23.44*D2R
     N[0, 0] = 1.0
     N[1, 1] = 1.0
     N[2, 2] = 1.0
