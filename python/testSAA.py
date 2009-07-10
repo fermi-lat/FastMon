@@ -6,9 +6,11 @@ from pSAAPolygon import *
 
 ROOT.gStyle.SetOptStat(0)
 
+USE_DATE = True
 SAA_XML_FILE_PATH =\
    '/data/work/datamon/dataMonitoring/FastMonCfg/xml/saaDefinition.xml'
 EARTH_GRID.GetYaxis().SetRangeUser(-30, 30)
+TIME_FORMAT = '%b %d 20%y, %H:%M%F2000-12-31 22:00:00'
 
 
 if __name__ == '__main__':
@@ -46,7 +48,13 @@ if __name__ == '__main__':
         gSAADist.SetPoint(i, met, dsaa)
         gSAAFlag.SetPoint(i, met, 1000*fsaa)
     for g in [gLon, gLat, gSAADist, gSAAFlag]:
-        g.GetXaxis().SetTitle('Mission elapsed Time (s)')
+        if USE_DATE:
+            g.GetXaxis().SetTimeDisplay(True)
+            g.GetXaxis().SetTimeFormat(TIME_FORMAT)
+            g.GetXaxis().SetNdivisions(503)
+            g.GetXaxis().SetTitle('Time (UTC)')
+        else:
+            g.GetXaxis().SetTitle('Mission elapsed Time (s)')
     canvas = ROOT.TCanvas('saa', inputFilePath)
     canvas.Divide(2, 2)
     canvas.cd(1)
