@@ -15,9 +15,10 @@ def getJ2000toTETERotationMatrix(JD):
     # Consider doing this outside for optimization, though dealing with
     # global variables passed around in the code sometimes has interesting
     # side effects.
-    N = numpy.zeros((3, 3), 'd')
-    P = numpy.zeros((3, 3), 'd')
-    C_TETE_J2000 = numpy.zeros((3, 3), 'd')
+    N = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]], 'd')
+    P = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]], 'd')
+    C_TETE_J2000 = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]],
+                                'd')
     
     # TETE to MEME (Nutation)
     d = JD - 2452639.5
@@ -27,15 +28,15 @@ def getJ2000toTETERotationMatrix(JD):
     deps = (0.0026*cos(arg1)+0.0002*cos(arg2))*D2R
     eps = 23.44*D2R
     
-    N[0][0] = 1.0
-    N[1][1] = 1.0
-    N[2][2] = 1.0
-    N[2][1] = deps
-    N[2][0] = dpsi*sin(eps)
-    N[1][0] = dpsi*cos(eps)
-    N[1][2] = -N[2][1]
-    N[0][2] = -N[2][0]
-    N[0][1] = -N[1][0]
+    N[0, 0] = 1.0
+    N[1, 1] = 1.0
+    N[2, 2] = 1.0
+    N[2, 1] = deps
+    N[2, 0] = dpsi*sin(eps)
+    N[1, 0] = dpsi*cos(eps)
+    N[1, 2] = -N[2, 1]
+    N[0, 2] = -N[2, 0]
+    N[0, 1] = -N[1, 0]
     
     # MEME to J2000 (Precession)
     T = (JD - 2451545.0)/36525.0
@@ -49,26 +50,26 @@ def getJ2000toTETERotationMatrix(JD):
     s2=sin(theta)
     c3=cos(-z)
     s3=sin(-z)
-    P[0][0] =  c1*c2*c3-s3*s1
-    P[1][0] = -c1*c2*s3-c3*s1
-    P[2][0] =  c1*s2
-    P[0][1] =  s1*c2*c3+s3*c1
-    P[1][1] = -s1*c2*s3+c3*c1
-    P[2][1] =  s1*s2
-    P[0][2] = -s2*c3
-    P[1][2] =  s2*s3
-    P[2][2] =  c2
+    P[0, 0] =  c1*c2*c3-s3*s1
+    P[1, 0] = -c1*c2*s3-c3*s1
+    P[2, 0] =  c1*s2
+    P[0, 1] =  s1*c2*c3+s3*c1
+    P[1, 1] = -s1*c2*s3+c3*c1
+    P[2, 1] =  s1*s2
+    P[0, 2] = -s2*c3
+    P[1, 2] =  s2*s3
+    P[2, 2] =  c2
     
     # TETE to J2000 (Precession, then Nutation)
-    C_TETE_J2000[0][0] = N[0][0]*P[0][0]+N[0][1]*P[1][0]+N[0][2]*P[2][0]
-    C_TETE_J2000[0][1] = N[0][0]*P[0][1]+N[0][1]*P[1][1]+N[0][2]*P[2][1]
-    C_TETE_J2000[0][2] = N[0][0]*P[0][2]+N[0][1]*P[1][2]+N[0][2]*P[2][2]
-    C_TETE_J2000[1][0] = N[1][0]*P[0][0]+N[1][1]*P[1][0]+N[1][2]*P[2][0]
-    C_TETE_J2000[1][1] = N[1][0]*P[0][1]+N[1][1]*P[1][1]+N[1][2]*P[2][1]
-    C_TETE_J2000[1][2] = N[1][0]*P[0][2]+N[1][1]*P[1][2]+N[1][2]*P[2][2]
-    C_TETE_J2000[2][0] = N[2][0]*P[0][0]+N[2][1]*P[1][0]+N[2][2]*P[2][0]
-    C_TETE_J2000[2][1] = N[2][0]*P[0][1]+N[2][1]*P[1][1]+N[2][2]*P[2][1]
-    C_TETE_J2000[2][2] = N[2][0]*P[0][2]+N[2][1]*P[1][2]+N[2][2]*P[2][2]
+    C_TETE_J2000[0, 0] = N[0, 0]*P[0, 0]+N[0, 1]*P[1, 0]+N[0, 2]*P[2, 0]
+    C_TETE_J2000[0, 1] = N[0, 0]*P[0, 1]+N[0, 1]*P[1, 1]+N[0, 2]*P[2, 1]
+    C_TETE_J2000[0, 2] = N[0, 0]*P[0, 2]+N[0, 1]*P[1, 2]+N[0, 2]*P[2, 2]
+    C_TETE_J2000[1, 0] = N[1, 0]*P[0, 0]+N[1, 1]*P[1, 0]+N[1, 2]*P[2, 0]
+    C_TETE_J2000[1, 1] = N[1, 0]*P[0, 1]+N[1, 1]*P[1, 1]+N[1, 2]*P[2, 1]
+    C_TETE_J2000[1, 2] = N[1, 0]*P[0, 2]+N[1, 1]*P[1, 2]+N[1, 2]*P[2, 2]
+    C_TETE_J2000[2, 0] = N[2, 0]*P[0, 0]+N[2, 1]*P[1, 0]+N[2, 2]*P[2, 0]
+    C_TETE_J2000[2, 1] = N[2, 0]*P[0, 1]+N[2, 1]*P[1, 1]+N[2, 2]*P[2, 1]
+    C_TETE_J2000[2, 2] = N[2, 0]*P[0, 2]+N[2, 1]*P[1, 2]+N[2, 2]*P[2, 2]
 
     # We're interested in the tranformation matrix from J2000 to TETE,
     # so return the transpose.
