@@ -14,6 +14,9 @@
 import time
 import math
 import bisect
+import numpy
+
+import pTETEUtils
 
 from pSafeROOT   import ROOT
 from pSAAPolygon import pVertex
@@ -501,6 +504,15 @@ class pSCPosition:
  	x = self.Position[0]
 	y = self.Position[1]
 	z = self.Position[2]
+
+        # This is absolutely brilliant! We start with three numbers, create a numpy matrix for the
+        # multiplication with the rotation matrix and, go back to three numbers and then convert
+        # them into a ROOT.TVector3 object to transform into polar coordinates.
+        # Talking about code optimization...
+        R = pTETEUtils.getJ2000toTETERotationMatrix(self.JulianDate)
+        v = numpy.matrix([[x], [y], [z]], 'd')
+        v = R*v
+        (x, y, z) = (v[0, 0], v[1, 0], v[2, 0])
 
         # use ROOT TVector3 to avoid dumb errors
         v3 = ROOT.TVector3(x, y, z)
