@@ -510,7 +510,7 @@ class pSCPosition:
         # three numbers and then convert them into a ROOT.TVector3 object to transform into
         # polar coordinates.
         # Talking about code optimization...
-        R = pTETEUtils.getJ2000toTETERotationMatrix(self.JulianDate)
+        R = pTETEUtils.getJ2000toTETEMatrix(self.JulianDate)
         v = numpy.matrix([[x], [y], [z]], 'd')
         v = R*v
         (x, y, z) = (v[0, 0], v[1, 0], v[2, 0])
