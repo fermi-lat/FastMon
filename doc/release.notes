@@ -3,6 +3,9 @@
 to the SAA.
 - Some more work for the calculation of the distance to the SAA. Still pretty
 rough, but first reasonable implementation.
+- New small module pTETEUtils.py added to the repository to handle the
+transformation between the J2000 and the True Equator True Equinox (TETE)
+systems.
 
 
 *** v5r0p0 ***
