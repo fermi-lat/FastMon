@@ -17,8 +17,6 @@ def getJ2000toTETERotationMatrix(JD):
     # side effects.
     N = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]], 'd')
     P = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]], 'd')
-    C_TETE_J2000 = numpy.matrix([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]],
-                                'd')
     
     # TETE to MEME (Nutation)
     d = JD - 2452639.5
@@ -27,7 +25,6 @@ def getJ2000toTETERotationMatrix(JD):
     dpsi = (-0.0048*sin(arg1)-0.0004*sin(arg2))*D2R
     deps = (0.0026*cos(arg1)+0.0002*cos(arg2))*D2R
     eps = 23.44*D2R
-    
     N[0, 0] = 1.0
     N[1, 1] = 1.0
     N[2, 2] = 1.0
@@ -43,7 +40,6 @@ def getJ2000toTETERotationMatrix(JD):
     z =     D2R*((0.6406161+(3.041E-4+5.10E-6*T)*T)*T)
     theta = D2R*((0.5567530-(1.185E-4+1.16E-5*T)*T)*T)
     zeta =  D2R*((0.6406161+(8.390E-5+5.00E-6*T)*T)*T)
-    
     c1=cos(-zeta)
     s1=sin(-zeta)
     c2=cos(theta)
@@ -59,21 +55,9 @@ def getJ2000toTETERotationMatrix(JD):
     P[0, 2] = -s2*c3
     P[1, 2] =  s2*s3
     P[2, 2] =  c2
-    
-    # TETE to J2000 (Precession, then Nutation)
-    C_TETE_J2000[0, 0] = N[0, 0]*P[0, 0]+N[0, 1]*P[1, 0]+N[0, 2]*P[2, 0]
-    C_TETE_J2000[0, 1] = N[0, 0]*P[0, 1]+N[0, 1]*P[1, 1]+N[0, 2]*P[2, 1]
-    C_TETE_J2000[0, 2] = N[0, 0]*P[0, 2]+N[0, 1]*P[1, 2]+N[0, 2]*P[2, 2]
-    C_TETE_J2000[1, 0] = N[1, 0]*P[0, 0]+N[1, 1]*P[1, 0]+N[1, 2]*P[2, 0]
-    C_TETE_J2000[1, 1] = N[1, 0]*P[0, 1]+N[1, 1]*P[1, 1]+N[1, 2]*P[2, 1]
-    C_TETE_J2000[1, 2] = N[1, 0]*P[0, 2]+N[1, 1]*P[1, 2]+N[1, 2]*P[2, 2]
-    C_TETE_J2000[2, 0] = N[2, 0]*P[0, 0]+N[2, 1]*P[1, 0]+N[2, 2]*P[2, 0]
-    C_TETE_J2000[2, 1] = N[2, 0]*P[0, 1]+N[2, 1]*P[1, 1]+N[2, 2]*P[2, 1]
-    C_TETE_J2000[2, 2] = N[2, 0]*P[0, 2]+N[2, 1]*P[1, 2]+N[2, 2]*P[2, 2]
 
-    # We're interested in the tranformation matrix from J2000 to TETE,
-    # so return the transpose.
-    return C_TETE_J2000.transpose()
+    return (N*P).transpose()
+
 
 
 if __name__ == '__main__':
