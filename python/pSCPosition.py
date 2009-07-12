@@ -469,7 +469,8 @@ class pSCPosition:
 	jd-=Ora_Un_Dec/24.
 	
      	T = (jd - self.getJ2000()) / 36525.
-     	T1 = (24110.54841 + 8640184.812866 * T + 0.0093103 * T * T)/86400.0
+        
+     	T1 = (24110.54841 + 8640184.812866*T + 0.093104*T*T - 0.0000062*T*T*T)/86400.0
      	
 	Tempo_Siderale_0 = math.modf(T1)[0] * 24.
         # integer part - Not Used
