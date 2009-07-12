@@ -412,6 +412,9 @@ class pSCPosition:
 	   convert from MET to JD
 	   Changed Trunc to math.floor
 	"""
+        # Correct for leap seconds and UTC to UT1
+        met -= 1.764810
+        
         if Me>2 :
 	    pass
         else:
