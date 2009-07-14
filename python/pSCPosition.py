@@ -395,51 +395,30 @@ class pSCPosition:
 	    self.processCoordinates()
 	return self.ArcAngleEarthLimb
 
-    ## @brief Returns the Julian date for a given mission elapsed time 
+    ## @brief Returns the Julian date for a given Gregorian date
     ## @param self
     #  The class instance is actually not used in this stand alone function
-    ## @param An
-    #  The year
-    ## @param Me
-    #  The month
-    ## @param Gio
-    #  The day
-    ## @param met
-    #  The mission elapsed time in seconds
-    
-    def getJulianDate(self, An, Me, Gio, met):
-        """Calculate Julian Date of 0.0 Jan year
-	   convert from MET to JD
-	   Changed Trunc to math.floor
-	"""
-        # Correct for leap seconds and UTC to UT1
-        met -= 1.764810
-        
-        if Me>2 :
-	    pass
-        else:
-	    An = An - 1
-            Me = Me + 12
-
-        A = An/100.
-        B = 2 - A + A/4.
-        C = 365.25 * An 
-        if An < 0:
-	    C = C - 1
-        D = int(30.6001 * (Me + 1))
-        m_JD = B + C + D + Gio + 1720994.5 + float(met) / SECONDS_PER_DAY
-        return m_JD
-
-    ## @brief Returns the Julian Date since start of the mission
-    ## @param self
-    #  The class instance is actually not used in this stand alone function
-    ## @param met
-    #  The mission elapsed time in seconds
-    def getGLASTDate(self, met):
-        """
-	   Changed Trunc to math.floor
-	"""
-	return self.getJulianDate(2001,1,1,met)
+    ## @param Year
+    #  The year : K is the year (1801 <= K <= 2099)
+    ## @param Month
+    #  The month :  M is the month (1 <= M <= 12)
+    ## @param Day 
+    #  The day : I is the day of the month (1 <= I <= 31)
+    ## @param UT
+    #  UT is the universal time in hours
+    def getJulianDate(Year, Month, Day, UT):
+    	"""Conversion of Gregorian calendar date to Julian date for years AD 1801-2099
+    	   Ref is at http://aa.usno.navy.mil/faq/docs/JD_Formula.php
+    	   Changed Trunc to math.floor
+    	   Checked that getJulianDate(1877,8,11,7.5) = 2406841.8125 as in ref above
+           <> is replaced with math.floor()
+    	"""
+    	K=Year
+    	M=Month
+    	I=Day
+    	JD = 367*K - math.floor( (7*(K+ math.floor((M+9)/12.) ) )/4. ) + math.floor((275*M)/9.) + I + 1721013.5 + UT/24.
+    	# Removed - 0.5*sign(100K+M-190002.5) + 0.5  as it is 0 after 1900 February 28
+    	return JD
 
     ## @brief Returns the Julian Date for the mission start date : 1 Jan 2001 00:00
     ## @param self
@@ -447,9 +426,20 @@ class pSCPosition:
     #
     ## the GLAST official mission start is : 1 Jan 2001 00:00
     #
-    ##  Should return 2451910.5, currently returning 2451910.9
+    ##  Should return 2451910.5, currently returning 2451910.5
     def getMissionStart(self):
-        return self.getGLASTDate(0)
+        return self.getJulianDate(2001,1,1,0)
+	
+    ## @brief Returns the Julian Date for a given MET
+    ## @param self
+    #  The class instance is actually not used in this stand alone function
+    ## @param met
+    #  The mission elapsed time in seconds
+    def getJulianDateFromMET(self, met):
+        """ Convert from MET to Julian date
+        """
+        MET_in_JD = getMissionStart() + float(met) / SECONDS_PER_DAY
+	return MET_in_JD
 
     ## @brief Returns the Julian Date for the J2000 reference.
     ## @param self
@@ -672,7 +662,7 @@ class pSCPosition:
     def processCoordinates(self):
 	self.setAllAxisVectors()
 	self.setRockAngle()
-        self.JulianDate = self.getGLASTDate(self.MetInSeconds)
+        self.JulianDate = self.getJulianDateFromMET(self.MetInSeconds)
         self.GMSTime    = self.getGMSTime(self.JulianDate)
         self.EarthCoordinates = self.getEarthCoordinate()
         self.Latitude         = self.EarthCoordinates[0]
