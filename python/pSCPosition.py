@@ -453,7 +453,10 @@ class pSCPosition:
     #  The class instance is actually not used in this stand alone function
     ## @param jd
     #  A Julian Date
-    def getGMSTime(self, jd):
+    def getGMSTime(self, jd):	
+	#To fix the leap seconds and UT1 offset
+	jd -= 1.764810/86400.
+	
 	# integer part - Not Used
 	M=math.modf(jd-0.5)[1] 
 	# fractional part
