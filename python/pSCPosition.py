@@ -406,7 +406,7 @@ class pSCPosition:
     #  The day : I is the day of the month (1 <= I <= 31)
     ## @param UT
     #  UT is the universal time in hours
-    def getJulianDate(Year, Month, Day, UT):
+    def getJulianDate(self, Year, Month, Day, UT):
     	"""Conversion of Gregorian calendar date to Julian date for years AD 1801-2099
     	   Ref is at http://aa.usno.navy.mil/faq/docs/JD_Formula.php
     	   Changed Trunc to math.floor
@@ -438,7 +438,7 @@ class pSCPosition:
     def getJulianDateFromMET(self, met):
         """ Convert from MET to Julian date
         """
-        MET_in_JD = getMissionStart() + float(met) / SECONDS_PER_DAY
+        MET_in_JD = self.getMissionStart() + float(met) / SECONDS_PER_DAY
 	return MET_in_JD
 
     ## @brief Returns the Julian Date for the J2000 reference.
