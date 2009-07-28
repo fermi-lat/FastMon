@@ -412,6 +412,9 @@ class pSCPosition:
     	   Changed Trunc to math.floor
     	   Checked that getJulianDate(1877,8,11,7.5) = 2406841.8125 as in ref above
            <> is replaced with math.floor()
+	   Validated on July 16th 2009
+	   Note that the Julian date here is not corrected for the leap second
+	   and takes UT (not UTC) as argument - different from the astro package JulianDate class
     	"""
     	K=Year
     	M=Month
@@ -449,6 +452,7 @@ class pSCPosition:
 
     ## @brief Returns the Greenwich Meridian Sideral Time for a given Julian Date
     #  Routine was checked against astro package code, Jun 13th 2008 JB
+    #  Corrected for the leap second
     ## @param self
     #  The class instance is actually not used in this stand alone function
     ## @param jd
