@@ -463,6 +463,6 @@ if __name__ == '__main__':
     if optparser.Options.r:
         dataProcessor.ReportGenerator.run(optparser.Options.v)
     if optparser.Options.V:
-            dataProcessor.ReportGenerator.viewReport()
+        dataProcessor.ReportGenerator.viewReport()
         
 
