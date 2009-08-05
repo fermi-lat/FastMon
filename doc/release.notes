@@ -1,3 +1,9 @@
+** @file release.notes
+ * Package FastMon
+ * Coordinator: Luca Baldini
+ *
+ *                  EOH
+
 *** v5r1p0 *** (TO BE TAGGED)
 - Test program added to read a m7 file and make plots of the orbit and dstance
 to the SAA.
