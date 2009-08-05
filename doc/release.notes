@@ -4,6 +4,7 @@
  *
  *                  EOH
 
+ FastMon-05-01-00 05-Aug-2009 bregeon upgrade to v5r1p0 - first stag tag as 05-01-00
 *** v5r1p0 ***
 - Test program added to read a m7 file and make plots of the orbit and dstance
 to the SAA.
