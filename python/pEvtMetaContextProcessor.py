@@ -115,17 +115,17 @@ class pEvtMetaContextProcessor:
 	# Check if the second has changed
         if ppsCounter != self.PreviousHacks :
 	    newSecond = True
-	    # If there is a problem check error code else check deviation to 20MHz clock
-	    if context.current.incomplete :
-	        # Check TimeTone errors
-	        self.checkTimeTone(meta, context)
-	    else :	    
-	        # Now really checking tics
+	    # Now really checking tics
+	    if not context.current.incomplete and not context.previous.incomplete:
 	        DeltaTics = clockTics - self.PreviousTics
 	        if DeltaTics>=0:
 	            ticsDev = 20000000 - DeltaTics
 	        else:
 	            ticsDev = 20000000 - (math.pow(2,25) - 1 -self.PreviousTics + clockTics)
+	    # If there is a problem check error code else check deviation to 20MHz clock
+	    elif context.current.incomplete:
+	        # Check TimeTone errors
+	        self.checkTimeTone(meta, context)
 
         self.PreviousHacks = ppsCounter
 	self.PreviousTics  = clockTics
