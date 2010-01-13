@@ -56,9 +56,9 @@ class pVertex:
     def getDistance(self, lon, lat):
         return sqrt((lon - self.Lon)**2 + (lat - self.Lat)**2)
 
-    def draw(self, options = ''):
-        self.RootMarker.Draw(options)
-        if self.Label is not None:
+    def draw(self, options = 'l'):
+        self.RootMarker.Draw()
+        if self.Label is not None and 'l' in options:
             self.RootLabel.Draw(options)
 
     def __add__(self, other):
@@ -129,12 +129,14 @@ class pSAAPolygon:
     def getNumVertices(self):
         return len(self.VertexList)
 
-    def draw(self, options = ''):
-        for vertex in self.VertexList:
-            vertex.draw()
+    def draw(self, options = 'vlc'):
+        if 'v' in options:
+            for vertex in self.VertexList:
+                vertex.draw('l'*('l' in options))
         for segment in self.SegmentList:
             segment.draw()
-        self.Center.draw()
+        if 'c' in options:
+            self.Center.draw()
 
     def getDistanceToCenter(self, v):
         return getDistanceOnSphere(self.Center, v)
