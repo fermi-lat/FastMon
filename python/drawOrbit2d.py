@@ -14,7 +14,12 @@ ROOT.gStyle.SetPadLeftMargin(0.08)
 ROOT.gStyle.SetPadRightMargin(0.01)
 ROOT.gStyle.SetPadBottomMargin(0.1)
 
-EARTH_GRID.GetYaxis().SetRangeUser(-30, 30)
+MIN_LON = -180
+MAX_LON = 180
+MIN_LAT = -30
+MAX_LAT = 30
+EARTH_GRID.GetXaxis().SetRangeUser(MIN_LON, MAX_LON)
+EARTH_GRID.GetYaxis().SetRangeUser(MIN_LAT, MAX_LAT)
 
 
 class pTimeStep:
@@ -83,8 +88,9 @@ class pOrbitViewer:
         self.Orbit = ROOT.TGraph()
         self.Orbit.SetMarkerStyle(20)
         self.Orbit.SetMarkerSize(0.15)
-        self.Equator = ROOT.TLine(-180, 0, 180, 0)
+        self.Equator = ROOT.TF1('equator', '0', MIN_LON, MAX_LON)
         self.Equator.SetLineStyle(7)
+        self.Equator.SetLineWidth(1)
         self.TimeSteps = []
         self.M7Parser = pM7Parser(m7FilePath, saaFilePath)
         self.StartMet = self.M7Parser.TimePoints[0]
@@ -141,25 +147,63 @@ class pOrbitViewer:
             logger.info('SAA DOCA ~ %d km' %  saaDoca)
         logger.info('Done.')
 
-    def createImage(self, interactive, width):
+    def getPocaWindow(self, timePadding):
+        logger.info('Retrieving the POCA window for the zoomed plot...')
+        timePadding *= 60
+        minLon = MAX_LON
+        maxLon = MIN_LON
+        minLat = MAX_LAT
+        maxLat = MIN_LAT
+        for (i, met) in enumerate(self.M7Parser.TimePoints[:-1]):
+            if abs(met - self.SaaPoca.Met) < timePadding:
+                position = self.M7Parser.getSCPosition((met, 0))
+                (lon, lat, dsaa) = self.getCoordinates(position)
+                if lon < minLon:
+                    minLon = lon
+                if lon > maxLon:
+                    maxLon = lon
+                if lat < minLat:
+                    minLat = lat
+                if lat > maxLat:
+                    maxLat = lat
+        logger.info('Done, window is (%.2f--%.2f, %.2f--%.2f)' %\
+                    (minLon, maxLon, minLat, maxLat))
+        return (minLon, maxLon, minLat, maxLat)
+
+    def createImage(self, interactive, width, zoomTimePadding):
         height = int(width*0.45)
-        if self.SaaPoca is None:
+        if self.SaaPoca is None or zoomTimePadding is None:
             self.Canvas = ROOT.TCanvas('orbit', 'Orbit 2D', width, height)
+            self.Canvas.SetGridx(True)
+            self.Canvas.SetGridy(True)
         else:
             height *= 2
             self.Canvas = ROOT.TCanvas('orbit', 'Orbit 2D', width, height)
             self.Canvas.Divide(1, 2)
-        self.Canvas.cd(1)
-        self.Canvas.SetGridx(True)
-        self.Canvas.SetGridy(True)
-        EARTH_GRID.Draw()
+            self.Canvas.cd(1)
+            self.Canvas.GetPad(1).SetGridx(True)
+            self.Canvas.GetPad(1).SetGridy(True)
+        EARTH_GRID.DrawCopy()
         self.M7Parser.SAAPolygon.draw('v')
-        self.Equator.Draw()
+        self.Equator.Draw('same')
         self.Orbit.Draw('psame')
         for timeStep in self.TimeSteps:
             timeStep.draw('ml')
         if self.SaaPoca is not None:
             self.SaaPoca.draw('ml')
+            if zoomTimePadding is not None:
+                self.Canvas.cd(2)
+                self.Canvas.GetPad(2).SetGridx(True)
+                self.Canvas.GetPad(2).SetGridy(True)
+                (minLon, maxLon, minLat, maxLat) =\
+                         self.getPocaWindow(zoomTimePadding)
+                EARTH_GRID.GetXaxis().SetRangeUser(minLon, maxLon)
+                EARTH_GRID.GetYaxis().SetRangeUser(minLat, maxLat)
+                EARTH_GRID.DrawCopy()
+                self.M7Parser.SAAPolygon.draw('v')
+                self.Equator.Draw('same')
+                self.Orbit.Draw('psame')
+                self.SaaPoca.draw('ml')
         self.Canvas.Update()
         if interactive:
             raw_input('Press enter to quit.')
@@ -193,6 +237,9 @@ if __name__ == '__main__':
     parser.add_option('-p', '--time-padding', dest = 'p',
                       default = 10.0, type = float,
                       help = 'time padding (in min) for SAA POCAs')
+    parser.add_option('-z', '--zoom-time-padding', dest = 'z',
+                      default = None, type = float,
+                      help = 'time padding (in min) for SAA POCAs')
     parser.add_option('-d', '--max-poca-distance', dest = 'd',
                       default = 750.0, type = float,
                       help = 'max distance (in km) for SAA POCAs')
@@ -205,6 +252,6 @@ if __name__ == '__main__':
         ROOT.gROOT.SetBatch(True)
     viewer = pOrbitViewer(args[0], opts.s)
     viewer.run(opts.t, opts.p, opts.d)
-    viewer.createImage(opts.i, opts.w)
+    viewer.createImage(opts.i, opts.w, opts.z)
     if opts.o is not None:
         viewer.saveImage(opts.o)
