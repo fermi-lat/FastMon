@@ -1,12 +1,12 @@
 import pSafeLogger
 logger = pSafeLogger.getLogger('drawOrbit2d')
 
-import time
-
 from pM7Parser     import *
 from pSafeROOT     import *
 from pSAAPolygon   import *
 from pOptionParser import *
+
+import pTimeUtils
 
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetPadTopMargin(0.03)
@@ -16,43 +16,33 @@ ROOT.gStyle.SetPadBottomMargin(0.1)
 
 EARTH_GRID.GetYaxis().SetRangeUser(-30, 30)
 
-# Time difference between two consecutive time steps.
-DELTA_TIME_STEP_MIN = 10
-DELTA_TIME_STEP_SEC = DELTA_TIME_STEP_MIN*60
-
-# Parameters for the SAA POCA
-SAA_POCA_TIME_PADDING_MIN = 10
-SAA_POCA_TIME_PADDING_SEC = SAA_POCA_TIME_PADDING_MIN*60
-SAA_POCA_MAX_DISTANCE = 750
-
-MET_OFFSET = 978307200
-
 
 class pTimeStep:
 
     def __init__(self, met, longitude, latitude, labelText = '',
-                 textAlign = 12, color = ROOT.kBlack):
+                 textAlign = 12, color = ROOT.kBlack, labelVertOffset = 0):
         self.Met = met
         self.Longitude = longitude
         self.Latitude = latitude
         self.LabelText = labelText
         self.__setupMarker(color)
-        self.__setupLabel(color, textAlign)
+        self.__setupLabel(color, textAlign, labelVertOffset)
 
     def __setupMarker(self, color, style = 20, size = 1):
         self.Marker = ROOT.TMarker(self.Longitude, self.Latitude, style)
         self.Marker.SetMarkerSize(size)
         self.Marker.SetMarkerColor(color)
 
-    def __setupLabel(self, color, textAlign, textAngle = 0, textSize = 0.035):
-        self.Label = ROOT.TLatex(self.Longitude, self.Latitude, self.LabelText)
+    def __setupLabel(self, color, textAlign, vertOffset, textAngle = 0,
+                     textSize = 0.035):
+        self.Label = ROOT.TLatex(self.Longitude, self.Latitude + vertOffset,\
+                                 self.LabelText)
         self.Label.SetTextAngle(textAngle)
         self.Label.SetTextSize(textSize)
         self.Label.SetTextColor(color)
         self.Label.SetTextAlign(textAlign)
-
-    def adjustAlignment(self):
-        textAlign = self.Label.GetTextAlign()
+        # Adjust the alignment
+        #
         # From the ROOT documentation:
         # align = 10*HorizontalAlign + VerticalAlign
         # For Horizontal alignment the following convention applies:
@@ -62,8 +52,13 @@ class pTimeStep:
         horAlign = textAlign/10
         verAlign = textAlign - horAlign*10
         x = self.Label.GetX()
-        dx = self.Label.GetXsize()
-        #print horAlign, self.Label.GetX(), self.Label.GetXsize()
+        # Estimate the label width once on the canvas
+        # This is not exact as is it does not take into account the fact the
+        # font is not monospace. The issue here is that ROOT won't tell the
+        # actual width of the TLatex object until it is drawn on the canvas,
+        # and this does not work well in batch mode.
+        # The 80 factor is put in by hand, in case sombody cares.
+        dx = 80.*len(self.LabelText)*self.Label.GetTextSize()
         xmax = x + 0.5*(3 - horAlign)*dx
         xmin = x + 0.5*(1 - horAlign)*dx
         if xmax > 180 and horAlign == 1:
@@ -82,80 +77,134 @@ class pTimeStep:
                (self.Met, self.Longitude, self.Latitude)
 
 
-def metToDate(met, fmtstring = '%b %d, %Y %H:%M:%S'):
-    return time.strftime(fmtstring, time.gmtime(met + MET_OFFSET))
+class pOrbitViewer:
+
+    def __init__(self, m7FilePath, saaFilePath):
+        self.Orbit = ROOT.TGraph()
+        self.Orbit.SetMarkerStyle(20)
+        self.Orbit.SetMarkerSize(0.15)
+        self.Equator = ROOT.TLine(-180, 0, 180, 0)
+        self.Equator.SetLineStyle(7)
+        self.TimeSteps = []
+        self.M7Parser = pM7Parser(m7FilePath, saaFilePath)
+        self.StartMet = self.M7Parser.TimePoints[0]
+        self.StopMet  = self.M7Parser.TimePoints[-1]
+        self.SaaPoca  = None
+
+    def getCoordinates(self, position):
+        position.processCoordinates()
+        lon = position.getLongitude()
+        lat = position.getLatitude()
+        dsaa = position.getDistanceToSAA()
+        return (lon, lat, dsaa)
+
+    def run(self, deltaTimeStepMin, saaPocaTimePaddingMin, saaPocaMaxDistance):
+        deltaTimeStepSec = deltaTimeStepMin*60.
+        saaPocaTimePaddingSec = saaPocaTimePaddingMin*60
+        saaDoca = saaPocaMaxDistance
+        logger.info('Looping over the input file...')
+        for (i, met) in enumerate(self.M7Parser.TimePoints[:-1]):
+            secFromStart = met - self.StartMet
+            secToEnd = self.StopMet - met
+            position = self.M7Parser.getSCPosition((met, 0))
+            (lon, lat, dsaa) = self.getCoordinates(position)
+            self.Orbit.SetPoint(i, lon, lat)
+            if i == 0:
+                date = pTimeUtils.met2utc(met, '%b %d, %Y %H:%M:%S')
+                text = '  M7 start: %s  ' % date
+                timeStep = pTimeStep(met, lon, lat, text, 11, ROOT.kBlack,
+                                     0.5*(abs(lat) < 0.1))
+                self.TimeSteps.append(timeStep)
+                logger.info('M7 starting at %s, %s.' % (date, timeStep))
+            else:
+                if (met - timeStep.Met) > deltaTimeStepSec:
+                    elapsedMinutes = deltaTimeStepMin*len(self.TimeSteps)
+                    text = '+%d min' % elapsedMinutes
+                    timeStep = pTimeStep(met, lon, lat, text,
+                                         21, ROOT.kGray+1, 1)
+                    self.TimeSteps.append(timeStep)
+            if secFromStart > saaPocaTimePaddingSec and \
+                   secToEnd > saaPocaTimePaddingSec:
+                if dsaa < saaDoca:
+                    saaDoca = dsaa
+                    date = pTimeUtils.met2utc(met, '%H:%M:%S')
+                    text = '  SAA POCA: %s (~%d km)' % (date, dsaa)
+                    self.SaaPoca = pTimeStep(met, lon, lat, text, 11,
+                                             ROOT.kRed)
+        date = pTimeUtils.met2utc(met, '%b %d, %Y %H:%M:%S')
+        text = '  M7 stop: %s  ' % date
+        timeStep = pTimeStep(met, lon, lat, text, 13, ROOT.kBlack,
+                             -0.5*(abs(lat) < 0.1))
+        self.TimeSteps.append(timeStep)
+        logger.info('M7 ending at %s, %s.' % (date, timeStep))
+        if self.SaaPoca is not None:
+            logger.info('SAA DOCA ~ %d km' %  saaDoca)
+        logger.info('Done.')
+
+    def createImage(self, interactive, width):
+        height = int(width*0.45)
+        if self.SaaPoca is None:
+            self.Canvas = ROOT.TCanvas('orbit', 'Orbit 2D', width, height)
+        else:
+            height *= 2
+            self.Canvas = ROOT.TCanvas('orbit', 'Orbit 2D', width, height)
+            self.Canvas.Divide(1, 2)
+        self.Canvas.cd(1)
+        self.Canvas.SetGridx(True)
+        self.Canvas.SetGridy(True)
+        EARTH_GRID.Draw()
+        self.M7Parser.SAAPolygon.draw('v')
+        self.Equator.Draw()
+        self.Orbit.Draw('psame')
+        for timeStep in self.TimeSteps:
+            timeStep.draw('ml')
+        if self.SaaPoca is not None:
+            self.SaaPoca.draw('ml')
+        self.Canvas.Update()
+        if interactive:
+            raw_input('Press enter to quit.')
+
+    def saveImage(self, outputFilePath):
+        self.Canvas.Update()
+        self.Canvas.SaveAs(outputFilePath)
+
+        
 
 
-def getCoordinates(position):
-    position.processCoordinates()
-    lon = position.getLongitude()
-    lat = position.getLatitude()
-    dsaa = position.getDistanceToSAA()
-    return (lon, lat, dsaa)
-
-    
 
 if __name__ == '__main__':
-    optparser = pOptionParser('so', 1, 1, False)
-    orbit = ROOT.TGraph()
-    orbit.SetMarkerStyle(20)
-    orbit.SetMarkerSize(0.15)
-    equator = ROOT.TLine(-180, 0, 180, 0)
-    equator.SetLineStyle(7)
-    timeSteps = []
-    parser = pM7Parser(optparser.Argument, optparser.Options.s)
-    startMet = parser.TimePoints[0]
-    stopMet = parser.TimePoints[-1]
-    saaDoca = SAA_POCA_MAX_DISTANCE
-    saaPoca = None
-    logger.info('Looping over the input file...')
-    for (i, met) in enumerate(parser.TimePoints[:-1]):
-        secFromStart = met - startMet
-        secToEnd = stopMet - met
-        position = parser.getSCPosition((met, 0))
-        (lon, lat, dsaa) = getCoordinates(position)
-        orbit.SetPoint(i, lon, lat)
-        if i == 0:
-            startDate = metToDate(met)
-            labelText = '  Start: %s  ' % startDate
-            timeSteps.append(pTimeStep(met, lon, lat, labelText, 11))
-            logger.info('Run started on %s (approximately); %s.' %\
-                        (startDate, timeSteps[-1]))
-        else:
-            if (met - timeSteps[-1].Met) > DELTA_TIME_STEP_SEC:
-                elapsedMin = DELTA_TIME_STEP_MIN*len(timeSteps)
-                labelText = '#splitline{+%d min}{}' % elapsedMin
-                timeSteps.append(pTimeStep(met, lon, lat, labelText, 21, 921))
-        if secFromStart > SAA_POCA_TIME_PADDING_SEC and \
-           secToEnd > SAA_POCA_TIME_PADDING_SEC:
-            if dsaa < saaDoca:
-                saaDoca = dsaa
-                saaPocaDate = metToDate(met, '%H:%M:%S')
-                labelText = '  SAA POCA: %s (~%d km)' % (saaPocaDate, dsaa)
-                saaPoca = pTimeStep(met, lon, lat, labelText, 11, 632)
-    stopDate = metToDate(met)
-    labelText = '  Stop: %s  ' % stopDate
-    timeSteps.append(pTimeStep(met, lon, lat, labelText, 13))
-    logger.info('Run stopped on %s (approximately); %s.' %\
-                (stopDate, timeSteps[-1]))
-    if saaPoca is not None:
-        logger.info('POCA to SAA around %s (DOCA ~ %d km)' %\
-                    (saaPocaDate, saaDoca))
-    logger.info('Done.')
-    
-    canvas = ROOT.TCanvas('orbit', 'Orbit 2D', 1000, 500)
-    canvas.SetGridx(True)
-    canvas.SetGridy(True)
-    EARTH_GRID.Draw()
-    parser.SAAPolygon.draw('v')
-    equator.Draw()
-    orbit.Draw('psame')
-    for timeStep in timeSteps:
-        timeStep.draw('ml')
-    if saaPoca is not None:
-        saaPoca.draw('ml')
-    canvas.Update()
-    for timeStep in timeSteps:
-        timeStep.adjustAlignment()
-    if optparser.Options.o is not None:
-        canvas.SaveAs(optparser.Options.o)
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option('-o', '--output-file', dest = 'o',
+                      default = None, type = str,
+                      help = 'path to the output file')
+    parser.add_option('-v', '--verbose', dest = 'v',
+                      default = False, action = 'store_true',
+                      help = 'print (a lot of!) debug messages')
+    parser.add_option('-s', '--saa-def-file-path', dest = 's',
+                      default = None, type = str,
+                      help = 'path to the SAA definition file')
+    parser.add_option('-i', '--interactive', dest = 'i',
+                      default = False, action = 'store_true',
+                      help = 'run interactively.')
+    parser.add_option('-t', '--time-step', dest = 't',
+                      default = 10.0, type = float,
+                      help = 'time step (in min) for labels')
+    parser.add_option('-p', '--time-padding', dest = 'p',
+                      default = 10.0, type = float,
+                      help = 'time padding (in min) for SAA POCAs')
+    parser.add_option('-d', '--max-poca-distance', dest = 'd',
+                      default = 750.0, type = float,
+                      help = 'max distance (in km) for SAA POCAs')
+    parser.add_option('-w', '--canvas-width', dest = 'w',
+                      default = 1000, type = int,
+                      help = 'canvas width')
+    (opts, args) = parser.parse_args()
+
+    if not opts.i:
+        ROOT.gROOT.SetBatch(True)
+    viewer = pOrbitViewer(args[0], opts.s)
+    viewer.run(opts.t, opts.p, opts.d)
+    viewer.createImage(opts.i, opts.w)
+    if opts.o is not None:
+        viewer.saveImage(opts.o)
