@@ -247,7 +247,9 @@ if __name__ == '__main__':
                       default = 1000, type = int,
                       help = 'canvas width')
     (opts, args) = parser.parse_args()
-
+    if len(args) != 1:
+        parser.print_help()
+        parser.error('Please provide a (single) input M7 file.')
     if not opts.i:
         ROOT.gROOT.SetBatch(True)
     viewer = pOrbitViewer(args[0], opts.s)
