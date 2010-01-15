@@ -121,7 +121,7 @@ class pEvtMetaContextProcessor:
 	        if DeltaTics>=0:
 	            ticsDev = 20000000 - DeltaTics
 	        else:
-	            ticsDev = 20000000 - (math.pow(2,25) - 1 -self.PreviousTics + clockTics)
+	            ticsDev = 20000000 - (math.pow(2,25) - self.PreviousTics + clockTics)
 	    # If there is a problem check error code else check deviation to 20MHz clock
 	    elif context.current.incomplete:
 	        # Check TimeTone errors
