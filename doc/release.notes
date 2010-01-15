@@ -4,11 +4,13 @@
  *
  *                  EOH
 
-*** v5r1p1 *** TO BE TAGGED
+*** v5r1p1 ***
 - python/pEvtMetaContextProcessor.py
   bug fix - GDQMQ-331 - calculate clock ticks deviation ony when
   current AND previous time tones are complete as in Digi EOR
-- Added script to generate the 2d plot of the orbit with the SAA overlaid
+- python/pEvtMetaContextProcessor.py
+  bug fix for the rollover of the clock tick dev calculus - GDQMQ-325
+- Added script to generate the 2d plot of the orbit with the SAA ovelaid
 (required some minor modifications to the pSAAPolygon class).
 
 
