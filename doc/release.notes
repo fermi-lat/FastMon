@@ -4,6 +4,7 @@
  *
  *                  EOH
 
+ FastMon-05-01-01 15-Jan-2010 bregeon fix clock tick deviation calculus and add SAA 2d plot
 *** v5r1p1 ***
 - python/pEvtMetaContextProcessor.py
   bug fix - GDQMQ-331 - calculate clock ticks deviation ony when
