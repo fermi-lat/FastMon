@@ -4,6 +4,12 @@
  *
  *                  EOH
 
+
+- Minimal changes in order to prevent the orbit line from disappearing with
+ROOT 5.26.
+* Relevant Jira(s): GDQMQ-346
+
+
  FastMon-05-01-01 15-Jan-2010 bregeon fix clock tick deviation calculus and add SAA 2d plot
 *** v5r1p1 ***
 - python/pEvtMetaContextProcessor.py
