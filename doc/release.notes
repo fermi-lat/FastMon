@@ -4,7 +4,7 @@
  *
  *                  EOH
 
-- Bug fix for the FastMon crashing on empty input M7 files.
+- Bug fix for preventing the FastMon from crashing on empty input M7 files.
 * Relevant Jira(s): GDQMQ-347
 
 
