@@ -4,6 +4,7 @@
  *
  *                  EOH
 
+ FastMon-05-02-00 24-Jun-2010 lbaldini Bug fix for the FastMon crashing on empty M7 files.
 - Bug fix for preventing the FastMon from crashing on empty input M7 files.
 * Relevant Jira(s): GDQMQ-347
 
