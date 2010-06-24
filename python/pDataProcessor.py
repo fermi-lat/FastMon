@@ -152,7 +152,7 @@ class pDataProcessor:
             logger.info('Using magic7 file : %s' % inputMagic7FilePath)
             self.M7Parser = pM7Parser(inputMagic7FilePath, saaDefinitionFile)
             self.GeomagProcessor = pGeomagProcessor(self.TreeMaker)
-        if self.self.M7Parser is None:
+        if self.M7Parser is None:
             logger.error('pDataProcessor started without magic7 information.')
             logger.error('Are you sure?')
         if self.OutputProcessedFilePath is not None:
