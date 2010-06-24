@@ -137,24 +137,24 @@ class pDataProcessor:
         if self.OutputErrorFilePath is None:
             self.OutputErrorFilePath = self.OutputFilePath.replace('.root',\
                                        '.errors.xml')
-        self.InputMagic7FilePath = inputMagic7FilePath
         self.XmlParser       = pXmlParser(configFilePath)
         self.TreeMaker       = pFastMonTreeMaker(self)
         self.ErrorHandler    = pErrorHandler()
         self.TreeProcessor   = pFastMonTreeProcessor(self.XmlParser,\
                                self.TreeMaker.OutputFilePath,\
                                self.OutputProcessedFilePath)
-        if self.InputMagic7FilePath is None:
-            logger.warn('pDataProcessor started without magic7 information.')
-            logger.warn('Are you sure?')
-        else:
+        self.M7Parser = None
+        self.GeomagProcessor = None
+        if inputMagic7FilePath is not None:
             from pGeomagProcessor   import pGeomagProcessor
             from pM7Parser          import pM7Parser
             from IGRF               import IGRF
-            logger.info('Using magic7 file : %s' % self.InputMagic7FilePath)
-            self.M7Parser = pM7Parser(self.InputMagic7FilePath,
-                                      saaDefinitionFile)
+            logger.info('Using magic7 file : %s' % inputMagic7FilePath)
+            self.M7Parser = pM7Parser(inputMagic7FilePath, saaDefinitionFile)
             self.GeomagProcessor = pGeomagProcessor(self.TreeMaker)
+        if self.self.M7Parser is None:
+            logger.error('pDataProcessor started without magic7 information.')
+            logger.error('Are you sure?')
         if self.OutputProcessedFilePath is not None:
             self.ReportGenerator = pFastMonReportGenerator(self)
 	self.MetaEventProcessor = pMetaEventProcessor(self.TreeMaker)
@@ -320,7 +320,7 @@ class pDataProcessor:
         self.EvtMetaContextProcessor.process(meta, context)
 	self.EbfEventIter.iterate(buff, len(buff), False)
         timestamp = self.TreeMaker.getVariable('event_timestamp')
-        if self.InputMagic7FilePath != None:
+        if self.M7Parser is not None and self.M7Parser.HasData:
 	    if (timestamp - self.PrevTimestamp) > 5:
 	        #logger.debug('\nTime stamp changed by more than 5s : new = %d \ old = %d\n' %\
 		#             (timestamp , self.PrevTimestamp))

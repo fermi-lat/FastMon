@@ -4,8 +4,11 @@
  *
  *                  EOH
 
- FastMon-05-01-02 24-Jun-2010 lbaldini Orbit line in the 2d plot reappearing
+- Bug fix for the FastMon crashing on empty input M7 files.
+* Relevant Jira(s): GDQMQ-347
 
+
+ FastMon-05-01-02 24-Jun-2010 lbaldini Orbit line in the 2d plot reappearing
 - Minimal changes in order to prevent the orbit line from disappearing with
 ROOT 5.26.
 * Relevant Jira(s): GDQMQ-346

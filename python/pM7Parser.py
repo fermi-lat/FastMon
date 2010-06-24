@@ -30,6 +30,7 @@ logger = pSafeLogger.getLogger('pM7Parser')
 
 import time
 import math
+import os
 import bisect
 from pSCPosition import pSCPosition
 from pSAAPolygon import pSAAPolygon, pVertex
@@ -67,11 +68,20 @@ class pM7Parser:
         else:
             self.SAAPolygon = pSAAPolygon(saaDefinitionFile)
         self.m7FilePath = inputFilePath
-	self.m7FileContent = file(self.m7FilePath ,'r').readlines()
-	self.tweakM7content()
-	self.SCPositionTable = []
-        self.TimePoints = []
-        self.parseIt()
+        if not os.path.exists(inputFilePath):
+            logger.error('Could not find M7 file "%s"...' % inputFilePath)
+            self.HasData = False
+        else:
+            self.m7FileContent = file(self.m7FilePath ,'r').readlines()
+            if not len(self.m7FileContent):
+                logger.error('Got empty M7 file "%s"...' % inputFilePath)
+                self.HasData = False
+            else:
+                self.tweakM7content()
+                self.SCPositionTable = []
+                self.TimePoints = []
+                self.parseIt()
+                self.HasData = True
 
     ## @brief Check magic 7 file content
     #  Use this function to check the magic 7 file quality
@@ -196,12 +206,18 @@ class pM7Parser:
 	return float(yearfloat)
 
 
+
 if __name__ == '__main__':
-    m7FilePath = '/data37/users/ISOCdata/071009001/magic7_071009001.txt'
-    p = pM7Parser(m7FilePath)
-    p.parseIt()
-    for met in p.TimePoints: 
-        sc = p.getSCPosition((met,0))
-        sc.processCoordinates()
-        print sc.getLongitude(), sc.getLatitude(), sc.getDistanceToSAA(), sc.OrbInSAA
+    from optparse import OptionParser
+    parser = OptionParser()
+    (opts, args) = parser.parse_args()
+    if len(args) != 1:
+        parser.print_help()
+        parser.error('Please provide a (single) input M7 file.')
+    p = pM7Parser(args[0], None)
+    if p.HasData:
+        for met in p.TimePoints: 
+            sc = p.getSCPosition((met,0))
+            sc.processCoordinates()
+            print sc.getLongitude(), sc.getLatitude(), sc.getDistanceToSAA(), sc.OrbInSAA
     
