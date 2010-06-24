@@ -4,6 +4,7 @@
  *
  *                  EOH
 
+ FastMon-05-01-02 24-Jun-2010 lbaldini Orbit line in the 2d plot reappearing
 
 - Minimal changes in order to prevent the orbit line from disappearing with
 ROOT 5.26.
