@@ -21,6 +21,10 @@ MAX_LAT = 30
 EARTH_GRID.GetXaxis().SetRangeUser(MIN_LON, MAX_LON)
 EARTH_GRID.GetYaxis().SetRangeUser(MIN_LAT, MAX_LAT)
 
+ORBIT_COLOR = ROOT.kGray
+TIME_STEP_COLOR = ROOT.kBlack
+EQUATOR_COLOR = ROOT.kRed
+
 
 class pTimeStep:
 
@@ -87,10 +91,12 @@ class pOrbitViewer:
     def __init__(self, m7FilePath, saaFilePath):
         self.Orbit = ROOT.TGraph()
         self.Orbit.SetMarkerStyle(20)
-        self.Orbit.SetMarkerSize(0.15)
+        self.Orbit.SetMarkerSize(0.175)
+        self.Orbit.SetMarkerColor(ORBIT_COLOR)
         self.Equator = ROOT.TF1('equator', '0', MIN_LON, MAX_LON)
         self.Equator.SetLineStyle(7)
-        self.Equator.SetLineWidth(1)
+        self.Equator.SetLineWidth(2)
+        self.Equator.SetLineColor(EQUATOR_COLOR)
         self.TimeSteps = []
         self.M7Parser = pM7Parser(m7FilePath, saaFilePath)
         self.StartMet = self.M7Parser.TimePoints[0]
@@ -127,7 +133,7 @@ class pOrbitViewer:
                     elapsedMinutes = deltaTimeStepMin*len(self.TimeSteps)
                     text = '+%d min' % elapsedMinutes
                     timeStep = pTimeStep(met, lon, lat, text,
-                                         21, ROOT.kGray+1, 1)
+                                         21, TIME_STEP_COLOR, 1)
                     self.TimeSteps.append(timeStep)
             if secFromStart > saaPocaTimePaddingSec and \
                    secToEnd > saaPocaTimePaddingSec:
