@@ -46,7 +46,10 @@ class pErrorHandler:
             errorEvent = pErrorEvent(eventNumber)
             for error in self.ErrorsBuffer:
                 errorEvent.addError(error)
-            self.ErrorEventsList.append(errorEvent)
+            if errorEvent.hasUnusualErrors():
+	        logger.info('Unsual errors found, probably just a phase error.')
+		logger.info(errorEvent.getAsText())
+	    self.ErrorEventsList.append(errorEvent)
             self.ErrorsBuffer = []
             return errorEvent.ErrorSummary
         return 0
