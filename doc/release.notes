@@ -3,6 +3,8 @@
  * Coordinator: Luca Baldini <luca.baldini@pi.infn.it>
  *
  *                  EOH
+
+ FastMon-05-02-01 06-Jan-2011 bregeon add logging for real phase errors -- GDQMQ-336
 - Improvement: add logging for real phase error in pErrorHandler.py and pErrorEvent.py.
 * Relevant Jira(s): GDQMQ-336
 
