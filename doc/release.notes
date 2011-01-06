@@ -3,6 +3,9 @@
  * Coordinator: Luca Baldini <luca.baldini@pi.infn.it>
  *
  *                  EOH
+- Improvement: add logging for real phase error in pErrorHandler.py and pErrorEvent.py.
+* Relevant Jira(s): GDQMQ-336
+
 
  FastMon-05-02-00 24-Jun-2010 lbaldini Bug fix for the FastMon crashing on empty M7 files.
 - Bug fix for preventing the FastMon from crashing on empty input M7 files.
