@@ -59,6 +59,11 @@ class pErrorEvent:
     def hasError(self, errorCode):
         return bool((self.ErrorSummary >> self.getBitNumber(errorCode)) & 1)
 
+    def hasUnusualErrors(self):
+        if not self.hasError('TEM_BUG'):
+	    return (self.ErrorSummary >= 2**8) 
+	return False
+
     def addError(self, error):
         self.ErrorsList.append(error)
         self.assertSummaryBit(error.ErrorCode)
