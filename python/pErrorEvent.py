@@ -65,7 +65,7 @@ class pErrorEvent:
         return bool(self.ErrorSummary == (0x1 << GTCC_FIFO_ERROR_BIT))
 
     def hasUnusualErrors(self):
-        if not self.hasError('TEM_BUG') and not hasOnlyGTCCFIFOErrors():
+        if not self.hasError('TEM_BUG') and not self.hasOnlyGTCCFIFOErrors():
 	    return (self.ErrorSummary >= 2**8) 
 	return False
 
