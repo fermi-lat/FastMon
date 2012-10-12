@@ -35,7 +35,15 @@ ERROR_BITS_DICT = {
     }
 
 UNKNOWN_ERROR_BIT = 31
-GTCC_FIFO_ERROR_BIT = self.getBitNumber('GTCC_FIFO_ERROR')
+
+def getBitNumber(errorCode):
+    try:
+        return ERROR_BITS_DICT[errorCode]
+    except KeyError:
+        return UNKNOWN_ERROR_BIT
+
+GTCC_FIFO_ERROR_BIT = getBitNumber('GTCC_FIFO_ERROR')
+
 
 class pErrorEvent:
 
@@ -44,20 +52,14 @@ class pErrorEvent:
         self.ErrorsList  = []
         self.ErrorSummary = 0
 
-    def getBitNumber(self, errorCode):
-        try:
-            return ERROR_BITS_DICT[errorCode]
-        except KeyError:
-            return UNKNOWN_ERROR_BIT
-
     def assertSummaryBit(self, errorCode):
-        self.ErrorSummary |= (1 << self.getBitNumber(errorCode))
+        self.ErrorSummary |= (1 << getBitNumber(errorCode))
 
     def hasErrors(self):
         return self.ErrorSummary > 0
 
     def hasError(self, errorCode):
-        return bool((self.ErrorSummary >> self.getBitNumber(errorCode)) & 1)
+        return bool((self.ErrorSummary >> getBitNumber(errorCode)) & 1)
 
     def hasOnlyGTCCFIFOErrors(self):
         return bool(self.ErrorSummary == (0x1 << GTCC_FIFO_ERROR_BIT))
