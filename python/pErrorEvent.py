@@ -35,7 +35,7 @@ ERROR_BITS_DICT = {
     }
 
 UNKNOWN_ERROR_BIT = 31
-
+GTCC_FIFO_ERROR_BIT = self.getBitNumber('GTCC_FIFO_ERROR')
 
 class pErrorEvent:
 
@@ -58,6 +58,9 @@ class pErrorEvent:
 
     def hasError(self, errorCode):
         return bool((self.ErrorSummary >> self.getBitNumber(errorCode)) & 1)
+
+    def hasOnlyGTCCFIFOErrors(self):
+        return bool(self.ErrorSummary == (0x1 << GTCC_FIFO_ERROR_BIT))
 
     def hasUnusualErrors(self):
         if not self.hasError('TEM_BUG'):
