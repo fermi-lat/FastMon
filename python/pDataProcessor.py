@@ -312,8 +312,8 @@ class pDataProcessor:
     ## @param buff
     #  The buff object of type LDF.EBFeventIterator
     #
-    # If a magic7 file is provided, the space craft position and the corresponding geomagnetic
-    # quantities are updated every 5 seconds
+    # If a magic7 file is provided, the space craft position and the
+    # corresponding geomagnetic quantities are updated every 5 seconds
     
     def processEvt(self, meta, context, buff):
         self.__preEvent()
@@ -322,8 +322,6 @@ class pDataProcessor:
         timestamp = self.TreeMaker.getVariable('event_timestamp')
         if self.M7Parser is not None and self.M7Parser.HasData:
 	    if (timestamp - self.PrevTimestamp) > 5:
-	        #logger.debug('\nTime stamp changed by more than 5s : new = %d \ old = %d\n' %\
-		#             (timestamp , self.PrevTimestamp))
                 position = self.M7Parser.getSCPosition((timestamp, 0))
                 self.GeomagProcessor.process(position)
 	        # Need to copy the value, not to let python use a reference !
@@ -344,19 +342,22 @@ class pDataProcessor:
     #  The buff object of type LDF.EBFeventIterator
     #
     ## FASTMON_DUMP_ERRORS_TO_FILE is defined in Common/python/pGlobals
-    #  if set to True, FastMon will dump events with at least one error to a file
+    #  if set to True, FastMon will dump events with at least one error to a
+    #  file.
     #  Use for debugging purpose only.
     
     def __postEvent(self, buff):        
-        # Try/Except in case the variable is not even defined for backward compatibility
+        # Try/Except in case the variable is not even defined for backward
+        # compatibility
 	try:
-	    if FASTMON_DUMP_ERRORS_TO_FILE and self.ErrorHandler.ErrorsBuffer != []:
+	    if FASTMON_DUMP_ERRORS_TO_FILE and \
+                    self.ErrorHandler.ErrorsBuffer != []:
 	        self.__dumpEventToFile(buff)
         except:
 	    pass
 
         error_summary = self.ErrorHandler.flushErrorsBuffer(\
-                             self.TreeMaker.getVariable('meta_context_gem_scalers_sequence')[0])
+             self.TreeMaker.getVariable('meta_context_gem_scalers_sequence')[0])
 	self.TreeMaker.getVariable('error_summary')[0]=error_summary
 	
         self.TreeMaker.fillTree()
@@ -380,7 +381,8 @@ class pDataProcessor:
         elapsedTime   = self.StopTime - self.StartTime
         averageRate   = self.NumEvents/elapsedTime        
 
-	#For the ErrorHandler get the number of seconds elapsed, assuming counters are fine... 
+	# For the ErrorHandler get the number of seconds elapsed, assuming
+        # counters are fine... 
 	tmin = self.TreeMaker.RootTree.GetMinimum("event_timestamp")
 	tmax = self.TreeMaker.RootTree.GetMaximum("event_timestamp")
 	delta_time = int(tmax-tmin)
