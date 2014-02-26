@@ -5,8 +5,10 @@
  *                  EOH
 
  FastMon-05-03-01 26-Feb-2014 bregeon bug fix pM7Parser::getSCPosition as per GDQMQ-368
- FastMon-05-03-00 12-Oct-2012 lbaldini Printout and xml output suppressed for events with *only* GTCC_FIFO errors.
+- Bug fix: bug fix getSCPosition, check if the M7 value returned is within 60 s of the requested space craft time
+* Relevant Jira(s): GDQMQ-368
 
+ FastMon-05-03-00 12-Oct-2012 lbaldini Printout and xml output suppressed for events with *only* GTCC_FIFO errors.
 - Printout and xml output suppressed for events with *only* GTCC_FIFO errors.
 * Relevant Jira(s): GDQMQ-367
 
