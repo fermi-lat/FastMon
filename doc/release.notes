@@ -4,6 +4,7 @@
  *
  *                  EOH
 
+ FastMon-05-03-02 26-Feb-2014 bregeon just fix last patch release notes
  FastMon-05-03-01 26-Feb-2014 bregeon bug fix pM7Parser::getSCPosition as per GDQMQ-368
 - Bug fix: bug fix getSCPosition, check if the M7 value returned is within 60 s of the requested space craft time
 * Relevant Jira(s): GDQMQ-368
