@@ -31,6 +31,7 @@ logger = pSafeLogger.getLogger('pM7Parser')
 import time
 import math
 import os
+import sys
 import bisect
 from pSCPosition import pSCPosition
 from pSAAPolygon import pSAAPolygon, pVertex
@@ -170,23 +171,24 @@ class pM7Parser:
     #  Only the seconds are used though to get the space craft position.
     #  Note that bisect return the length of the array when requiring a point which is
     #  larger than the maximum value of the array so that in that case we decrement the returned
-    #   index by one in order to avoid an IndexError.
+    #  index by one in order to avoid an IndexError.
+    #  When a boundary is returned we check if the time difference is greater than 60 s, in
+    #  which case the program considers the Magic 7 file time span
+    #  does not match data and exits as per JIRA GDQMQ-368
     
     def getSCPosition(self, SCTime):
         index = bisect.bisect(self.TimePoints, SCTime[0])
-        if index == len(self.TimePoints):
-            logger.info('Required index exceeds the length of TimePoints by one.')
-            logger.info('Decreasing it by one.')
-            index -= 1
-        try:
-            return self.SCPositionTable[index]
-        except IndexError:
-            logger.error('Invalid index in pM7Parser.getSCPosition().')
-            logger.info('Required spacecraft time is %s.' % SCTime[0])
-            logger.info('Index returned by bisect is %s (the SC table has %s rows).' %\
-                        (index, len(self.SCPositionTable)))
-            logger.info('Returning the last SC position table element...')
-            return self.SCPositionTable[-1]
+        if index == 0 or index == len(self.TimePoints):
+            if index==len(self.TimePoints):
+                index-=1
+            m7time=float(self.TimePoints[index])
+            timediff=abs(m7time-SCTime[0])
+            if timediff>60:
+                logger.error('M7 Time = %s s and SC Time=%s s'% (m7time, SCTime[0]) )
+                logger.error('Time difference is %s s, greater than 60 s' % timediff)
+                logger.error('Magic 7 time span does not match space craft time, aborting...')
+                sys.exit(1)
+        return self.SCPositionTable[index]
        
     ## @brief Parse any magic7 line having a human readable time stamp and returns a float corresponding to
     # the year and month of the data.
@@ -216,8 +218,10 @@ if __name__ == '__main__':
         parser.error('Please provide a (single) input M7 file.')
     p = pM7Parser(args[0], None)
     if p.HasData:
-        for met in p.TimePoints: 
+        for met in p.TimePoints[len(p.TimePoints)-10:]: 
             sc = p.getSCPosition((met,0))
             sc.processCoordinates()
-            print sc.getLongitude(), sc.getLatitude(), sc.getDistanceToSAA(), sc.OrbInSAA
-    
+            print met, sc.getLongitude(), sc.getLatitude(), sc.getDistanceToSAA(), sc.OrbInSAA
+    print '\nTest time request out of M7 time span'
+    sc = p.getSCPosition((358905868,0))
+    print sc
