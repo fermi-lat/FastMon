@@ -4,6 +4,7 @@
  *
  *                  EOH
 
+ FastMon-05-03-01 26-Feb-2014 bregeon bug fix pM7Parser::getSCPosition as per GDQMQ-368
  FastMon-05-03-00 12-Oct-2012 lbaldini Printout and xml output suppressed for events with *only* GTCC_FIFO errors.
 
 - Printout and xml output suppressed for events with *only* GTCC_FIFO errors.
