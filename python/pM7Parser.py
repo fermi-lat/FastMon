@@ -196,16 +196,14 @@ class pM7Parser:
     ## @param self
     #  The class instance.
     ## @param dataList
-    #  Any line of the magic7 file contains a human readable time stamp, that we parse here when needed.
+    #  Any line of the magic7 file contains a human readable time stamp,
+    # that we parse here when needed.
     #
-    # This yearfloat is usefull for the igrf plugin.
-    # We consider month level for now, as this is used to initialize the Earth geomagnetic model,
-    # it should be sufficient.
+    # This yearfloat is used for the igrf plugin.
 
     def getYearFloat(self, dataList):
-        dayList = dataList[0].split('-')
-	yearfloat = float(dayList[0]) + 0.1*float(dayList[1])*10/12.
-	return float(yearfloat)
+        year, month, day = [float(item) for item in dataList[0].split('-')]
+        return year + (month - 1)/12. + (day - 1)/365.
 
 
 
