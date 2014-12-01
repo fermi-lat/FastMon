@@ -4,6 +4,7 @@
  *
  *                  EOH
 
+ FastMon-05-03-03 01-Dec-2014 lbaldini Bug fix in the way we handle M7 datetimes as inputs to IGRF.
 - Bug fix in the way we calculate the (floating point year-equivalent) of the
   date and time in the M7 file to be passed to the IGRF package to initialize
   the Geomagnetic field model. Essentially the patch changes the old
