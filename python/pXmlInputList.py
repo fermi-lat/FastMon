@@ -23,9 +23,7 @@ NUMPY_TO_ROOT_TYPE_MAP = {'int8'   : 'B',#an 8 bit signed integer (Char_t)
                           'float64': 'D',#a 64 bit floating point (Double_t)
                           'int64'  : 'L',#a 64 bit signed integer (Long64_t)
                           'uint64' : 'l',#a 64 bit unsigned integer (ULong64_t)
-                          'bool_'  : 'O',#a boolean (Bool_t)}
-                          'int'    : 'I',
-                          'float'  : 'F',
+                          'bool_'  : 'O',#a boolean (Bool_t)
                           'double' : 'D'
                           }
 

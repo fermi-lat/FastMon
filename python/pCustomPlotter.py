@@ -76,9 +76,9 @@ class pCustomPlotter:
                               36, -0.5, 35.5)
         self.__createTmpRootTree(['TkrHitsTowerPlane', 'ToT_con0_TowerPlane',\
                                   'ToT_con1_TowerPlane'], plotRep.Cut)
-        nHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
-        tot0 = self.__createNumpyArray('ToT_con0_TowerPlane', (16, 36), 'int')
-        tot1 = self.__createNumpyArray('ToT_con1_TowerPlane', (16, 36), 'int')
+        nHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int32')
+        tot0 = self.__createNumpyArray('ToT_con0_TowerPlane', (16, 36), 'int32')
+        tot1 = self.__createNumpyArray('ToT_con1_TowerPlane', (16, 36), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(16):
@@ -107,7 +107,7 @@ class pCustomPlotter:
                               -0.5, NUM_ACD_VETOES -0.5)
         self.__createTmpRootTree(['AcdGemVeto_AcdTile'], plotRep.Cut)
         acdVeto = self.__createNumpyArray('AcdGemVeto_AcdTile',\
-                                          (NUM_ACD_VETOES), 'int')
+                                          (NUM_ACD_VETOES), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tile in xrange(NUM_ACD_VETOES):
@@ -129,7 +129,7 @@ class pCustomPlotter:
         self.__startTimer()
         histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, 16, -0.5, 16-0.5)
         self.__createTmpRootTree([plotRep.Expression], plotRep.Cut)
-        towerVec = self.__createNumpyArray(plotRep.Expression, (1), 'int')
+        towerVec = self.__createNumpyArray(plotRep.Expression, (1), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in xrange(16):
@@ -159,8 +159,8 @@ class pCustomPlotter:
                                         plotRep.getExpandedTitle(tower),
                                         38, -0.5, 38 - 0.5))
         self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
-        tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
-        noHits = numpy.zeros((36), 'int')
+        tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int32')
+        noHits = numpy.zeros((36), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(16):
@@ -172,7 +172,7 @@ class pCustomPlotter:
     def __getTkrIntegralHits(self, tkrHits):
         if 'tkrIntegralHits' in self.ObjectsPool.keys():
             return self.ObjectsPool['tkrIntegralHits']
-        tkrIntegralHits = numpy.zeros((16, 36, 24), 'int')
+        tkrIntegralHits = numpy.zeros((16, 36, 24), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             tkrIntegralHits += tkrHits
@@ -187,7 +187,7 @@ class pCustomPlotter:
                                         plotRep.getExpandedTitle(tower),
                                         24, -0.5, 23.5, 36, -0.5, 35.5))
         self.__createTmpRootTree(['TkrHitsGTFE'], plotRep.Cut)
-        tkrHits = self.__createNumpyArray('TkrHitsGTFE', (16, 36, 24), 'int')
+        tkrHits = self.__createNumpyArray('TkrHitsGTFE', (16, 36, 24), 'int32')
         tkrIntegralHits = self.__getTkrIntegralHits(tkrHits)
         for tower in range(16):
             for layer in range(36):
@@ -209,7 +209,7 @@ class pCustomPlotter:
                                         plotRep.getExpandedTitle(tower),
                                         36, -0.5, 35.5))
         self.__createTmpRootTree(['TkrHitsGTFE'], plotRep.Cut)
-        tkrHits = self.__createNumpyArray('TkrHitsGTFE', (16, 36, 24), 'int')
+        tkrHits = self.__createNumpyArray('TkrHitsGTFE', (16, 36, 24), 'int32')
         tkrIntegralHits = self.__getTkrIntegralHits(tkrHits)
         for tower in range(16):
             for layer in range(36):   
@@ -234,7 +234,7 @@ class pCustomPlotter:
         histogram = ROOT.TH1F(plotRep.Name, plotRep.Title, NUM_ACD_CABLES,\
                               -0.5 , NUM_ACD_CABLES -0.5)
         self.__createTmpRootTree([plotRep.Expression], plotRep.Cut)
-        varArray = self.__createNumpyArray(plotRep.Expression, (1), 'int')
+        varArray = self.__createNumpyArray(plotRep.Expression, (1), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for board in xrange(NUM_ACD_CABLES):
@@ -253,7 +253,7 @@ class pCustomPlotter:
         self.__createTmpRootTree(['CalLogEndRangeHit'], plotRep.Cut)
         calHits = self.__createNumpyArray('CalLogEndRangeHit',\
                                           (16, 8, 12, 2, 4), 'bool_')
-        calIntegralHits = numpy.zeros((16, 8, 12, 2, 4), 'int')
+        calIntegralHits = numpy.zeros((16, 8, 12, 2, 4), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             calIntegralHits += calHits
@@ -295,7 +295,7 @@ class pCustomPlotter:
         self.__createTmpRootTree(['CalXHit_TowerCalLayerCalColumn'],\
                                  plotRep.Cut)
         calHits = self.__createNumpyArray('CalXHit_TowerCalLayerCalColumn',\
-                                          (16, 8, 12), 'int')
+                                          (16, 8, 12), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(NUM_TOWERS):
@@ -329,7 +329,7 @@ class pCustomPlotter:
         self.__createTmpRootTree(['CalXHit_TowerCalLayerCalColumn'],\
                                  plotRep.Cut)
         calHits = self.__createNumpyArray('CalXHit_TowerCalLayerCalColumn',\
-                                          (16, 8, 12), 'int')
+                                          (16, 8, 12), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(NUM_TOWERS):
@@ -356,7 +356,7 @@ class pCustomPlotter:
         histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 16, -0.5, 15.5,
                               36, -0.5, 35.5)
         self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
-        tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
+        tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(16):
@@ -378,7 +378,7 @@ class pCustomPlotter:
         histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 16, -0.5, 15.5,
                               36, -0.5, 35.5)
         self.__createTmpRootTree(['TkrHitsTowerPlane'], plotRep.Cut)
-        tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int')
+        tkrHits = self.__createNumpyArray('TkrHitsTowerPlane', (16, 36), 'int32')
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
             for tower in range(16):
@@ -591,8 +591,8 @@ class pCustomPlotter:
         histogram = ROOT.TH2F(plotRep.Name, plotRep.Title, 18, -0.5, 17.5, 12, -0.5, 11.5)
         self.__createTmpRootTree(['AcdHitChannel'], plotRep.Cut)
 	
-        acdHits = self.__createNumpyArray('AcdHitChannel', (12, 18), 'int')	        
-        AcdHitSum = numpy.zeros((12, 18), 'int')
+        acdHits = self.__createNumpyArray('AcdHitChannel', (12, 18), 'int32')	        
+        AcdHitSum = numpy.zeros((12, 18), 'int32')
 	
         for i in xrange(self.TmpRootTree.GetEntriesFast()):
             self.TmpRootTree.GetEntry(i)
