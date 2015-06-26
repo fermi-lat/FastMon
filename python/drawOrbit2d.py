@@ -91,7 +91,7 @@ class pOrbitViewer:
     def __init__(self, m7FilePath, saaFilePath):
         self.Orbit = ROOT.TGraph()
         self.Orbit.SetMarkerStyle(20)
-        self.Orbit.SetMarkerSize(0.175)
+        self.Orbit.SetMarkerSize(0.4)
         self.Orbit.SetMarkerColor(ORBIT_COLOR)
         self.Equator = ROOT.TF1('equator', '0', MIN_LON, MAX_LON)
         self.Equator.SetLineStyle(7)
